@@ -1,0 +1,1537 @@
+/* =========================
+   VARIABLES – PALETA VAGOS
+========================= */
+:root {
+    --verde-principal: #0F3D2E;
+    --verde-hover: #145C44;
+    --dorado: #D6B77C;
+    --negro: #111111;
+    --negro-suave: #1A1A1A;
+    --blanco-crema: #F7F5F2;
+    --gris-texto: #6b7280;
+    --gris-borde: #e5e7eb;
+    --rojo-vino: #8C2F2F;
+}
+
+/* =========================
+   RESET
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--blanco-crema);
+    color: var(--negro);
+    padding-top: 70px;
+}
+
+/* =========================
+   HEADER
+========================= */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--verde-principal);
+    color: #fff;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+header h2 {
+    font-size: 18px;
+    color: var(--dorado);
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+header nav a:hover {
+    background: rgba(255,255,255,0.15);
+}
+header nav a.login-btn {
+    background: #2563eb; /* igual que user-btn */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    border: none;
+}
+
+header nav a.login-btn:hover {
+    background: #1e40af;
+}
+
+/* =========================
+   CART ICON
+========================= */
+.cart-btn {
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+       margin-right: 10px;
+}
+
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--rojo-vino);
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 999px;
+}
+
+/* =========================
+   MAIN
+========================= */
+main {
+    padding: 16px;
+}
+
+
+/* =========================
+   CARRITO
+========================= */
+#carrito {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Se oculta fuera de la pantalla */
+    width: 100%;
+    max-width: 380px;
+    height: 100vh; /* Asegura que tome toda la altura */
+    background: var(--blanco-crema);
+    z-index: 1000;
+    padding: 16px;
+    box-shadow: -4px 0 12px rgba(0,0,0,.15);
+    transition: right .3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mostrar carrito */
+#carrito.active {
+    right: 0;
+}
+
+/* Header */
+.carrito-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.cerrar {
+    border: none;
+    background: none;
+    font-size: 28px; /* Un poco más grande para mejor accesibilidad */
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Lista de productos con scroll */
+#lista-carrito {
+    flex: 1; /* Toma todo el espacio disponible */
+    overflow-y: auto; /* Scroll vertical cuando sea necesario */
+    list-style: none;
+    margin: 0; /* Quita margen para evitar scroll innecesario */
+    padding: 0;
+    border-top: 1px solid var(--gris-borde);
+    border-bottom: 1px solid var(--gris-borde);
+}
+
+/* Cada item */
+#lista-carrito li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gris-borde);
+    font-size: 14px;
+}
+
+.item-info small {
+    color: var(--gris-texto);
+    display: block;
+}
+
+.cart-controls button {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: var(--gris-borde);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease;
+}
+
+.cart-controls button:hover {
+    background: var(--verde-principal);
+    color: white;
+}
+
+.eliminar {
+    background: #c94b4b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.eliminar:hover {
+    background: #992d2d;
+}
+
+/* Footer */
+.carrito-footer {
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 12px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--verde-principal);
+    margin: 0;
+}
+
+/* Botón ordenar */
+.carrito-footer button {
+    width: 100%;
+    background: var(--verde-principal);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease;
+}
+
+.carrito-footer button:hover {
+    background: #396232;
+}
+
+/* Mensaje carrito vacío */
+.carrito-vacio {
+    text-align: center;
+    color: var(--gris-texto);
+    padding: 20px 0;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+}
+
+/* Mostrar overlay solo cuando carrito está activo */
+#carrito.active + #overlay {
+    opacity: 1;
+    pointer-events: all;
+}
+
+
+/* =========================
+   MODALES (LOGIN + CHECKOUT)
+========================= */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--blanco-crema);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    animation: fadeInUp .25s ease;
+}
+
+/* =========================
+   MENÚ USUARIO
+========================= */
+.user-btn {
+    background: var(--verde-principal);
+    color: white;
+}
+.user-avatar {
+    background: var(--blanco-crema);
+    color: var(--verde-principal);
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content h3 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--gris-borde);
+    font-size: 14px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.modal-actions button[type="submit"] {
+    background: var(--verde-principal);
+    color: white;
+}
+
+.modal-actions button[type="button"] {
+    background: var(--gris-borde);
+    color: var(--negro);
+}
+
+/* =========================
+   PEDIDOS
+========================= */
+.lista-pedidos {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.pedido-card {
+    background: #ffffff;
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.estado-pendiente { color: var(--dorado); font-weight: bold; }
+.estado-preparando { color: var(--verde-principal); font-weight: bold; }
+.estado-entregado { color: #16a34a; font-weight: bold; }
+
+/* =========================
+   CAJAS
+========================= */
+
+
+/* =========================
+   CAJAS - DOS COLUMNAS INDEPENDIENTES
+========================= */
+/* Contenedor principal */
+.caja-layout {
+    display: flex;          /* lado a lado */
+    justify-content: space-between; /* aire entre ellos */
+    gap: 40px;              /* separación horizontal */
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Panel de pedidos */
+.caja-pedidos {
+    flex: 1;                /* ocupa el espacio disponible */
+    max-height: 600px;      /* para que no se estire demasiado */
+    overflow-y: auto;       /* scroll si hay muchos pedidos */
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* Panel de cobro */
+.caja-cobro {
+    width: 400px;           /* ancho fijo */
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    height: fit-content;    /* solo ocupa lo que necesita */
+}
+
+/* Pedidos individuales */
+.orden-item {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    background: #f9fafb;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.orden-item:hover {
+    background: #f3f4f6;
+    transform: translateX(2px);
+}
+
+/* Inputs y select más grandes */
+.caja-cobro input,
+.caja-cobro select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+    box-sizing: border-box;
+}
+
+/* Botones */
+.btn-cobrar, .btn-ticket {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-cobrar:hover, .btn-ticket:hover {
+    transform: translateY(-2px);
+}
+
+/* Referencia de pago */
+#campoReferencia {
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .caja-layout {
+        flex-direction: column; /* apilar en móviles */
+    }
+    
+    .caja-cobro {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+
+/* =========================
+   SOBRE NOSOTROS
+========================= */
+/* =========================
+   HERO MENÚ
+========================= */
+.hero-menu {
+    min-height: 45vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    padding: 60px 20px;
+
+    background:
+      linear-gradient(rgba(13, 39, 33, 0.75), rgba(13, 39, 33, 0.75)),
+      url('/media/hero-restaurante.jpg') center/cover no-repeat;
+
+    color: #f0ead8;
+}
+
+.hero-menu h1 {
+    font-size: 52px;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    color: #d4b886;
+}
+
+.hero-menu p {
+    font-size: 16px;
+    color: #e5e5e5;
+    max-width: 520px;
+    margin: auto;
+}
+
+.nosotros {
+    padding: 90px 20px;
+    background: #0d2721; /* mismo verde del branding */
+    color: #f0ead8;
+}
+
+/* =========================
+   HERO HISTORIA
+========================= */
+.nosotros-hero {
+    max-width: 1200px;
+    margin: 0 auto 90px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.nosotros-texto h2 {
+    font-size: 42px;
+    color: #d4b886;
+    margin-bottom: 18px;
+}
+
+.nosotros-texto p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #e5e5e5;
+    max-width: 560px;
+}
+
+/* IMAGEN */
+.nosotros-img img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.4);
+}
+
+/* =========================
+   BLOQUE INFO
+========================= */
+.info-container {
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+}
+
+.info-title {
+    font-size: 34px;
+    color: #d4b886;
+    margin-bottom: 12px;
+}
+
+.info-intro {
+    max-width: 720px;
+    margin: 0 auto 50px;
+    font-size: 15px;
+    color: #ddd;
+}
+
+/* TARJETAS */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+}
+
+.info-card {
+    background: #12362c; /* verde un poco más claro */
+    padding: 26px 24px;
+    border-radius: 18px;
+    text-align: left;
+    box-shadow: 0 14px 30px rgba(0,0,0,.35);
+    transition: transform .25s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-6px);
+}
+
+.info-card h3 {
+    font-size: 18px;
+    color: #d4b886;
+    margin-bottom: 10px;
+}
+
+.info-card p,
+.info-card li {
+    font-size: 14px;
+    color: #f0ead8;
+    line-height: 1.7;
+}
+
+.info-card ul {
+    padding-left: 18px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+    .nosotros-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .nosotros-texto p {
+        margin: 0 auto;
+    }
+
+    .nosotros-img {
+        max-width: 420px;
+        margin: 0 auto;
+    }
+}
+
+/* =========================
+   CATEGORÍAS
+========================= */
+.categorias {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;        /* Habilita scroll horizontal */
+  padding: 10px 20px;
+  scroll-behavior: smooth; /* Scroll suave */
+  background: #f8f5ef;     /* Fondo suave */
+  border-radius: 30px;
+  -webkit-overflow-scrolling: touch; /* Suaviza scroll en iOS */
+}
+
+/* BOTONES DE CATEGORÍAS */
+.categorias button {
+  flex: 0 0 auto; /* No se estiren, solo al ancho del contenido */
+  background: #efefef;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap; /* Evita que el texto se parta */
+  color: #0d2721;
+  border: 1.5px solid transparent;
+}
+
+.categorias button:hover {
+  background: #d4b886;
+  color: #0d2721;
+}
+
+.categorias button.active {
+  background: #0d2721;
+  color: #f3e6cb;
+  border: 1.5px solid #b4a672;
+}
+
+/* OCULTAR BARRA DE SCROLL EN LA MAYORÍA DE LOS NAVEGADORES (opcional) */
+.categorias::-webkit-scrollbar {
+  height: 8px;
+}
+.categorias::-webkit-scrollbar-thumb {
+  background: #b4a672;
+  border-radius: 4px;
+}
+
+/* =========================
+   MENÚ
+========================= */
+.menu {
+  padding: 30px 20px;
+  background: #f8f5ef;
+}
+
+
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+/* CARD PRODUCTO */
+.producto-card {
+  background: white;
+  border: 1.5px solid #b4a672;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.producto-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1.5px solid #b4a672;
+}
+.producto-info {
+  flex-grow: 1;
+  padding: 15px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.producto-card:hover {
+    transform: translateY(-6px);
+}
+
+.producto-info h3 {
+  margin: 0 0 10px 0;
+  color: #0d2721;
+}
+
+.producto-info p {
+  flex-grow: 1;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+
+.producto-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.producto-precio {
+  font-weight: 700;
+  color: #b48a4e;
+  font-size: 18px;
+}
+
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cantidad-control input[type="number"] {
+  width: 50px;
+  padding: 6px 8px;
+  border: 1.5px solid #b4a672;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.btn-agregar {
+  background-color: #b4a672;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: #0d2721;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #927740;
+}
+/* =========================
+   HERO PRINCIPAL HOME
+========================= */
+.hero-home {
+    height: 90vh;
+    background: url('/media/hero-restaurante.jpg') center/cover no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-overlay {
+    background: rgba(15, 61, 46, 0.7); /* verde semi-transparente */
+    color: #fff;
+    text-align: center;
+    padding: 40px;
+    border-radius: 8px;
+}
+
+.hero-overlay h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.hero-overlay p {
+    font-size: 18px;
+    margin-bottom: 25px;
+    color: #ddd;
+}
+
+.hero-overlay button {
+    background: var(--dorado);
+    color: var(--negro);
+    padding: 12px 28px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.hero-overlay button:hover {
+    background: var(--verde-principal);
+    color: white;
+}
+
+/* =========================
+   DESTACADOS
+========================= */
+.destacados {
+    padding: 70px 20px;
+    text-align: center;
+    background: var(--blanco-crema);
+}
+
+.destacados h2 {
+    font-size: 32px;
+    margin-bottom: 35px;
+    color: var(--verde-principal);
+}
+
+.destacados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* =========================
+   NOSOTROS
+========================= */
+.nosotros {
+    display: flex;
+    flex-wrap: wrap;
+      justify-content: space-between;
+    align-items: center;
+  padding: 100px 20px;
+   background: #153024; 
+    color: #fff;
+    gap: 60px;
+}
+
+
+.nosotros-texto {
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 500px;
+    color: #f3e6cb;
+}
+
+.nosotros-texto h2 {
+    font-size: 34px;
+    margin-bottom: 15px;
+    color: var(--dorado);
+}
+
+.nosotros-texto p {
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.nosotros-img img {
+       width: 100%;
+    max-width: 600px;
+    border-radius: 14px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
+}
+.nosotros-img {
+    margin-left: auto;
+}
+/* =========================
+   CONTACTO
+========================= */
+.footer-contacto {
+  background: #1c1c1c; /* fondo oscuro elegante */
+  color: #f5f5f5;      /* texto claro */
+  padding: 60px 20px 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-logo h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #f0a500; /* color dorado suave para destacar */
+}
+
+.footer-logo p {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.footer-info h3,
+.footer-redes h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #f0a500;
+}
+
+.footer-info p,
+.footer-redes a {
+  font-size: 14px;
+  color: #ddd;
+  margin-bottom: 6px;
+  text-decoration: none;
+  display: block;
+  transition: color 0.2s;
+}
+
+.footer-redes a:hover {
+  color: #f0a500;
+}
+
+.footer-redes .redes-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-copy {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 13px;
+  color: #888;
+  border-top: 1px solid #333;
+  padding-top: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .footer-wrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-redes .redes-icons {
+    justify-content: center;
+  }
+}
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .caja-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-card ul li {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    .modal-content.modal-pedidos {
+        width: 95vw;
+        height: 90vh;
+        padding: 15px;
+    }
+
+    .user-dropdown-content {
+        position: absolute;
+        top: 70px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.25);
+        font-size: 16px;
+        z-index: 2000;
+    }
+
+    .user-dropdown-content a {
+        padding: 16px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 16px;
+    }
+
+    .modal-content h3 {
+        font-size: 18px;
+    }
+
+    .modal-actions button {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .user-btn {
+        padding: 6px;
+        border-radius: 50%;
+    }
+}
+
+/* =========================
+   CSS COMPLETO – FIN
+========================= */
+
+
+/* =========================
+   MENÚ DE USUARIO SOBRIO
+========================= */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Botón principal del usuario */
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #333;           /* gris oscuro elegante */
+    color: #fff;                /* texto blanco */
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;       /* pill button */
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.user-btn:hover {
+    background: #444;           /* hover más claro */
+}
+
+/* Círculo del avatar */
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f5f5f5;        /* gris muy claro */
+    color: #333;                /* texto gris oscuro */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+/* Nombre visible en desktop */
+.user-name {
+    white-space: nowrap;
+}
+
+/* Dropdown contenido */
+.user-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: #fff;           /* fondo limpio */
+    min-width: 200px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 2000;
+    animation: fadeInDropdown 0.2s ease;
+}
+
+.user-dropdown-content a {
+    display: block;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: #333;               /* texto gris oscuro */
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.user-dropdown-content a:hover {
+    background: #e2d8c3;       /* beige suave elegante */
+    color: #333;
+}
+
+/* Mostrar dropdown */
+.user-dropdown.show .user-dropdown-content {
+    display: block;
+}
+
+/* Animación dropdown */
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive: ocultar nombre en móvil */
+@media (max-width: 600px) {
+    .user-name {
+        display: none;
+    }
+    .user-btn {
+        padding: 6px;
+        border-radius: 50%;
+    }
+    .user-dropdown-content {
+        top: 60px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        font-size: 16px;
+    }
+    .user-dropdown-content a {
+        padding: 14px;
+    }
+}
+
+
+
+/* =========================
+   MODAL MIS PEDIDOS
+========================= */
+#misPedidosModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);   /* overlay semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+#misPedidosModal.active {
+    display: flex;
+}
+
+/* Contenedor principal */
+.modal-content.modal-pedidos {
+    background: #fff;                /* fondo blanco limpio */
+    width: 75vw;                     /* ancho 3/4 pantalla */
+    max-width: 1100px;
+    height: 85vh;                    /* altura grande */
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.25s ease;
+}
+
+/* Título */
+.modal-content.modal-pedidos h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #111;                     /* gris muy oscuro */
+    text-align: center;
+}
+
+/* Lista de pedidos */
+.lista-pedidos {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding-right: 5px;
+}
+
+/* Tarjeta de cada pedido */
+.pedido-card {
+    background: #fafafa;             /* gris muy claro */
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.pedido-card:hover {
+    background: #f0f0f0;
+}
+
+/* Encabezado del pedido */
+.pedido-card h4 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* Lista horizontal de productos */
+.pedido-card ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pedido-card ul li {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* Estados de pedido */
+.estado-pendiente { color: #d97706; font-weight: bold; }
+.estado-preparando { color: #2563eb; font-weight: bold; }
+.estado-entregado { color: #16a34a; font-weight: bold; }
+
+/* Botón de cerrar */
+.modal-actions {
+    text-align: right;
+    margin-top: 15px;
+}
+
+.modal-actions button {
+    background: #333;                 /* gris oscuro elegante */
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.modal-actions button:hover {
+    background: #555;                 /* hover más claro */
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-content.modal-pedidos {
+        width: 95vw;
+        height: 90vh;
+        padding: 15px;
+    }
+
+    .pedido-card {
+        font-size: 13px;
+    }
+
+    .pedido-card ul li {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    .modal-actions button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+
+
+
+/* reserva */
+
+
+/* =========================
+   MODAL RESERVA
+========================= */
+
+/* ===============================
+   MODAL RESERVA
+================================ */
+
+/* ===============================
+   MODAL RESERVA – MODERNO
+================================ */
+
+.modalreserva {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.65);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalreserva.active {
+  display: flex;
+}
+
+/* ===============================
+   CARD
+================================ */
+
+.modalreserva-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 640px;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.25);
+  position: relative;
+  animation: modalreservaPop .35s ease;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ===============================
+   HEADER
+================================ */
+
+.modalreserva-content h2 {
+  margin: 0 0 18px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ===============================
+   CLOSE
+================================ */
+
+.modalreserva-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color .2s;
+}
+
+.modalreserva-close:hover {
+  color: #000;
+}
+
+/* ===============================
+   FORM
+================================ */
+
+.modalreserva label {
+  display: block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+}
+
+.modalreserva input,
+.modalreserva select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fafafa;
+  transition: border .2s, box-shadow .2s;
+}
+
+.modalreserva input:focus,
+.modalreserva select:focus {
+  outline: none;
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px rgba(230,57,70,.15);
+  background: #fff;
+}
+
+/* ===============================
+   GRID
+================================ */
+
+.modalreserva-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* ===============================
+   INFO
+================================ */
+
+.modalreserva-info {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f5f7fa;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.modalreserva-btn-primary {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #e63946, #ff5f6d);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.modalreserva-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(230,57,70,.35);
+}
+
+.modalreserva-btn-secondary {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: transparent;
+  color: #666;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.modalreserva-btn-secondary:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   ANIMATION
+================================ */
+
+@keyframes modalreservaPop {
+  from {
+    opacity: 0;
+    transform: scale(.92) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 480px) {
+  .modalreserva-content {
+    padding: 22px;
+    border-radius: 16px;
+  }
+}
+
+/* ===============================
+   LAYOUT HORIZONTAL
+================================ */
+
+.modalreserva-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalreserva-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Mesas / Sillas y Nombre / Teléfono en 2 columnas */
+.modalreserva-row:nth-of-type(2),
+.modalreserva-row:nth-of-type(3) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ===============================
+   BOTONES
+================================ */
+
+.modalreserva-actions {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 640px) {
+  .modalreserva-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modalreserva-actions {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Panel Administracion{% endblock %}
+
+{% block content %}
+
+<div class="admin-layout">
+  <header class="admin-header">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <h1 id="adminTitle">Dashboard</h1>
+        </header>
+    <aside class="sidebar" id="sidebar">
+        <h2>⚙️ Admin</h2>
+
+        <nav>
+           <a href="#" onclick="cargarSeccion('dashboard')">📊 Dashboard</a>
+<a href="#" onclick="cargarSeccion('pedidos')">🧾 Pedidos</a>
+<a href="#" onclick="cargarSeccion('reservas')">🧾 Reservas</a>
+<a href="#" onclick="cargarSeccion('clientes')">👥 Clientes</a>
+<a href="#" onclick="cargarSeccion('productos')">🍽️ Productos</a>
+<a href="#" onclick="cargarSeccion('caja')">🍽️ Caja</a>
+<a href="#" onclick="cargarSeccion('empresa')">🍽️ Configuracionde Empresa</a>
+
+
+
+        </nav>
+    </aside>
+
+    <main class="admin-content" id="adminContent">
+
+      
+
+        <section id="adminBody">
+            Bienvenido al panel administrativo
+        </section>
+
+    </main>
+
+</div>
+<script>
+    const HOME_URL = "{% url 'home' %}";
+</script>
+
+
+{% endblock %}

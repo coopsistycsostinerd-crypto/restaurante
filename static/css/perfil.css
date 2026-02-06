@@ -1,0 +1,225 @@
+.perfil-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.perfil-modal.active {
+  display: flex;
+}
+
+.perfil-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 14px;
+  width: 700px;
+  max-width: 95%;
+  position: relative;
+}
+
+.perfil-card.small {
+  width: 420px;
+}
+
+.perfil-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.perfil-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+}
+
+.perfil-avatar {
+  text-align: center;
+}
+
+.perfil-avatar img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+}
+
+.btn-upload {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.perfil-info label {
+  font-size: 13px;
+  margin-top: 10px;
+  display: block;
+}
+
+.perfil-info input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.perfil-info input[readonly] {
+  background: #f4f4f4;
+}
+
+.perfil-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #eee;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+
+
+
+/* ===============================
+   MODAL CAMBIAR CONTRASEÑA
+================================ */
+.password-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.password-modal.active {
+  display: flex;
+}
+
+/* ===============================
+   CONTENEDOR
+================================ */
+.password-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: fadeInScale 0.25s ease;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.password-box h3 {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* ===============================
+   FORMULARIO
+================================ */
+.password-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.password-box label {
+  font-size: 14px;
+  color: #444;
+  font-weight: 500;
+}
+
+.password-box input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.password-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ===============================
+   BOTONES
+================================ */
+.password-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.password-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.password-actions .btn-guardar {
+  background: #2563eb;
+  color: #fff;
+}
+
+.password-actions .btn-guardar:hover {
+  background: #1e4fd6;
+}
+
+.password-actions .btn-cancelar {
+  background: #e5e7eb;
+  color: #333;
+}
+
+.password-actions .btn-cancelar:hover {
+  background: #d1d5db;
+}
+
+/* ===============================
+   ANIMACIÓN
+================================ */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

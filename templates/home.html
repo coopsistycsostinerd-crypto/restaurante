@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<!-- 🌟 HERO PRINCIPAL -->
+<section class="hero-home">
+    <div class="hero-overlay">
+        <h1>Una experiencia gastronómica diferente</h1>
+        <p>Sabores auténticos, ingredientes frescos y pasión por la cocina</p>
+        <button onclick="scrollToMenu()">Ver Menú</button>
+    </div>
+</section>
+
+<!-- ⭐ DESTACADOS -->
+<section class="destacados">
+    <h2>Platos Destacados</h2>
+    <div class="destacados-grid" id="destacados">
+        <!-- JS puede cargar productos destacados aquí -->
+    </div>
+</section>
+
+<!-- 👨‍🍳 SOBRE EL RESTAURANTE -->
+<!-- 👨‍🍳 SOBRE EL RESTAURANTE -->
+<section id="sobre-nosotros" class="nosotros info-section">
+
+  <!-- BLOQUE HISTORIA -->
+  <div class="nosotros-hero">
+
+    <div class="nosotros-texto">
+      <h2>Nuestra Historia</h2>
+      <p>
+        Somos un restaurante dedicado a crear experiencias inolvidables a través
+        de cada plato. Fusionamos tradición y creatividad para ofrecerte algo
+        verdaderamente especial.
+      </p>
+    </div>
+
+    <div class="nosotros-img">
+      <img src="/media/restaurante.jpg" alt="Nuestro Restaurante">
+    </div>
+
+  </div>
+
+  <!-- BLOQUE SOBRE NOSOTROS -->
+  <div class="info-container">
+
+    <h2 class="info-title">🍽️ Sobre Nosotros</h2>
+
+    <p class="info-intro">
+      Somos más que un restaurante. Somos un espacio donde la buena comida,
+      el servicio de calidad y los momentos especiales se encuentran.
+    </p>
+
+    <div class="info-grid">
+
+      <div class="info-card">
+        <h3>🎯 Nuestra misión</h3>
+        <p>
+          Ofrecer experiencias gastronómicas memorables, combinando ingredientes
+          de calidad, atención personalizada y un ambiente acogedor.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h3>👁️ Nuestra visión</h3>
+        <p>
+          Ser un referente en nuestro sector, innovando constantemente
+          y creando un lugar al que siempre quieras volver.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h3>💛 Nuestros valores</h3>
+        <ul>
+          <li>Calidad en cada plato</li>
+          <li>Respeto y cercanía con el cliente</li>
+          <li>Compromiso y honestidad</li>
+          <li>Pasión por lo que hacemos</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- 🍽️ HERO DEL MENÚ (EL TUYO ACTUAL) -->
+<section class="hero-menu">
+    <div class="hero-menu-content">
+        <h1>Nuestro Menú</h1>
+        <p>Descubre todo lo que tenemos preparado para ti</p>
+    </div>
+</section>
+
+
+<!-- 🔘 CATEGORÍAS (TU SECCIÓN ACTUAL) -->
+<section class="categorias" id="categorias"></section>
+
+<!-- 🧾 MENÚ (TU GRID ACTUAL) -->
+<section class="menu">
+    <div class="productos" id="productos"></div>
+     <div class="menu-ver-mas">
+    <button onclick="abrirMenuModal()">Ver todo el menú</button>
+  </div>
+</section>
+
+
+
+<!-- 📍 CONTACTO -->
+<!-- 📍 CONTACTO -->
+<footer class="footer-contacto">
+  <div class="footer-wrapper">
+    <div class="footer-logo">
+      <h2>Vagos Restaurante</h2>
+      <p>Sabores auténticos y experiencias únicas</p>
+    </div>
+    
+    <div class="footer-info">
+      <h3>Contáctanos</h3>
+      <p>Calle Principal #123, Ciudad</p>
+      <p>Tel: (809) 000-0000</p>
+      <p>Horario: Lunes a Domingo 12:00 PM – 11:00 PM</p>
+    </div>
+
+    <div class="footer-redes">
+      <h3>Síguenos</h3>
+      <div class="redes-icons">
+        <a href="#" target="_blank">Instagram</a>
+        <a href="#" target="_blank">Facebook</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-copy">
+    <p>© 2026 Vagos Restaurante. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+
+
+{% endblock %}
