@@ -47,6 +47,7 @@ INSTALLED_APPS = [
                      'carrito',  
                                  'caja',
                                   'reserva',
+                                 
 ]
 # settings.py
 AUTH_USER_MODEL = 'users.Usuariohtp'
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  
 ]
 
 ROOT_URLCONF = 'restaurante_api.urls'
