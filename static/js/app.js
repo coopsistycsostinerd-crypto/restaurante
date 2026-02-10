@@ -2,6 +2,13 @@
    CARRITO (LOCALSTORAGE)
 ========================= */
 
+const togglePrincipal = document.getElementById("menuToggleprincipal");
+const mainNav = document.getElementById("mainNav");
+
+togglePrincipal.addEventListener("click", () => {
+    mainNav.classList.toggle("open");
+});
+
 
 function usuarioLogueado() {
     return !!localStorage.getItem("token");
@@ -194,14 +201,14 @@ let productosGlobal = [];
    FETCH CATEGORIAS
 ========================= */
 async function cargarCategorias() {
-    console.log("📡 Llamando a /api/categorias/");
+  
 
     try {
         const res = await fetch(`${API_BASE}/categorias/`);
-        console.log("📥 Respuesta categorias:", res);
+      
 
         const categorias = await res.json();
-        console.log("📦 Categorias recibidas:", categorias);
+      
 
         const contenedor = document.getElementById("categorias");
 
@@ -290,7 +297,7 @@ function renderProductos(lista) {
    FILTRAR
 ========================= */
 function filtrarCategoria(categoriaNombre, e) {
-    console.log("🎯 Filtrando categoría:", categoriaNombre);
+   
 
     document.querySelectorAll(".categorias button")
         .forEach(b => b.classList.remove("active"));
@@ -320,9 +327,11 @@ function filtrarCategoria(categoriaNombre, e) {
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
-    cargarCategorias();
-    cargarProductos();
-    actualizarMenuUsuario();
+   await cargarEmpresaPublica();
+   await cargarEmpresaFooter() 
+   await cargarCategorias();
+   await cargarProductos();
+   await actualizarMenuUsuario();
 
     if (usuarioLogueado()) {
         await cargarCarritoBackend();
@@ -602,6 +611,26 @@ function abrirLoginModal() {
     document.getElementById("loginModal").classList.add("active");
 }
 
+const btnScrollTop = document.getElementById("btnScrollTop");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 300) {
+    btnScrollTop.style.display = "flex";
+    btnScrollTop.classList.add("show");
+  } else {
+    btnScrollTop.classList.remove("show");
+    setTimeout(() => {
+      btnScrollTop.style.display = "none";
+    }, 300);
+  }
+});
+
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 
 
 // Mostrar el menú según si hay usuario
@@ -623,11 +652,10 @@ function actualizarMenuUsuario() {
                 <a href="#" onclick="abrirMisPedidos()">🧾 Mis pedidos</a>
                 <a href="#" onclick="abrirMisReservas()">🧾 Mis Reservas</a>
 
-           <a href="#" onclick="irPanelAdmin()">⚙️ Panel Admin</a>
-
-
+ ${user.is_superuser ? `<a href="#" onclick="irPanelAdmin()">⚙️ Panel Admin</a>` : ``}
 
 ${user.is_superuser ? `<a href="/super-panel.html">👑 Super Panel</a>` : ``}
+
 
 
                 <a href="#" onclick="cerrarSesion()">🚪 Cerrar sesión</a>
@@ -926,13 +954,57 @@ async function cargarMisReservas() {
 
 
 
-document.getElementById("contactForm").addEventListener("submit", e => {
-  e.preventDefault();
+/* Envío (frontend por ahora) */
+document.addEventListener("DOMContentLoaded", () => {
 
-  alert("📨 Mensaje enviado. Te contactaremos pronto.");
-  e.target.reset();
+  const form = document.getElementById("contactoForm");
+
+  if (!form) {
+    console.error("❌ contactoForm no existe");
+    return;
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    console.log("✅ Submit detectado");
+
+    const payload = {
+      nombre: document.getElementById("contacto_nombre").value,
+      email: document.getElementById("contacto_email").value,
+      telefono: document.getElementById("contacto_telefono").value,
+      mensaje: document.getElementById("contacto_mensaje").value
+    };
+
+    console.log("📦 Payload:", payload);
+
+    try {
+      const res = await fetch("/contacto/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("❌ Error backend:", data);
+        alert("❌ Error enviando mensaje");
+        return;
+      }
+
+      alert("📨 Mensaje enviado correctamente");
+      cerrarContacto();
+      form.reset();
+
+    } catch (err) {
+      console.error("❌ Error fetch:", err);
+      alert("❌ Error de conexión");
+    }
+  });
+
 });
-
 
 function abrirContacto() {
   document.getElementById("contactoModal").classList.add("active");
@@ -947,15 +1019,13 @@ function cerrarContacto() {
   if (form) {
     form.reset(); // 👈 limpiar campos al cerrar
   }
+
+  
 }
 
-/* Envío (frontend por ahora) */
-document.getElementById("contactoForm").addEventListener("submit", e => {
-  e.preventDefault();
 
-  alert("📨 Mensaje enviado. Te contactaremos pronto.");
-  cerrarContacto();
-});
+
+
 
 function cerrarMenuModal() {
   document.getElementById("menuModal").classList.remove("active");
@@ -1001,4 +1071,221 @@ function abrirMenuModal() {
   });
 
   document.getElementById("menuModal").classList.add("active");
+}
+
+
+async function cargarEmpresaPublica() {
+  try {
+    const res = await fetch("/public/config/empresa/");
+    if (!res.ok) return;
+
+    const e = await res.json();
+
+    // 🏢 Nombre
+    const nombre = document.getElementById("empresaNombre");
+    if (nombre) {
+      nombre.textContent = e.nombre ? `🍽️ ${e.nombre}` : "";
+    }
+
+    // 📍 Dirección
+    const dir = document.getElementById("empresaDireccion");
+    if (dir) dir.textContent = e.direccion || "";
+
+    // 📞 Teléfono
+    const tel = document.getElementById("empresaTelefono");
+    if (tel) tel.textContent = e.telefono || "";
+
+    // ✉️ Email
+    const email = document.getElementById("empresaEmail");
+    if (email) email.textContent = e.email || "";
+
+    // 🕒 Horario
+    const horario = document.getElementById("empresaHorario");
+    if (horario) horario.textContent = e.horario || "";
+
+    // 🧠 Slogan
+    const slogan = document.getElementById("empresaSlogan");
+    if (slogan) slogan.textContent = e.slogan || "";
+
+    // 🖼️ LOGO PRINCIPAL (header)
+    const logoHeader = document.getElementById("empresaLogo");
+    if (logoHeader) {
+      if (e.logo) {
+        logoHeader.src = e.logo;
+        logoHeader.style.display = "block";
+      } else {
+        logoHeader.style.display = "none";
+      }
+    }
+
+    // 🖼️ LOGOS AUTH (login / registro)
+    if (e.logo) {
+      document.querySelectorAll(".empresaLogoAuth").forEach(img => {
+        img.src = e.logo;
+      });
+    }
+
+    // 📸 Instagram (siempre visible)
+    const ig = document.getElementById("empresaInstagram");
+    if (ig) {
+      ig.href = e.instagram && e.instagram.trim() !== "" ? e.instagram : "#";
+    }
+
+    // 📘 Facebook (siempre visible)
+    const fb = document.getElementById("empresaFacebook");
+    if (fb) {
+      fb.href = e.facebook && e.facebook.trim() !== "" ? e.facebook : "#";
+    }
+
+    // © Año
+    const year = document.getElementById("empresaYear");
+    if (year) {
+      year.textContent = new Date().getFullYear();
+    }
+
+  } catch (err) {
+    console.error("Error cargando empresa:", err);
+  }
+}
+
+
+async function cargarEmpresaFooter() {
+  try {
+    const res = await fetch("/public/config/empresa/");
+    if (!res.ok) return;
+
+    const e = await res.json();
+
+    // Nombre + slogan
+    document.getElementById("empresaNombre").textContent = e.nombre || "";
+    document.getElementById("empresaNombreCopy").textContent = e.nombre || "";
+
+    document.getElementById("empresaSlogan").textContent = e.slogan || "";
+
+    // Info contacto
+    document.getElementById("empresaDireccion").textContent = `📍 ${e.direccion || ""}`;
+    document.getElementById("empresaTelefono").textContent = `📞 ${e.telefono || ""}`;
+    document.getElementById("empresaHorario").textContent = `🕒 ${e.horario || ""}`;
+
+    // Redes
+  const ig = document.getElementById("empresaInstagram");
+if (ig) {
+  ig.style.display = "inline-block";
+  if (e.instagram) {
+    ig.href = e.instagram;
+    ig.classList.remove("disabled");
+  } else {
+    ig.href = "#";
+    ig.classList.add("disabled");
+  }
+}
+
+
+
+    // Año actual
+    document.getElementById("empresaYear").textContent =
+      new Date().getFullYear();
+console.log(e.nombre)
+  } catch (err) {
+    console.error("Error cargando empresa footer", err);
+  }
+}
+
+function mostrarRegistro(e) {
+  e.preventDefault();
+
+  const slider = document.getElementById("authSlider");
+  if (slider) {
+    slider.style.transform = "translateX(-50%)";
+  }
+}
+
+function mostrarLogin() {
+  const slider = document.getElementById("authSlider");
+  if (slider) {
+    slider.style.transform = "translateX(0)";
+  }
+}
+
+
+
+document.getElementById("registerForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("/api/registro/cliente/", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      alert("✅ Registro exitoso, ahora puedes iniciar sesión");
+      mostrarLogin(); // vuelve al login
+      form.reset();
+    } else {
+      alert("❌ Error: " + (data.error || "No se pudo registrar"));
+    }
+
+  } catch (err) {
+    console.error("Error registrando cliente:", err);
+    alert("❌ Error de conexión");
+  }
+});
+
+
+
+const btn = document.getElementById('themeToggle');
+
+btn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+
+  // icono
+  btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+
+  // guardar preferencia
+  localStorage.setItem(
+    'theme',
+    document.body.classList.contains('dark') ? 'dark' : 'light'
+  );
+});
+
+// cargar preferencia
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  btn.textContent = '☀️';
+}
+
+
+function cargarExperiencias(e) {
+  e.preventDefault();
+
+  fetch("/experiencias/")
+    .then(response => {
+      if (!response.ok) throw new Error("Error cargando experiencias");
+      return response.text();
+    })
+    .then(html => {
+      const main = document.querySelector("main");
+      main.innerHTML = html;
+
+      // 👉 marcar link activo
+      document.querySelectorAll("#mainNav a")
+        .forEach(a => a.classList.remove("active"));
+      e.target.classList.add("active");
+
+      // 👉 cambiar URL sin recargar
+      history.pushState(null, "", "/experiencias/");
+
+      // 👉 subir arriba
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    })
+    .catch(err => {
+      console.error(err);
+      alert("No se pudo cargar la página");
+    });
 }

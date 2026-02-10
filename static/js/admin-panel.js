@@ -1,3 +1,6 @@
+let modoFormulario = "crear"; // o "editar"
+let usuarioEditandoId = null;
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -73,6 +76,7 @@ async function cargarTablaUsuarios(rol) {
         if (!res.ok) throw new Error("No autorizado");
 
         const usuarios = await res.json();
+window.usuariosGlobal = usuarios;
 
         if (usuarios.length === 0) {
             contenedorTabla.innerHTML = "<p>No hay usuarios para este rol.</p>";
@@ -90,8 +94,12 @@ async function cargarTablaUsuarios(rol) {
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Teléfono</th>
+                                <th>Dirección</th>
                             <th>Rol</th>
                             <th>Estado</th>
+                            <th>Acciones</th>
+
+
                         </tr>
                     </thead>
                     <tbody>
@@ -102,20 +110,34 @@ async function cargarTablaUsuarios(rol) {
                                 <td>${u.nombre} ${u.apellido}</td>
                                 <td>${u.email}</td>
                                 <td>${u.telefono || "-"}</td>
-                                <td>
-                                    ${
-                                        u.is_superuser
-                                        ? `<span class="badge-rol badge-admin">👑 Admin</span>`
-                                        : u.is_staff
-                                        ? `<span class="badge-rol badge-staff">🛠 Staff</span>`
-                                        : `<span class="badge-rol badge-cliente">👤 Cliente</span>`
-                                    }
-                                </td>
+                                   <td>${u.direccion || "-"}</td>
+                              <td>
+    <span class="badge-rol badge-${u.rol}">
+        ${
+            u.rol === "cliente" ? "👤 Cliente" :
+            u.rol === "empleado" ? "🛠 Empleado" :
+            u.rol === "supervisor" ? "🧭 Supervisor" :
+            u.rol === "admin" ? "👑 Administrador" :
+            u.rol === "superuser" ? "🔥 Superuser" :
+            "—"
+        }
+    </span>
+</td>
+
                                 <td>
                                     <span class="${u.is_active ? 'badge-activo' : 'badge-inactivo'}">
                                         ${u.is_active ? '🟢 Activo' : '🔴 Inactivo'}
                                     </span>
                                 </td>
+                                <td class="acciones">
+    <button 
+        class="btn-editaradminuser"
+        onclick="editarUsuario(${u.id})"
+    >
+        ✏️ Editar
+    </button>
+</td>
+
                             </tr>
                         `).join("")}
                     </tbody>
@@ -124,40 +146,99 @@ async function cargarTablaUsuarios(rol) {
         </div>
 
         <!-- MODAL -->
-        <div id="modalUsuario" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="cerrarModalUsuario()">&times;</span>
-                <h2 id="modalTitulo">Crear Usuario</h2>
+     <div id="modalUsuario" class="modal-usuariopanel">
+    <div class="modal-usuariopanel__content">
+     
+           <div class="modal-usuariopanel__header">
+            <h2 class="modal-usuariopanel__title">Crear Usuario</h2>
+            <span class="modal-usuariopanel__close" onclick="cerrarModalUsuario()">&times;</span>
+        </div>
 
-                <form id="formUsuario">
-                    <input type="hidden" id="usuarioId">
+      <form id="formUsuario" class="modal-usuariopanel__form">
 
-                    <label>Nombre</label>
-                    <input type="text" id="nombreUsuario" required>
+    <!-- Username -->
+    <div>
+        <label>Username</label>
+        <input type="text" id="usernameUsuario" required>
+    </div>
 
-                    <label>Apellido</label>
-                    <input type="text" id="apellidoUsuario" required>
+    <!-- Email -->
+    <div>
+        <label>Email</label>
+        <input type="email" id="emailUsuario" required>
+    </div>
 
-                    <label>Email</label>
-                    <input type="email" id="emailUsuario" required>
+    <!-- Nombre -->
+    <div>
+        <label>Nombre</label>
+        <input type="text" id="nombreUsuario" required>
+    </div>
 
-                    <label>Teléfono</label>
-                    <input type="text" id="telefonoUsuario">
+    <!-- Apellido -->
+    <div>
+        <label>Apellido</label>
+        <input type="text" id="apellidoUsuario" required>
+    </div>
 
-                    <label>Rol</label>
-                    <select id="rolUsuario" required>
-                        <option value="admin">Admin</option>
-                        <option value="staff">Staff</option>
-                        <option value="cliente">Cliente</option>
-                    </select>
+    <!-- Teléfono -->
+    <div>
+        <label>Teléfono</label>
+        <input type="text" id="telefonoUsuario">
+    </div>
 
-                    <label>
-                        <input type="checkbox" id="activoUsuario" checked>
-                        Activo
-                    </label>
+    <!-- Dirección -->
+    <div>
+        <label>Dirección</label>
+        <input type="text" id="direccionUsuario">
+    </div>
 
-                    <button type="submit" class="btn-guardar">Guardar</button>
-                </form>
+    <!-- Rol -->
+    <div>
+        <label>Rol</label>
+        <select id="rolUsuario" required onchange="toggleAdminFields()">
+            <option value="cliente">Cliente</option>
+            <option value="empleado">Empleado</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <!-- Activo -->
+    <div class="modal-usuariopanel__checkbox">
+        <label>
+            <input type="checkbox" id="activoUsuario" checked>
+            Activo
+        </label>
+    </div>
+
+    <!-- ADMIN FIELDS -->
+    <div id="adminFields" class="modal-usuariopanel__admin">
+        <label>
+            <input type="checkbox" id="isSuperUsuario">
+            Superusuario
+        </label>
+    </div>
+
+    <!-- Password -->
+    <div>
+        <label>Contraseña</label>
+        <input type="password" id="passwordUsuario" required>
+    </div>
+
+    <!-- Confirm Password -->
+    <div>
+        <label>Confirmar contraseña</label>
+        <input type="password" id="passwordConfirmUsuario" required>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="modal-usuariopanel__actions">
+        <button type="submit" class="modal-usuariopanel__btn">
+            Guardar Usuario
+        </button>
+    </div>
+</form>
+
+
             </div>
         </div>
         `;
@@ -166,6 +247,202 @@ async function cargarTablaUsuarios(rol) {
         console.error(err);
         contenedorTabla.innerHTML = "<p>Error cargando usuarios</p>";
     }
+}
+
+function editarUsuario(id) {
+    const usuario = window.usuariosGlobal.find(u => u.id === id);
+    if (!usuario) return;
+
+    // Eliminar modal previo si existe
+    const modalPrevio = document.getElementById("modalUsuario");
+    if (modalPrevio) modalPrevio.remove();
+
+    // 🧱 Inyectar HTML del modal
+    document.body.insertAdjacentHTML("beforeend", `
+        <div id="modalUsuario" class="modal-usuariopanel">
+            <div class="modal-usuariopanel__content">
+
+                <div class="modal-usuariopanel__header">
+                    <h2 class="modal-usuariopanel__title">Editar Usuario</h2>
+                    <span class="modal-usuariopanel__close" onclick="cerrarModalUsuario()">&times;</span>
+                </div>
+
+                <form id="formUsuario" class="modal-usuariopanel__form">
+
+                    <div>
+                        <label>Username</label>
+                        <input type="text" id="usernameUsuario" required>
+                    </div>
+
+                    <div>
+                        <label>Email</label>
+                        <input type="email" id="emailUsuario" required>
+                    </div>
+
+                    <div>
+                        <label>Nombre</label>
+                        <input type="text" id="nombreUsuario" required>
+                    </div>
+
+                    <div>
+                        <label>Apellido</label>
+                        <input type="text" id="apellidoUsuario" required>
+                    </div>
+
+                    <div>
+                        <label>Teléfono</label>
+                        <input type="text" id="telefonoUsuario">
+                    </div>
+
+                    <div>
+                        <label>Dirección</label>
+                        <input type="text" id="direccionUsuario">
+                    </div>
+
+                    <div>
+                        <label>Rol</label>
+                        <select id="rolUsuario" required onchange="toggleAdminFields()">
+                            <option value="cliente">Cliente</option>
+                            <option value="empleado">Empleado</option>
+                            <option value="supervisor">Supervisor</option>
+                            <option value="admin">Admin</option>
+                            <option value="superuser">Superuser</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-usuariopanel__checkbox">
+                        <label>
+                            <input type="checkbox" id="activoUsuario">
+                            Activo
+                        </label>
+                    </div>
+
+                    <div class="modal-usuariopanel__actions">
+                        <button type="submit" class="modal-usuariopanel__btn">
+                            Guardar cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    `);
+
+    // 🧾 Rellenar datos
+    document.getElementById("usernameUsuario").value = usuario.username;
+    document.getElementById("emailUsuario").value = usuario.email;
+    document.getElementById("nombreUsuario").value = usuario.nombre;
+    document.getElementById("apellidoUsuario").value = usuario.apellido;
+    document.getElementById("telefonoUsuario").value = usuario.telefono || "";
+    document.getElementById("direccionUsuario").value = usuario.direccion || "";
+    document.getElementById("rolUsuario").value = usuario.rol;
+    document.getElementById("activoUsuario").checked = usuario.is_active;
+
+    // Mostrar modal
+    document.getElementById("modalUsuario").style.display = "flex";
+
+    // Guardar ID para el submit
+    window.usuarioEditandoId = id;
+}
+function cerrarModalUsuario() {
+    const modal = document.getElementById("modalUsuario");
+    if (modal) modal.remove();
+}
+
+
+document.addEventListener("submit", async function (e) {
+    if (e.target.id !== "formUsuario") return;
+
+    e.preventDefault();
+
+    const password = document.getElementById("passwordUsuario").value;
+    const confirmPassword = document.getElementById("passwordConfirmUsuario").value;
+
+    if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+    }
+
+    const rol = document.getElementById("rolUsuario").value;
+    const token = localStorage.getItem("token");
+
+    const data = {
+        username: document.getElementById("usernameUsuario").value,
+        nombre: document.getElementById("nombreUsuario").value,
+        apellido: document.getElementById("apellidoUsuario").value,
+        email: document.getElementById("emailUsuario").value,
+        telefono: document.getElementById("telefonoUsuario").value,
+        direccion: document.getElementById("direccionUsuario").value,
+        rol: rol,
+        password: password,
+        is_active: document.getElementById("activoUsuario").checked,
+        is_admin: rol === "admin",
+        is_superuser: document.getElementById("isSuperUsuario").checked
+    };
+
+    try {
+        const res = await fetch("/api/admin/usuarios/crear/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+            alert("Error: " + JSON.stringify(result));
+            return;
+        }
+
+        cerrarModalUsuario();
+        cargarTablaUsuarios("");
+        alert("Usuario creado correctamente");
+
+    } catch (err) {
+        console.error(err);
+        alert("Error creando usuario");
+    }
+});
+
+
+
+
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("modalUsuario");
+    if (e.target === modal) cerrarModalUsuario();
+});
+
+function toggleAdminFields() {
+    const rol = document.getElementById("rolUsuario").value;
+    const adminFields = document.getElementById("adminFields");
+
+    if (rol === "admin") {
+        adminFields.style.display = "block";
+    } else {
+        adminFields.style.display = "none";
+        document.getElementById("isAdminUsuario").checked = false;
+        document.getElementById("isSuperUsuario").checked = false;
+    }
+}
+
+function abrirModalUsuario() {
+    const modal = document.getElementById("modalUsuario");
+    if (modal) {
+        modal.style.display = "block";
+    }
+}
+
+function cerrarModalUsuario() {
+    const modal = document.getElementById("modalUsuario");
+    if (modal) modal.style.display = "none";
+
+    const form = document.getElementById("formUsuario");
+    if (form) form.reset();
+
+    document.getElementById("adminFields").style.display = "none";
 }
 
 
@@ -188,6 +465,13 @@ function cargarSeccion(seccion) {
 
 
     }
+     if (seccion === "contacto") {
+        titulo.textContent = "Gestion de Contactos";
+    cargarContactoAdmin();
+
+
+    }
+
 
     if (seccion === "pedidos") {
         titulo.textContent = "Gestión de Pedidos";
@@ -213,6 +497,97 @@ function cargarSeccion(seccion) {
     }
 }
 
+
+async function cargarContactoAdmin() {
+    const token = localStorage.getItem("token");
+    const contenedor = document.getElementById("adminBody");
+
+    contenedor.innerHTML = "Cargando mensajes...";
+
+    const res = await fetch("/panel_admin/contacto/", {
+        headers: {
+            "Authorization": `Token ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        contenedor.innerHTML = "Error cargando mensajes";
+        return;
+    }
+
+    const mensajes = await res.json();
+
+    if (!mensajes.length) {
+        contenedor.innerHTML = "<p>No hay mensajes</p>";
+        return;
+    }
+    console.log("los mensjaes", mensajes)
+    contenedor.innerHTML = ""; // Limpiar contenedor
+
+    mensajes.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "admin-contactos__card";
+
+     card.innerHTML = `
+  <h3 class="admin-contactos__titulo">📩 Mensaje de contacto</h3>
+
+  <p><strong>👤 Nombre:</strong> ${m.nombre}</p>
+  <p><strong>📧 Correo:</strong> ${m.email}</p>
+
+  ${m.telefono ? `<p><strong>📞 Teléfono:</strong> ${m.telefono}</p>` : ""}
+
+  <p><strong>📝 Mensaje:</strong></p>
+  <div >
+    ${m.mensaje}
+  </div>
+  <label class="admin-contactos__leido">
+    <input 
+      type="checkbox" 
+      ${m.leido ? "checked" : ""} 
+      onchange="marcarLeido(${m.id}, this.checked)"
+    />
+    Marcar como leído
+  </label>
+  <p class="admin-contactos__fecha">
+    <strong>🕒 Fecha:</strong> ${new Date(m.creado).toLocaleString()}
+  </p>
+`;
+
+
+        contenedor.appendChild(card);
+    });
+}
+
+
+async function marcarLeido(id, estado) {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`/panel_admin/contacto/${id}/leido/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`
+      },
+      body: JSON.stringify({ leido: estado })
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Error backend:", text);
+      alert("Error actualizando estado");
+      return;
+    }
+
+    const data = await res.json();
+    console.log("✔ Estado actualizado:", data);
+
+  } catch (err) {
+    console.error("❌ Error real de red:", err);
+    alert("Error de conexión");
+  }
+}
+
 function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -222,11 +597,20 @@ function logout() {
 
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
-    sidebar.classList.toggle("collapsed");
+    sidebar.classList.toggle("open");
 
-    localStorage.setItem("sidebarCollapsed",
-        sidebar.classList.contains("collapsed"));
+    localStorage.setItem(
+        "sidebarOpen",
+        sidebar.classList.contains("open")
+    );
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("sidebarOpen") === "true") {
+        document.getElementById("sidebar").classList.add("open");
+    }
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("sidebarCollapsed") === "true") {
@@ -306,165 +690,6 @@ async function cambiarEstado(id, estado) {
 
 
 
-
-
-
-
-
-async function cargarClientesAdmin() {
-    const token = localStorage.getItem("token");
-    const cuerpo = document.getElementById("adminBody");
-    cuerpo.innerHTML = `
-
-     <!-- Contenedor para el botón "Crear Usuario" y el filtro -->
-    <div class="acciones-usuarios">
-        <button class="btn-crear" onclick="abrirModalUsuario()">➕ Crear Usuario</button>
-        <select id="filtroRol">
-            <option value="">Filtrar por rol</option>
-            <option value="cliente">Clientes</option>
-            <option value="empleado">Empleados</option>
-            <option value="admin">Administradores</option>
-        </select>
-    </div>
-
-
-
-
-    <div class="admin-clientes-header">
-        <h2>Gestión de Usuarios</h2>
-    </div>
-
-
-    <div class="tabla-wrapper">
-        <div id="tablaUsuarios">Cargando usuarios...</div>
-    </div>
-`;
-
-    const selectRol = document.getElementById("filtroRol");
-
-    // Evento para cuando cambia el filtro
-    selectRol.addEventListener("change", () => {
-        cargarTablaUsuarios(selectRol.value);
-    });
-
-    // Cargar tabla inicial (sin filtro)
-    cargarTablaUsuarios("");
-}
-
-async function cargarTablaUsuarios(rol) {
-    const token = localStorage.getItem("token");
-    const contenedorTabla = document.getElementById("tablaUsuarios");
-
-    contenedorTabla.innerHTML = "Cargando usuarios...";
-
-    try {
-        const url = rol
-            ? `/api/panel-admin/clientes/?rol=${rol}`
-            : `/api/panel-admin/clientes/`;
-
-        const res = await fetch(url, {
-            headers: {
-                "Authorization": `Token ${token}`
-            }
-        });
-
-        if (!res.ok) throw new Error("No autorizado");
-
-        const usuarios = await res.json();
-
-        if (usuarios.length === 0) {
-            contenedorTabla.innerHTML = "<p>No hay usuarios para este rol.</p>";
-            return;
-        }
-
-        contenedorTabla.innerHTML = `
-        <div class="admin-container">
-            <div class="usuarios-header">
-                <table class="tabla-admin">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Usuario</th>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${usuarios.map(u => `
-                            <tr>
-                                <td>${u.id}</td>
-                                <td>${u.username}</td>
-                                <td>${u.nombre} ${u.apellido}</td>
-                                <td>${u.email}</td>
-                                <td>${u.telefono || "-"}</td>
-                                <td>
-                                    ${
-                                        u.is_superuser
-                                        ? `<span class="badge-rol badge-admin">👑 Admin</span>`
-                                        : u.is_staff
-                                        ? `<span class="badge-rol badge-staff">🛠 Staff</span>`
-                                        : `<span class="badge-rol badge-cliente">👤 Cliente</span>`
-                                    }
-                                </td>
-                                <td>
-                                    <span class="${u.is_active ? 'badge-activo' : 'badge-inactivo'}">
-                                        ${u.is_active ? '🟢 Activo' : '🔴 Inactivo'}
-                                    </span>
-                                </td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- MODAL -->
-        <div id="modalUsuario" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="cerrarModalUsuario()">&times;</span>
-                <h2 id="modalTitulo">Crear Usuario</h2>
-
-                <form id="formUsuario">
-                    <input type="hidden" id="usuarioId">
-
-                    <label>Nombre</label>
-                    <input type="text" id="nombreUsuario" required>
-
-                    <label>Apellido</label>
-                    <input type="text" id="apellidoUsuario" required>
-
-                    <label>Email</label>
-                    <input type="email" id="emailUsuario" required>
-
-                    <label>Teléfono</label>
-                    <input type="text" id="telefonoUsuario">
-
-                    <label>Rol</label>
-                    <select id="rolUsuario" required>
-                        <option value="admin">Admin</option>
-                        <option value="staff">Staff</option>
-                        <option value="cliente">Cliente</option>
-                    </select>
-
-                    <label>
-                        <input type="checkbox" id="activoUsuario" checked>
-                        Activo
-                    </label>
-
-                    <button type="submit" class="btn-guardar">Guardar</button>
-                </form>
-            </div>
-        </div>
-        `;
-
-    } catch (err) {
-        console.error(err);
-        contenedorTabla.innerHTML = "<p>Error cargando usuarios</p>";
-    }
-}
 
 
 
@@ -583,7 +808,7 @@ function iniciarAutoRefresh(desde = "", hasta = "") {
 
   dashboardTimer = setInterval(() => {
     cargarDashboardAdmin(desde, hasta);
-  }, 30000);
+  }, 400000);
 }
 
 
@@ -710,6 +935,10 @@ function renderDashboard(data) {
     );
   };
 }
+
+
+
+
 
 // 🔥 Exponer funciones para onclick del HTML
 window.cargarSeccion = cargarSeccion;

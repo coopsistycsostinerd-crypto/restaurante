@@ -110,34 +110,36 @@
 
 <!-- 📍 CONTACTO -->
 <!-- 📍 CONTACTO -->
-<footer class="footer-contacto">
+
+<footer class="footer-contacto" id="footerEmpresa">
   <div class="footer-wrapper">
+
     <div class="footer-logo">
-      <h2>Vagos Restaurante</h2>
-      <p>Sabores auténticos y experiencias únicas</p>
+      <h2 id="empresaNombre">Restaurante</h2>
+      <p id="empresaSlogan"></p>
     </div>
     
     <div class="footer-info">
       <h3>Contáctanos</h3>
-      <p>Calle Principal #123, Ciudad</p>
-      <p>Tel: (809) 000-0000</p>
-      <p>Horario: Lunes a Domingo 12:00 PM – 11:00 PM</p>
+      <p id="empresaDireccion"></p>
+      <p id="empresaTelefono"></p>
+      <p id="empresaHorario"></p>
     </div>
 
     <div class="footer-redes">
       <h3>Síguenos</h3>
       <div class="redes-icons">
-        <a href="#" target="_blank">Instagram</a>
-        <a href="#" target="_blank">Facebook</a>
+        <a id="empresaInstagram" target="_blank">Instagram</a>
+        <a id="empresaFacebook" target="_blank">Facebook</a>
       </div>
     </div>
+
   </div>
 
   <div class="footer-copy">
-    <p>© 2026 Vagos Restaurante. Todos los derechos reservados.</p>
+<p>© <span id="empresaYear"></span> <span id="empresaNombreCopy"></span></p>
   </div>
 </footer>
-
 
 
 {% endblock %}

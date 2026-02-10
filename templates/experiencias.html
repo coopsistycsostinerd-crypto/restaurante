@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Experiencias | Vagos Restaurante{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="experiencia-hero">
+  <div class="experiencia-hero-overlay">
+    <h1>Vive la experiencia Vagos</h1>
+    <p>
+      Espacios pensados para compartir, celebrar
+      y crear recuerdos inolvidables.
+    </p>
+  </div>
+</section>
+
+<!-- INFO -->
+<section class="experiencia-info">
+  <div class="experiencia-info-grid">
+
+    <div class="experiencia-card">
+      <h3>Reuniones familiares</h3>
+      <p>Ambiente cómodo y acogedor para todos.</p>
+    </div>
+
+    <div class="experiencia-card">
+      <h3>Salón de eventos</h3>
+      <p>Cumpleaños, aniversarios y celebraciones.</p>
+    </div>
+
+    <div class="experiencia-card">
+      <h3>Eventos exclusivos</h3>
+      <p>Catas y noches especiales.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- GALERÍA -->
+<section class="experiencia-galeria">
+  <img src="/media/488640179_18456401806077740_233368677200402225_n.jpg">
+  <img src="/media/448351163_431876406420693_8551257259844306436_n.jpg">
+  <img src="/media/496879840_18500133736059012_243722533241202208_n.jpg">
+  <img src="/media/510932137_18507930712017141_5001937598609163091_n.jpg">
+  <img src="/media/542952873_18522038185036485_7660673310556728305_n.jpg">
+  <img src="/media/518640206_18472558051077740_3743680320788477753_n.jpg">
+</section>
+
+<!-- CTA -->
+<section class="experiencia-cta">
+  <h2>Reserva tu experiencia</h2>
+  <a href="https://wa.me/1XXXXXXXXXX" target="_blank">
+    Reservar por WhatsApp
+  </a>
+</section>
+
+
+<footer class="footer-contacto" id="footerEmpresa">
+  <div class="footer-wrapper">
+
+    <div class="footer-logo">
+      <h2 id="empresaNombre">Restaurante</h2>
+      <p id="empresaSlogan"></p>
+    </div>
+    
+    <div class="footer-info">
+      <h3>Contáctanos</h3>
+      <p id="empresaDireccion"></p>
+      <p id="empresaTelefono"></p>
+      <p id="empresaHorario"></p>
+    </div>
+
+    <div class="footer-redes">
+      <h3>Síguenos</h3>
+      <div class="redes-icons">
+        <a id="empresaInstagram" target="_blank">Instagram</a>
+        <a id="empresaFacebook" target="_blank">Facebook</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-copy">
+<p>© <span id="empresaYear"></span> <span id="empresaNombreCopy"></span></p>
+  </div>
+</footer>
+
+{% endblock %}

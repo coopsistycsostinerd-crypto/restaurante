@@ -10,6 +10,7 @@
       <link rel="stylesheet" href="{% static 'css/seccion.css' %}">
         <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}">
           <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+  <link rel="stylesheet" href="{% static 'css/Experiencias.css' %}">
 
 
                   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -19,19 +20,30 @@
 <body>
 
 <header>
-    <h2>🍽️ Restaurante XYZ</h2>
+<button class="menu-toggle-principal" id="menuToggleprincipal">☰</button>
 
-    <nav>
+    <div class="empresa-header">
+    <img id="empresaLogo" alt="Logo" />
+    <h2 id="empresaNombre">Restaurante</h2>
+</div>
+
+
+
+    <nav id="mainNav">
       <a href="/">Inicio</a>
     <a href="#sobre-nosotros">Sobre Nosotros</a>
 
+    <a href="#" onclick="cargarExperiencias(event)">Experiencias</a>
+
        
-    <a href="#" onclick="abrirReservaModal()">Reservar</a>
+    <a onclick="abrirReservaModal()">Reservar</a>
 
 
 
-        <a href="#"  onclick="abrirContacto()" >
-Contáctanos</a>
+      <a  onclick="event.preventDefault(); abrirContacto()">
+  Contáctanos
+</a>
+
          <!-- Contenedor del usuario -->
     <div id="userMenuContainer">
         <button class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</button>
@@ -43,6 +55,8 @@ Contáctanos</a>
             🛒
             <span class="cart-count" id="cart-count">0</span>
         </div>
+        <button id="themeToggle" class="theme-btn">🌙</button>
+
     </nav>
 </header>
 
@@ -125,30 +139,73 @@ Contáctanos</a>
 
 
 <!-- Modal Login -->
+<!-- Modal Login -->
+<!-- Modal Login -->
 <div id="loginModal" class="modal">
-    <div class="modal-content">
-        <h3>Iniciar sesión</h3>
-        <form id="loginForm">
-            <input
-                type="text"
-                id="loginUsername"
-                placeholder="Usuario"
-                required
-            />
-            <input
-                type="password"
-                id="loginPassword"
-                placeholder="Contraseña"
-                required
-            />
-            <div class="modal-actions">
-                <button type="submit">Entrar</button>
-                <button type="button" onclick="cerrarLoginModal()">Cancelar</button>
-            </div>
-        </form>
-    </div>
-</div>
+  <div class="modalLogin">
 
+    <div class="modalLogin-slider" id="authSlider">
+
+      <!-- LOGIN -->
+      <div class="auth-panel">
+        <img class="empresaLogoAuth" alt="Logo empresa" />
+
+        <h3>Iniciar sesión</h3>
+
+       <form id="loginForm">
+  <input
+    type="text"
+    id="loginUsername"
+    placeholder="Usuario"
+    required
+  />
+
+  <input
+    type="password"
+    id="loginPassword"
+    placeholder="Contraseña"
+    required
+  />
+
+  <div class="modal-actions">
+    <button type="submit">Entrar</button>
+    <button type="button" onclick="cerrarLoginModal()">Cancelar</button>
+  </div>
+</form>
+
+
+        <p>
+          ¿No tienes cuenta?
+          <a href="#" onclick="mostrarRegistro(event)">Hazte cliente aquí</a>
+        </p>
+      </div>
+
+      <!-- REGISTRO -->
+      <div class="auth-panel">
+        <img class="empresaLogoAuth" alt="Logo empresa" />
+
+        <h3>Registro</h3>
+
+        <form id="registerForm">
+          <input type="text" name="nombre" placeholder="Nombre" required />
+          <input type="text" name="apellido" placeholder="Apellido" required />
+          <input type="text" name="username" placeholder="Usuario" required />
+          <input type="email" name="email" placeholder="Correo" required />
+            <input type="password" name="password" placeholder="Contraseña" required />
+          <input type="text" name="telefono" placeholder="Teléfono" required />
+          <input type="text" name="direccion" placeholder="Dirección" required />
+        
+
+          <div class="modal-actions">
+            <button type="submit">Registrarse</button>
+            <button type="button" onclick="mostrarLogin()">Volver</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
 <div id="misPedidosModal" class="modal">
@@ -406,19 +463,20 @@ Contáctanos</a>
 
           <div class="contacto-actions">
             <button type="submit" class="btn-enviar">Enviar</button>
-            <button type="button" class="btn-cancelar" onclick="cerrarContacto()">
-              Cancelar
-            </button>
+           <button type="button" class="btn-cancelar" onclick="cerrarContacto()">Cancelar</button>
+
+        
+        
           </div>
 
         </form>
 
-        <div class="contacto-info">
-          <p><strong>📍 Dirección:</strong> Santo Domingo, RD</p>
-          <p><strong>📞 Teléfono:</strong> +1 (809) 000-0000</p>
-          <p><strong>📧 Email:</strong> contacto@turestaurante.com</p>
-          <p><strong>🕒 Horario:</strong> Lun - Dom · 12:00 PM - 11:00 PM</p>
-        </div>
+       <div class="contacto-info">
+  <p><strong>📍 Dirección:</strong> <span id="empresaDireccion"></span></p>
+  <p><strong>📞 Teléfono:</strong> <span id="empresaTelefono"></span></p>
+  <p><strong>📧 Email:</strong> <span id="empresaEmail"></span></p>
+</div>
+
 
       </div>
 
@@ -435,6 +493,18 @@ Contáctanos</a>
     </div>
   </div>
 </div>
+
+<button id="btnScrollTop" onclick="scrollToTop()">
+  <svg viewBox="0 0 24 24">
+    <path d="M6 14l6-6 6 6" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </svg>
+</button>
+
 
 
 <script src="{% static 'js/app.js' %}"></script>

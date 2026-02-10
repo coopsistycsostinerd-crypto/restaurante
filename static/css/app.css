@@ -1,17 +1,68 @@
 /* =========================
    VARIABLES – PALETA VAGOS
 ========================= */
+/* =========================
+   VARIABLES – SISTEMA GLOBAL
+========================= */
 :root {
-    --verde-principal: #0F3D2E;
-    --verde-hover: #145C44;
-    --dorado: #D6B77C;
-    --negro: #111111;
-    --negro-suave: #1A1A1A;
-    --blanco-crema: #F7F5F2;
-    --gris-texto: #6b7280;
-    --gris-borde: #e5e7eb;
-    --rojo-vino: #8C2F2F;
+
+  /* BRAND */
+  --verde-principal: #0F3D2E;
+  --verde-hover: #145C44;
+  --dorado: #D6B77C;
+  --rojo-vino: #8C2F2F;
+
+  /* BACKGROUNDS */
+  --bg-main: #F7F5F2;
+  --bg-card: #ffffff;
+  --bg-soft: #f9fafb;
+  --blanco-crema: #ffffff;
+
+  /* TEXTOS */
+  --texto-principal: #ffffff;
+  --text-main: #111111;
+  --text-soft: #6b7280;
+  --gris-texto: #6b7280;
+  --negro: #111111;
+
+  /* BORDES */
+  --border-color: #e5e7eb;
+  --gris-borde: #e5e7eb;
+
+  /* UI */
+  --borde: #d1d5db;
 }
+
+body.dark {
+
+  /* BRAND */
+  --verde-principal: #1f6f54;
+  --verde-hover: #2a8f6b;
+  --dorado: #e4c78a;
+  --rojo-vino: #c94b4b;
+
+  /* BACKGROUNDS */
+  --bg-main: #242222;
+  --bg-card: #1a1a1a;
+  --bg-soft: #121212;
+  --blanco-crema: #1a1a1a;
+
+  /* TEXTOS */
+  --texto-principal: #ffffff;
+  --text-main: #f5f5f5;
+  --text-soft: #9ca3af;
+  --gris-texto: #9ca3af;
+  --negro: #ffffff;
+
+  /* BORDES */
+  --border-color: #2a2a2a;
+  --gris-borde: #2a2a2a;
+
+  /* UI */
+  --borde: #374151;
+}
+
+
 
 /* =========================
    RESET
@@ -24,8 +75,8 @@
 
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--blanco-crema);
-    color: var(--negro);
+   background: var(--bg-main);
+  color: var(--text-main);
     padding-top: 70px;
 }
 
@@ -38,7 +89,7 @@ header {
     left: 0;
     width: 100%;
     background: var(--verde-principal);
-    color: #fff;
+    color: var(--texto-principal);
     padding: 12px 24px;
     display: flex;
     justify-content: space-between;
@@ -59,7 +110,7 @@ header nav {
 }
 
 header nav a {
-    color: #fff;
+    color: var(--texto-principal);
     text-decoration: none;
     font-size: 14px;
     padding: 6px 10px;
@@ -72,7 +123,7 @@ header nav a:hover {
 }
 header nav a.login-btn {
     background: #2563eb; /* igual que user-btn */
-    color: white;
+    color:  var(--texto-principal);
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: 600;
@@ -98,7 +149,7 @@ header nav a.login-btn:hover {
     top: -6px;
     right: -10px;
     background: var(--rojo-vino);
-    color: white;
+    color:var(--texto-principal);
     font-size: 12px;
     padding: 2px 6px;
     border-radius: 999px;
@@ -319,6 +370,9 @@ main {
     font-size: 20px;
     text-align: center;
 }
+.modal-content {
+    overflow: hidden;
+}
 
 .modal-content input,
 .modal-content textarea,
@@ -365,8 +419,8 @@ main {
 }
 
 .pedido-card {
-    background: #ffffff;
-    border: 1px solid var(--gris-borde);
+     background: var(--bg-card);
+  border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 14px;
     margin-bottom: 14px;
@@ -477,6 +531,117 @@ main {
     }
 }
 
+
+
+
+
+
+/* =========================
+   MENU TOGGLE PRINCIPAL
+========================= */
+
+/* Oculto en desktop */
+.menu-toggle-principal {
+    display: none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  header {
+    padding: 12px 16px;
+  }
+
+  /* Botón hamburguesa PRINCIPAL */
+  .menu-toggle-principal {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+  }
+
+  /* NAV principal */
+  header nav {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--verde-principal);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 0;
+    gap: 0;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,.4);
+    z-index: 1500;
+  }
+
+  /* Mostrar cuando está abierto */
+  header nav.open {
+    display: flex;
+  }
+
+  header nav a {
+    padding: 14px 20px;
+    font-size: 16px;
+    border-radius: 0;
+  }
+
+  header nav a:hover {
+    background: rgba(255,255,255,0.1);
+  }
+}
+
+/* Logo en login y registro */
+.empresaLogoAuth {
+    max-width: 140px;      /* tamaño máximo */
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto 12px auto; /* centrado */
+    object-fit: contain;  /* no se deforma */
+}
+@media (max-width: 480px) {
+    .empresaLogoAuth {
+        max-width: 110px;
+        max-height: 65px;
+    }
+}
+
+
+.auth-slider {
+    display: flex;
+    width: 200%;
+    transition: transform 0.4s ease;
+}
+
+.auth-panel {
+    width: 50%;
+    padding: 20px;
+}
+
+.auth-slider.show-register {
+    transform: translateX(-50%);
+}
+
+
+
+.empresa-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#empresaLogo {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
 
 /* =========================
    SOBRE NOSOTROS
@@ -1521,6 +1686,11 @@ main {
   grid-template-columns: 2fr 1fr;
   gap: 12px;
 }
+.redes-icons a.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
 
 /* ===============================
    MOBILE
@@ -1534,4 +1704,450 @@ main {
   .modalreserva-actions {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* =========================
+   MODAL BASE (REUTILIZABLE)
+========================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.233);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+/* =========================
+   MODAL LOGIN
+========================= */
+.modalLogin {
+  background: #c2ddd4;
+  width: 760px;
+  max-width: 96%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(71, 35, 35, 0.788);
+}
+
+/* =========================
+   MODAL BASE (REUTILIZABLE)
+========================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.233);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+/* =========================
+   MODAL LOGIN
+========================= */
+.modalLogin {
+  background: #c2ddd4;
+  width: 760px;
+  max-width: 96%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(71, 35, 35, 0.788);
+}
+
+/* Slider */
+.modalLogin-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.45s ease-in-out;
+}
+
+/* Estado registro */
+.modalLogin-slider.show-register {
+  transform: translateX(-50%);
+}
+
+/* Panel (login / registro) */
+.auth-panel {
+  width: 50%;
+  padding: 40px 45px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Logo */
+.empresaLogoAuth {
+  max-width: 150px;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+/* Títulos */
+.auth-panel h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Inputs */
+.auth-panel input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+}
+
+.auth-panel input:focus {
+  border-color: #111827;
+}
+
+/* Acciones */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.modal-actions button:first-child {
+  background: #111827;
+  color: #fff;
+}
+
+.modal-actions button:last-child {
+  background: #e5e7eb;
+}
+
+/* Texto inferior */
+.auth-panel p {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.auth-panel a {
+  font-weight: 600;
+  cursor: pointer;
+  color: #111827;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .modalLogin {
+    width: 95%;
+  }
+
+  .auth-panel {
+    padding: 25px;
+  }
+}
+/* =========================
+   REGISTRO EN 2 COLUMNAS
+========================= */
+
+/* Solo el formulario de registro */
+.auth-panel form#registerForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Inputs que deben ocupar toda la fila */
+.auth-panel form#registerForm input[name="direccion"],
+
+.auth-panel form#registerForm .modal-actions {
+  grid-column: span 2;
+}
+
+/* =========================
+   RESPONSIVE (1 columna)
+========================= */
+@media (max-width: 768px) {
+  .auth-panel form#registerForm {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel form#registerForm input,
+  .auth-panel form#registerForm .modal-actions {
+    grid-column: span 1;
+  }
+}
+
+/* Slider */
+.modalLogin-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.45s ease-in-out;
+}
+
+/* Estado registro */
+.modalLogin-slider.show-register {
+  transform: translateX(-50%);
+}/* =========================
+   INPUTS LOGIN – ESPACIADO
+========================= */
+#loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* separación entre inputs */
+}
+
+/* =========================
+   ANCHO CONTROLADO INPUTS
+========================= */
+#loginForm input {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Botones alineados al mismo ancho */
+#loginForm .modal-actions {
+  max-width: 360px;
+  margin: 10px auto 0;
+}
+
+
+/* Panel (login / registro) */
+.auth-panel {
+  width: 50%;
+  padding: 40px 45px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Logo */
+.empresaLogoAuth {
+  max-width: 150px;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+/* Títulos */
+.auth-panel h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Inputs */
+.auth-panel input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+}
+
+.auth-panel input:focus {
+  border-color: #111827;
+}
+
+/* Acciones */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.modal-actions button:first-child {
+  background: #111827;
+  color: #fff;
+}
+
+.modal-actions button:last-child {
+  background: #e5e7eb;
+}
+
+/* Texto inferior */
+.auth-panel p {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.auth-panel a {
+  font-weight: 600;
+  cursor: pointer;
+  color: #111827;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+  .modalLogin {
+    width: 95%;
+  }
+
+  .auth-panel {
+    padding: 25px;
+  }
+}
+/* =========================
+   REGISTRO EN 2 COLUMNAS
+========================= */
+
+/* Solo el formulario de registro */
+.auth-panel form#registerForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Inputs que deben ocupar toda la fila */
+.auth-panel form#registerForm input[name="direccion"],
+
+.auth-panel form#registerForm .modal-actions {
+  grid-column: span 2;
+}
+
+/* =========================
+   RESPONSIVE (1 columna)
+========================= */
+@media (max-width: 768px) {
+  .auth-panel form#registerForm {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel form#registerForm input,
+  .auth-panel form#registerForm .modal-actions {
+    grid-column: span 1;
+  }
+}
+
+
+#btnScrollTop {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+  z-index: 5000;
+
+  box-shadow:
+    0 10px 25px rgba(22, 163, 74, 0.45),
+    inset 0 -2px 0 rgba(0,0,0,0.15);
+
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Visible */
+#btnScrollTop.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Hover */
+#btnScrollTop:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 16px 35px rgba(22, 163, 74, 0.55),
+    inset 0 -2px 0 rgba(0,0,0,0.2);
+}
+
+/* Active (click) */
+#btnScrollTop:active {
+  transform: scale(0.95);
+}
+#btnScrollTop svg {
+  width: 24px;
+  height: 24px;
+}
+
+#btnScrollTop {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+  z-index: 5000;
+
+  box-shadow:
+    0 10px 25px rgba(22, 163, 74, 0.45),
+    inset 0 -2px 0 rgba(0,0,0,0.15);
+
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Visible */
+#btnScrollTop.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Hover */
+#btnScrollTop:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 16px 35px rgba(22, 163, 74, 0.55),
+    inset 0 -2px 0 rgba(0,0,0,0.2);
+}
+
+/* Active (click) */
+#btnScrollTop:active {
+  transform: scale(0.95);
+}
+#btnScrollTop svg {
+  width: 24px;
+  height: 24px;
+}
+#btnScrollTop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.theme-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--borde);
 }

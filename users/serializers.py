@@ -34,6 +34,7 @@ class AdminUsuarioSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
+                "direccion",
             "nombre",
             "apellido",
             "email",
@@ -41,6 +42,7 @@ class AdminUsuarioSerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "is_active",
+                "rol",
         ]
 
 
@@ -88,3 +90,52 @@ class CambiarPasswordSerializer(serializers.Serializer):
             )
 
         return data
+
+
+
+# users/serializers.py
+from rest_framework import serializers
+from users.models import Usuariohtp
+
+
+class AdminCrearUsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=6)
+
+    class Meta:
+        model = Usuariohtp
+        fields = [
+            "id",
+            "username",
+            "email",
+            "nombre",
+            "apellido",
+            "telefono",
+            "direccion",
+            "rol",
+            "password",
+            "is_active",
+            "is_admin",
+            "is_superuser",
+        ]
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+
+        user = Usuariohtp.objects.create_user(
+            email=validated_data["email"],
+            username=validated_data["username"],
+            nombre=validated_data["nombre"],
+            apellido=validated_data["apellido"],
+            password=password,
+        )
+
+        # campos opcionales
+        user.telefono = validated_data.get("telefono")
+        user.direccion = validated_data.get("direccion")
+        user.rol = validated_data.get("rol", "cliente")
+        user.is_active = validated_data.get("is_active", True)
+        user.is_admin = validated_data.get("is_admin", False)
+        user.is_superuser = validated_data.get("is_superuser", False)
+
+        user.save()
+        return user

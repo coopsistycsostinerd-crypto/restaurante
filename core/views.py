@@ -26,6 +26,17 @@ def home(request):
 
 
 
+from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import AllowAny
+
+class EmpresaPublicAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        empresa, created = Empresa.objects.get_or_create(id=1)
+        serializer = EmpresaSerializer(empresa)
+        return Response(serializer.data)
+
 class EmpresaConfigAPIView(APIView):
     permission_classes = [IsAdminUser]
 
@@ -36,12 +47,17 @@ class EmpresaConfigAPIView(APIView):
 
     def put(self, request):
         empresa, created = Empresa.objects.get_or_create(id=1)
-        serializer = EmpresaSerializer(empresa, data=request.data, partial=True)
+        serializer = EmpresaSerializer(
+            empresa,
+            data=request.data,
+            partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+
         return Response(serializer.errors, status=400)
-    
+
 
 
 from rest_framework.decorators import api_view, permission_classes
@@ -116,3 +132,76 @@ def admin_dashboard(request):
         "ventas_por_dia": list(ventas_por_dia),
         "reservas_por_dia": list(reservas_por_dia),
     })
+
+
+
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+
+from .serializers import MensajeContactoSerializer
+
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def enviar_mensaje_contacto(request):
+    print("lo que llego al backen", request.data)
+    serializer = MensajeContactoSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Mensaje enviado correctamente"},
+            status=status.HTTP_201_CREATED
+        )
+
+    print(serializer.errors)  # 👈 DEBUG
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+from .models import MensajeContacto
+from .serializers import MensajeContactoAdminSerializer
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_mensajes_contacto(request):
+    mensajes = MensajeContacto.objects.all().order_by("-creado")
+    serializer = MensajeContactoAdminSerializer(mensajes, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def marcar_contacto_leido(request, pk):
+    try:
+        mensaje = MensajeContacto.objects.get(pk=pk)
+    except MensajeContacto.DoesNotExist:
+        return Response(
+            {"error": "Mensaje no encontrado"},
+            status=404
+        )
+
+    mensaje.leido = request.data.get("leido", False)
+    mensaje.save()
+
+    return Response(
+        {
+            "id": mensaje.id,
+            "leido": mensaje.leido
+        },
+        status=200
+    )
+
+
+
+
+
+def experiencias(request):
+    return render(request, "experiencias.html")

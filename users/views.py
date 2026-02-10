@@ -139,3 +139,102 @@ class CambiarPasswordAPIView(APIView):
             {"message": "Contraseña actualizada correctamente"},
             status=status.HTTP_200_OK
         )
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Usuariohtp
+
+@csrf_exempt
+def registro_cliente(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido"}, status=405)
+
+    try:
+        data = request.POST
+
+        user = Usuariohtp.objects.create_user(
+            email=data.get("email"),
+            username=data.get("username"),
+            nombre=data.get("nombre"),
+            apellido=data.get("apellido"),
+            password=data.get("password")
+        )
+
+        # 🔒 datos extra
+        user.telefono = data.get("telefono")
+        user.direccion = data.get("direccion")
+        user.rol = "cliente"
+        user.save()
+
+        return JsonResponse({"success": True})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
+
+# users/views.py
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAdminUser
+from .serializers import AdminCrearUsuarioSerializer
+from users.models import Usuariohtp
+
+
+class AdminCrearUsuarioAPIView(CreateAPIView):
+    queryset = Usuariohtp.objects.all()
+    serializer_class = AdminCrearUsuarioSerializer
+    permission_classes = [IsAdminUser]
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+import json
+
+User = get_user_model()
+
+
+@csrf_exempt
+@require_http_methods(["PATCH"])
+def editar_usuario(request, user_id):
+    # 🔐 Validación básica (ajústala si usas otra auth)
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "No autorizado"}, status=401)
+
+    # Solo admin / superuser pueden editar
+    if request.user.rol not in ["admin", "superuser"]:
+        return JsonResponse({"error": "Permisos insuficientes"}, status=403)
+
+    try:
+        usuario = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "Usuario no encontrado"}, status=404)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    # 🧠 Campos editables
+    campos = {
+        "username": "username",
+        "email": "email",
+        "nombre": "first_name",
+        "apellido": "last_name",
+        "telefono": "telefono",
+        "direccion": "direccion",
+        "rol": "rol",
+        "is_active": "is_active",
+    }
+
+    for campo_front, campo_modelo in campos.items():
+        if campo_front in data:
+            setattr(usuario, campo_modelo, data[campo_front])
+
+    usuario.save()
+
+    return JsonResponse({
+        "success": True,
+        "message": "Usuario actualizado correctamente"
+    })

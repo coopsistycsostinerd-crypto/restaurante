@@ -199,18 +199,16 @@ textarea { min-height: 80px; resize: vertical; }
 ========================= */
 .sidebar {
     width: 250px;
-    background: #111827; 
-    color: #f1f5f9;
-    padding: 20px 0;
-    transition: 0.3s;
-    flex-shrink: 0;
+    background: #111827;
     position: fixed;
-    top: 110px;           /* menú base + admin-header */
-    left: 0;
+    top: 110px;
+    left: -250px;
     height: calc(100vh - 110px);
-    overflow-y: auto;
+    transition: left 0.3s ease;
     z-index: 1040;
 }
+
+
 
 .sidebar h2 {
     text-align: center;
@@ -228,6 +226,9 @@ textarea { min-height: 80px; resize: vertical; }
     text-decoration: none;
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
+}
+.sidebar.open {
+    left: 0;
 }
 
 .sidebar a:hover { background: #1f2937; color: #ffffff; }
@@ -255,14 +256,23 @@ textarea { min-height: 80px; resize: vertical; }
    ADMIN CONTENT
 ========================= */
 .admin-content {
-    margin-top: 10px;     /* espacio para menú base + admin-header */
-    margin-left: 250px;    /* espacio para sidebar */
-    padding: 25px;
+    margin-left: 250px;
     transition: margin-left 0.3s ease;
-    background: #f9fafb;
 }
 
+.sidebar:not(.open) + .admin-content {
+    margin-left: 0;
+}
+
+
 .sidebar.collapsed + .admin-content { margin-left: 0; }
+@media (max-width: 768px) {
+    .admin-content {
+        margin-left: 0;
+        margin-top: 110px;
+        padding: 15px;
+    }
+}
 
 /* =========================
    DROPDOWN MENÚ BASE
@@ -323,10 +333,280 @@ textarea { min-height: 80px; resize: vertical; }
         z-index: 1040;
     }
     .sidebar.active { left: 0; }
-    .admin-content {
+      .admin-content {
         margin-left: 0;
-        padding: 15px;
         margin-top: 110px;
+        padding: 15px;
     }
     .admin-layout { flex-direction: column; }
+}
+
+.btn-editaradminuser {
+    background: var(--verde-principal);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-editaradminuser:hover {
+    background: var(--verde-hover);
+}
+
+
+
+
+/* =========================
+   ADMIN CONTACTOS
+========================= */
+
+.admin-contactos {
+  padding: 32px;
+}
+
+/* Título */
+.admin-contactos__title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #f5f7fa;
+}
+
+/* Grid */
+.admin-contactos__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 22px;
+}
+
+/* Card */
+.admin-contactos__card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 10px 22px rgba(0,0,0,.3);
+  transition: .25s ease;
+  border: 1px solid transparent;
+}
+
+.admin-contactos__card:hover {
+  transform: translateY(-4px);
+  border-color: #4f8cff;
+}
+
+/* Header */
+.admin-contactos__nombre {
+  font-size: 16px;
+  font-weight: 700;
+  color: #d4b886;
+  margin-bottom: 6px;
+}
+
+/* Info */
+.admin-contactos__info {
+  font-size: 13px;
+  color: #aab0c0;
+  margin-bottom: 4px;
+}
+
+/* Mensaje */
+.admin-contactos__mensaje {
+  font-size: 14px;
+  color: #f5f7fa;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+/* Footer */
+.admin-contactos__fecha {
+  font-size: 12px;
+  color: #8b90a0;
+  display: block;
+  margin-top: 10px;
+  text-align: right;
+}
+
+
+.admin-contactos__card:not(.leido) {
+  border-left: 4px solid #ff9800;
+}
+
+.admin-contactos__card.leido {
+  opacity: 0.7;
+}
+
+
+
+/* ================================
+   MODAL USUARIO PANEL ADMIN
+================================ */
+
+.modal-usuariopanel {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+}
+
+/* Contenedor principal */
+.modal-usuariopanel__content {
+    background: #ffffff;
+    width: 100%;
+    max-width: 540px;
+    margin: 5vh auto;
+    padding: 24px 26px;
+    border-radius: 14px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+    animation: modalUsuarioFade 0.25s ease;
+}
+
+/* Animación */
+@keyframes modalUsuarioFade {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.modal-usuariopanel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.modal-usuariopanel__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.modal-usuariopanel__close {
+    font-size: 26px;
+    cursor: pointer;
+    color: #9ca3af;
+    transition: color 0.2s;
+}
+
+.modal-usuariopanel__close:hover {
+    color: #ef4444;
+}
+
+/* ================================
+   FORMULARIO (2 COLUMNAS)
+================================ */
+
+.modal-usuariopanel__form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.modal-usuariopanel__form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-usuariopanel__form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.modal-usuariopanel__form input,
+.modal-usuariopanel__form select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.modal-usuariopanel__form input:focus,
+.modal-usuariopanel__form select:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Elementos que ocupan 2 columnas */
+.modal-usuariopanel__checkbox,
+.modal-usuariopanel__admin,
+.modal-usuariopanel__actions {
+    grid-column: span 2;
+}
+
+/* Checkbox */
+.modal-usuariopanel__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+/* Admin fields */
+.modal-usuariopanel__admin {
+    padding: 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px dashed #c7d2fe;
+}
+
+/* ================================
+   BOTONES
+================================ */
+
+.modal-usuariopanel__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.modal-usuariopanel__btn {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-usuariopanel__btn:hover {
+    background: #1d4ed8;
+}
+
+/* ================================
+   RESPONSIVE (MÓVIL)
+================================ */
+
+@media (max-width: 640px) {
+    .modal-usuariopanel__content {
+        margin: 3vh 12px;
+        padding: 20px;
+    }
+
+    .modal-usuariopanel__form {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-usuariopanel__checkbox,
+    .modal-usuariopanel__admin,
+    .modal-usuariopanel__actions {
+        grid-column: span 1;
+    }
 }
