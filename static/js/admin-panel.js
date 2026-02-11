@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
 async function cargarClientesAdmin() {
     const token = localStorage.getItem("token");
     const cuerpo = document.getElementById("adminBody");

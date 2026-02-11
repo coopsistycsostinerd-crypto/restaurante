@@ -201,6 +201,8 @@ def marcar_contacto_leido(request, pk):
 
 
 
+# views.py
+from django.http import JsonResponse
 
 
 def experiencias(request):

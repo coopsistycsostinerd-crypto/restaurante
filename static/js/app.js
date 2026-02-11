@@ -8,11 +8,49 @@ const mainNav = document.getElementById("mainNav");
 togglePrincipal.addEventListener("click", () => {
     mainNav.classList.toggle("open");
 });
+// Scroll suave para links internos, o redirección si no existe en la página actual
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener("click", e => {
+        const hash = link.getAttribute("href");
+
+        // Evita el comportamiento por defecto
+        e.preventDefault();
+
+        // Buscamos el elemento con ese ID en la página actual
+        const target = document.querySelector(hash);
+
+        if (target) {
+            // Si existe, hacemos scroll suave
+            target.scrollIntoView({ behavior: "smooth" });
+        } else {
+            // Si no existe en la página actual, redirigimos al home con hash
+            window.location.href = `/${hash}`;
+        }
+    });
+});
+
 
 
 function usuarioLogueado() {
     return !!localStorage.getItem("token");
 }
+document.addEventListener("DOMContentLoaded", async () => {
+
+
+   await cargarEmpresaPublica();
+    await cargarEmpresaFooter() 
+       await actualizarMenuUsuario();
+       actualizarUIUsuario();
+   await cargarCategorias();
+   await cargarProductos();
+
+
+    if (usuarioLogueado()) {
+        await cargarCarritoBackend();
+    } else {
+        renderCarrito();
+    }
+});
 
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
@@ -243,8 +281,7 @@ async function cargarProductos() {
     const res = await fetch(`${API_BASE}/productos/`);
     productosGlobal = await res.json();
 
-    console.log("📦 productosGlobal completo:", productosGlobal);
-    console.log("🧾 primer producto:", productosGlobal[0]);
+  
     const primerosCuatro = productosGlobal.slice(0, 4);
     renderProductos(primerosCuatro);
 }
@@ -269,7 +306,7 @@ function renderProductos(lista) {
 
             <div class="producto-info">
                 <h3>${prod.nombre}</h3>
-                <p>Deliciosa preparación hecha al momento con ingredientes frescos.</p>
+                <p>${prod.descripcion}</p>
 
                 <div class="producto-footer">
                     <span class="producto-precio">$${prod.precio}</span>
@@ -326,19 +363,6 @@ function filtrarCategoria(categoriaNombre, e) {
 /* =========================
    INIT
 ========================= */
-document.addEventListener("DOMContentLoaded", async () => {
-   await cargarEmpresaPublica();
-   await cargarEmpresaFooter() 
-   await cargarCategorias();
-   await cargarProductos();
-   await actualizarMenuUsuario();
-
-    if (usuarioLogueado()) {
-        await cargarCarritoBackend();
-    } else {
-        renderCarrito();
-    }
-});
 
 
 
@@ -1047,7 +1071,7 @@ function abrirMenuModal() {
 
       <div class="producto-info">
         <h3>${prod.nombre}</h3>
-        <p>Deliciosa preparación hecha al momento.</p>
+        <p>${prod.descripcion}</p>
 
         <div class="producto-footer">
           <span class="producto-precio">$${prod.precio}</span>
@@ -1261,31 +1285,5 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 
-function cargarExperiencias(e) {
-  e.preventDefault();
 
-  fetch("/experiencias/")
-    .then(response => {
-      if (!response.ok) throw new Error("Error cargando experiencias");
-      return response.text();
-    })
-    .then(html => {
-      const main = document.querySelector("main");
-      main.innerHTML = html;
 
-      // 👉 marcar link activo
-      document.querySelectorAll("#mainNav a")
-        .forEach(a => a.classList.remove("active"));
-      e.target.classList.add("active");
-
-      // 👉 cambiar URL sin recargar
-      history.pushState(null, "", "/experiencias/");
-
-      // 👉 subir arriba
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    })
-    .catch(err => {
-      console.error(err);
-      alert("No se pudo cargar la página");
-    });
-}

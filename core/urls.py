@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import EmpresaConfigAPIView, EmpresaPublicAPIView, admin_dashboard, admin_mensajes_contacto, enviar_mensaje_contacto, home, marcar_contacto_leido
+from .views import EmpresaConfigAPIView, EmpresaPublicAPIView, admin_dashboard, admin_mensajes_contacto, enviar_mensaje_contacto, experiencias,   home, marcar_contacto_leido
 from core import views
 
 urlpatterns = [
     path('', home, name='home'),
+ 
+
 path("config/empresa/", EmpresaConfigAPIView.as_view()),          # ADMIN
 path("public/config/empresa/", EmpresaPublicAPIView.as_view()),  # PÚBLICO
 
@@ -16,7 +18,8 @@ path(
   marcar_contacto_leido,
   name="marcar_contacto_leido"
 ),
-path("experiencias/", views.experiencias, name="experiencias"),
+    path('experiencias/', experiencias, name='experiencias'),
+
 
 ]
 from django.conf import settings
