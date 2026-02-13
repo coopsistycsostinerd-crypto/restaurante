@@ -1,0 +1,34 @@
+<div class="pos-container">
+
+    <!-- PRODUCTOS -->
+    <div class="pos-productos">
+        <h2>Productos</h2>
+        <div id="productosPOS" class="productos-grid"></div>
+    </div>
+
+    <!-- TICKET -->
+    <div class="pos-ticket">
+
+        <h2>Venta Actual</h2>
+
+        <div id="ticketItems" class="ticket-items"></div>
+
+        <div class="ticket-resumen">
+            <div>
+                <span>Subtotal:</span>
+                <span id="subtotalPOS">RD$ 0.00</span>
+            </div>
+
+            <div class="total-line">
+                <span>TOTAL:</span>
+                <span id="totalPOS">RD$ 0.00</span>
+            </div>
+        </div>
+
+        <button class="btn-cobrar" onclick="cobrarVenta()">
+            💳 COBRAR
+        </button>
+
+    </div>
+
+</div>

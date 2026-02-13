@@ -464,6 +464,13 @@ function cargarSeccion(seccion) {
 
 
     }
+
+     if (seccion === "pos") {
+        titulo.textContent = "Punto de Venta";
+    cargarPuntodeVenta();
+
+
+    }
      if (seccion === "contacto") {
         titulo.textContent = "Gestion de Contactos";
     cargarContactoAdmin();
@@ -935,8 +942,214 @@ function renderDashboard(data) {
   };
 }
 
+async function cargarPuntodeVenta() {
+
+    const token = localStorage.getItem("token");
+    const contenedor = document.getElementById("adminBody");
+
+    contenedor.innerHTML = "Cargando productos...";
+
+    const res = await fetch("/api/productos/", {
+        headers: {
+            "Authorization": `Token ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        contenedor.innerHTML = "Error cargando productos";
+        return;
+    }
+
+    const productos = await res.json();
+
+    // 🧠 Layout base del POS
+    contenedor.innerHTML = `
+        <div class="pos-wrapper">
+            <div class="pos-productos" id="posProductos"></div>
+
+            <div class="pos-ticket">
+                <h3>Venta Actual</h3>
+                <div id="posCarrito"></div>
+
+                <div class="pos-total">
+                    TOTAL: RD$ <span id="posTotal">0.00</span>
+                </div>
+
+                <button onclick="cobrarVenta()" class="btn-cobrar">
+                    💳 COBRAR
+                </button>
+            </div>
+        </div>
+    `;
+
+    const grid = document.getElementById("posProductos");
+
+    productos.forEach(p => {
+        const btn = document.createElement("div");
+        btn.className = "pos-producto-btn";
+
+        btn.innerHTML = `
+    ${p.imagen 
+        ? `<img src="${p.imagen}" class="producto-img">`
+        : `<div class="producto-sin-img">Sin imagen</div>`
+    }
+
+    <strong>${p.nombre}</strong>
+    <p>RD$ ${p.precio}</p>
+`;
 
 
+        btn.onclick = () => agregarProducto(p);
+
+        grid.appendChild(btn);
+    });
+}
+
+function cargarProductospos() {
+    fetch("/api/pos/productos/")
+        .then(res => res.json())
+        .then(data => {
+            const contenedor = document.getElementById("productosPOS");
+            contenedor.innerHTML = "";
+
+            data.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="producto-btn"
+                        onclick="agregarProducto(${p.id}, '${p.nombre}', ${p.precio})">
+                        <h4>${p.nombre}</h4>
+                        <p>$${p.precio}</p>
+                    </div>
+                `;
+            });
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    cargarProductos();
+});
+
+
+async function cobrarVenta() {
+
+    const token = localStorage.getItem("token");
+
+    if (!carrito.length) {
+        alert("No hay productos en la venta");
+        return;
+    }
+
+    const res = await fetch("/panel_admin/crear-venta/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${token}`
+        },
+        body: JSON.stringify({
+            productos: carrito
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        window.open(`/caja/ticket/${data.venta_id}/`);
+        carrito = [];
+        renderCarrito();
+    }
+}
+
+
+
+let carrito2 = [];
+
+function agregarProducto(producto) {
+
+    const existe = carrito2.find(p => p.id === producto.id);
+
+    if (existe) {
+        existe.cantidad += 1;
+    } else {
+        carrito.push({
+            ...producto,
+            cantidad: 1
+        });
+    }
+
+    renderCarrito2();
+}
+
+function renderCarrito2() {
+
+    const contenedor = document.getElementById("posCarrito");
+    const totalSpan = document.getElementById("posTotal");
+
+    contenedor.innerHTML = "";
+
+    let total = 0;
+
+    carrito.forEach(p => {
+
+        const subtotal = p.precio * p.cantidad;
+        total += subtotal;
+
+        contenedor.innerHTML += `
+            <div class="carrito-item">
+                <span>${p.nombre}</span>
+
+                <div class="cantidad-control">
+          
+                    <input type="number" 
+                           value="${p.cantidad}" 
+                           min="1"
+                           onchange="editarCantidad(${p.id}, this.value)">
+
+               </div>
+
+                <span>RD$ ${subtotal.toFixed(2)}</span>
+
+                <button class="btn-eliminar"
+                        onclick="eliminarProducto(${p.id})">
+                        🗑
+                </button>
+            </div>
+        `;
+    });
+
+    totalSpan.textContent = total.toFixed(2);
+}
+
+function cambiarCantidad(id, cambio) {
+
+    const producto = carrito2.find(p => p.id === id);
+
+    if (!producto) return;
+
+    producto.cantidad += cambio;
+
+    if (producto.cantidad <= 0) {
+        carrito2 = carrito2.filter(p => p.id !== id);
+    }
+
+    renderCarrito2();
+}
+function editarCantidad(id, nuevaCantidad) {
+
+    const producto = carrito2.find(p => p.id === id);
+
+    if (!producto) return;
+
+    producto.cantidad = parseInt(nuevaCantidad);
+
+    if (producto.cantidad <= 0 || isNaN(producto.cantidad)) {
+        carrito2 = carrito2.filter(p => p.id !== id);
+    }
+
+    renderCarrito2();
+}
+function eliminarProducto(id) {
+    carrito2 = carrito2.filter(p => p.id !== id);
+    renderCarrito2();
+}
 
 
 // 🔥 Exponer funciones para onclick del HTML

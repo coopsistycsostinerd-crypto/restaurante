@@ -47,7 +47,7 @@ INSTALLED_APPS = [
                      'carrito',  
                                  'caja',
                                   'reserva',
-                                 
+          'pos',                           
 ]
 # settings.py
 AUTH_USER_MODEL = 'users.Usuariohtp'
