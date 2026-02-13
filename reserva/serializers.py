@@ -8,6 +8,12 @@ from datetime import datetime
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import serializers
+from datetime import datetime, timedelta
+from datetime import datetime, timedelta
+from django.utils import timezone
+from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework import status
 
 class ReservaSerializer(serializers.ModelSerializer):
 
@@ -29,18 +35,29 @@ class ReservaSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         fecha = data["fecha"]
-        inicio = data["hora_inicio"]
-        fin = data["hora_fin"]
+        inicio = data["hora_inicio"]  # datetime.time
+        fin = data["hora_fin"]        # datetime.time
         mesas = data["mesas"]
         sillas = data["sillas"]
 
         # ===============================
-        # 1️⃣ VALIDAR RANGO HORARIO
+        # 1️⃣ VALIDAR RANGO HORARIO (considerando medianoche)
         # ===============================
-        if inicio >= fin:
-            raise serializers.ValidationError(
-                "La hora de salida debe ser mayor a la de inicio."
-            )
+        inicio_dt = datetime.combine(fecha, inicio)
+        fin_dt = datetime.combine(fecha, fin)
+
+        # Si fin < inicio → sumar 1 día
+        if fin_dt <= inicio_dt:
+            fin_dt += timedelta(days=1)
+
+        # Validación final
+        if fin_dt <= inicio_dt:
+         raise serializers.ValidationError(
+            "La hora de salida debe ser mayor a la de inicio."
+        )
+
+    # Guardar hora final ajustada
+        data["hora_fin"] = fin_dt.time()
 
         # ===============================
         # 2️⃣ VALIDAR FECHA / HORA (LOCAL)
@@ -53,13 +70,13 @@ class ReservaSerializer(serializers.ModelSerializer):
                 "No puedes reservar en una fecha pasada."
             )
 
-        if fecha == hoy and inicio <= now.time():
+        if fecha == hoy and inicio_dt.time() <= now.time():
             raise serializers.ValidationError(
                 "La hora de inicio debe ser mayor a la hora actual."
             )
 
         # ===============================
-        # 3️⃣ VALIDAR CAPACIDAD (SOLAPAMIENTO)
+        # 3️⃣ VALIDAR CAPACIDAD / SOLAPAMIENTO
         # ===============================
         capacidad = CapacidadLocal.objects.first()
         if not capacidad:
@@ -90,27 +107,27 @@ class ReservaSerializer(serializers.ModelSerializer):
                 "No hay sillas disponibles en ese horario."
             )
 
+        # Guardar la hora final ajustada para backend
+        data["hora_fin"] = fin_dt.time().strftime("%H:%M")
+
         return data
 
     def create(self, validated_data):
-     request = self.context.get("request")
+        request = self.context.get("request")
 
-     if request and request.user.is_authenticated:
-        validated_data["user"] = request.user
+        if request and request.user.is_authenticated:
+            validated_data["user"] = request.user
+            validated_data["nombre"] = (
+                validated_data.get("nombre")
+                or request.user.get_full_name()
+                or request.user.username
+            )
+            validated_data["telefono"] = (
+                validated_data.get("telefono")
+                or getattr(request.user, "telefono", "")
+            )
 
-        validated_data["nombre"] = (
-            validated_data.get("nombre")
-            or request.user.get_full_name()
-            or request.user.username
-        )
-
-        validated_data["telefono"] = (
-            validated_data.get("telefono")
-            or getattr(request.user, "telefono", "")
-        )
-
-     return super().create(validated_data)
-
+        return super().create(validated_data)
 
 class DisponibilidadSerializer(serializers.Serializer):
     fecha = serializers.DateField()

@@ -56,3 +56,37 @@ class ComprobanteFiscal(models.Model):
 
     def __str__(self):
         return f"{self.numero}"
+
+
+
+
+
+class PagoOnline(models.Model):
+
+    METODOS = (
+        ("tarjeta", "Tarjeta"),
+        ("transferencia", "Transferencia"),
+    )
+
+    ESTADOS = (
+        ("pendiente", "Pendiente"),
+        ("confirmado", "Confirmado"),
+        ("rechazado", "Rechazado"),
+    )
+
+    orden = models.ForeignKey("ordenes.Orden", on_delete=models.CASCADE, related_name="pagos_online")
+
+    metodo = models.CharField(max_length=20, choices=METODOS)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default="pendiente")
+
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Datos opcionales
+    referencia = models.CharField(max_length=100, blank=True, null=True)
+    banco = models.CharField(max_length=100, blank=True, null=True)
+    ultimos_digitos = models.CharField(max_length=4, blank=True, null=True)
+
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"PagoOnline Orden {self.orden.id} - {self.metodo}"

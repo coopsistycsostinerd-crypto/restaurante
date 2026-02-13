@@ -11,14 +11,67 @@
         <button onclick="scrollToMenu()">Ver Menú</button>
     </div>
 </section>
+<section class="platos-destacados">
+  <h2>Nuestros Platos Destacados</h2>
 
-<!-- ⭐ DESTACADOS -->
-<section class="destacados">
-    <h2>Platos Destacados</h2>
-    <div class="destacados-grid" id="destacados">
-        <!-- JS puede cargar productos destacados aquí -->
+  <div id="carouselRestaurante" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+
+    <!-- Indicadores -->
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselRestaurante" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#carouselRestaurante" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#carouselRestaurante" data-bs-slide-to="2"></button>
     </div>
+
+    <div class="carousel-inner rounded-4 overflow-hidden">
+
+      <!-- Slide 1 -->
+  <div class="carousel-item active">
+  <img src="/media/destacados/mojito.jpg" class="d-block w-100 bg-blur" alt="Mojito">
+  <img src="/media/destacados/mojito.jpg" class="d-block slide-img" alt="Mojito">
+  <div class="carousel-caption custom-caption">
+    <h3>Mojito Especial</h3>
+    <p>Refrescante y preparado al momento.</p>
+  </div>
+</div>
+
+
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <img src="/media/destacados/pastacarbonara.jpg" class="d-block w-100 bg-blur" alt="Pasta">
+        <img src="/media/destacados/pastacarbonara.jpg" class="d-block w-75 slide-img" alt="Pasta">
+        <div class="carousel-caption custom-caption">
+          <h3>Pasta Carbonara</h3>
+          <p>Salsa cremosa y auténtico sabor italiano.</p>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <img src="/media/destacados/salmonallimon.jpg" class="d-block w-100 bg-blur" alt="Salmón">
+        <img src="/media/destacados/salmonallimon.jpg" class="d-block w-75 slide-img" alt="Salmón">
+        <div class="carousel-caption custom-caption">
+          <h3>Salmón al Limón</h3>
+          <p>Fresco, ligero y perfectamente sazonado.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Flechas -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselRestaurante" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselRestaurante" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+
+  </div>
 </section>
+
+
+<br>
 
 <!-- 👨‍🍳 SOBRE EL RESTAURANTE -->
 <!-- 👨‍🍳 SOBRE EL RESTAURANTE -->

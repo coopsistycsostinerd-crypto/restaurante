@@ -39,10 +39,19 @@
 </head>
 <body>
 
-    <h2>MI NEGOCIO</h2>
-    <p>RNC: 000-00000-0</p>
-    <p>Tel: 809-000-0000</p>
+<h2>{{ empresa.nombre }}</h2>
 
+{% if empresa.rnc %}
+<p>RNC: {{ empresa.rnc }}</p>
+{% endif %}
+
+{% if empresa.telefono %}
+<p>Tel: {{ empresa.telefono }}</p>
+{% endif %}
+
+{% if empresa.direccion %}
+<p>{{ empresa.direccion }}</p>
+{% endif %}
     <div class="linea"></div>
 
     <p><strong>Venta #{{ venta.id }}</strong></p>
@@ -67,7 +76,11 @@
 
     <div class="linea"></div>
 
-    <p>¡Gracias por su compra!</p>
+{% if empresa.pie_factura %}
+<div class="linea"></div>
+<p>{{ empresa.pie_factura }}</p>
+{% endif %}
+
 
     <button onclick="window.print()">🖨️ Imprimir</button>
 

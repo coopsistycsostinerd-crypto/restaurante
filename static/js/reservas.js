@@ -59,20 +59,27 @@ console.log("el ususario", user)
 function calcularHoraFin() {
     const inicio = reservaHoraInicio.value;
     const duracion = parseInt(duracionSelect.value, 10);
-    if (!inicio || !duracion) return;
+    const fecha = reservaFecha.value; // yyyy-mm-dd
+
+    if (!inicio || !duracion || !fecha) return;
 
     const [h, m] = inicio.split(":").map(Number);
-    const fin = new Date();
-    fin.setHours(h + duracion, m);
+    
+    // Crear fecha exacta de inicio
+    const inicioDate = new Date(fecha + "T" + inicio + ":00");
 
-    // 24h (backend)
-    horaFin24 = fin.toTimeString().slice(0, 5);
+    // Sumar duración en horas
+    const finDate = new Date(inicioDate.getTime() + duracion * 60 * 60 * 1000);
 
-    // 12h (visual)
-    document.getElementById("hora_fin").value = formato12h(horaFin24);
+    // Hora final 24h (para backend)
+    horaFin24 = finDate.toTimeString().slice(0,5);
+
+    // Hora final 12h (visual)
+    reservaHoraFin.value = formato12h(horaFin24);
 
     consultarDisponibilidad();
 }
+
 
 
 /* ===============================

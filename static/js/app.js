@@ -175,7 +175,11 @@ function renderCarrito() {
         li.innerHTML = `
             <div class="item-info">
                 <strong>${p.nombre}</strong>
-                <small>$${p.precio} x ${p.cantidad} = $${subtotal}</small>
+               <small>
+    ${formatearMoneda(p.precio)} x ${p.cantidad} = 
+    ${formatearMoneda(subtotal)}
+</small>
+
             </div>
 
             <div class="cart-controls">
@@ -189,7 +193,8 @@ function renderCarrito() {
         lista.appendChild(li);
     });
 
-    total.textContent = totalPrecio();
+    total.textContent = formatearMoneda(totalPrecio());
+
     badge.textContent = totalItems();
 }
 
@@ -285,6 +290,12 @@ async function cargarProductos() {
     const primerosCuatro = productosGlobal.slice(0, 4);
     renderProductos(primerosCuatro);
 }
+function formatearMoneda(valor) {
+    return new Intl.NumberFormat("es-DO", {
+        style: "currency",
+        currency: "DOP"
+    }).format(valor);
+}
 
 
 /* =========================
@@ -309,7 +320,8 @@ function renderProductos(lista) {
                 <p>${prod.descripcion}</p>
 
                 <div class="producto-footer">
-                    <span class="producto-precio">$${prod.precio}</span>
+               <span class="producto-precio">${formatearMoneda(prod.precio)}</span>
+
 
                     <div class="cantidad-control">
                         <input type="number" min="1" value="1" id="qty-${prod.id}">
@@ -427,7 +439,7 @@ function abrirCheckout() {
         return;
     }
 
-    document.getElementById("modal-total").textContent = totalPrecio();
+    document.getElementById("modal-total").textContent = formatearMoneda(totalPrecio());
     document.getElementById("checkoutModal").classList.add("active");
 
     precargarDatos();
@@ -436,6 +448,13 @@ function abrirCheckout() {
 function cerrarModal() {
     document.getElementById("checkoutModal").classList.remove("active");
 }
+document.getElementById("checkoutModal")
+    .addEventListener("click", function (e) {
+        if (e.target.id === "checkoutModal") {
+            // NO hacemos nada → no se cierra
+            e.stopPropagation();
+        }
+});
 
 function toggleDireccion() {
     const tipo = document.getElementById("tipoPedido").value;
@@ -518,12 +537,16 @@ if (localStorage.getItem("token")) {
 carrito = [];
 guardarCarrito();
 renderCarrito();
-cerrarModal();
-
-alert("🎉 Pedido realizado con éxito");
+// cerrarModal();
 
 
 
+
+if (data.tipo_pedido === "delivery") {
+    mostrarPasoPago(data);
+} else {
+    finalizarPedido();
+}
 
 
 
@@ -537,7 +560,149 @@ alert("🎉 Pedido realizado con éxito");
 });
 
 
+function mostrarPasoPago(orden) {
 
+    const modalContent = document.querySelector("#checkoutModal .modal-content");
+
+    modalContent.innerHTML = `
+        <h3>💳 Pago del pedido</h3>
+
+        <p><strong>Pedido #${orden.id}</strong></p>
+        <p>Total: ${formatearMoneda(orden.total)}</p>
+
+        <label>Método de pago</label>
+        <select id="metodoPago" onchange="mostrarCamposPago()">
+            <option value="">Selecciona método</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="tarjeta">Tarjeta</option>
+        </select>
+
+        <div id="camposPago"></div>
+
+        <div class="modal-actions">
+            <button onclick="cerrarModal()">Cancelar</button>
+            <button onclick="confirmarPago(${orden.id})" class="btn-primary">
+                Confirmar pago
+            </button>
+        </div>
+    `;
+}
+function mostrarCamposPago() {
+    const metodo = document.getElementById("metodoPago").value;
+    const contenedor = document.getElementById("camposPago");
+
+    if (metodo === "transferencia") {
+        contenedor.innerHTML = `
+            <p>Banco Popular</p>
+            <p>Cuenta: 123-456789-0</p>
+
+            <label>Número de referencia</label>
+            <input type="text" id="referenciaPago" required>
+        `;
+    }
+
+  if (metodo === "tarjeta") {
+    contenedor.innerHTML = `
+        <div class="simulacion-alerta">
+            ⚠️ Pago simulado. No almacenamos datos reales de tarjeta.
+        </div>
+
+        <div class="card-form">
+            <label>Nombre del titular</label>
+            <input type="text" id="titularTarjeta" 
+                   placeholder="JUAN PEREZ" required>
+
+            <label>Número de tarjeta</label>
+            <input type="text" id="numeroTarjeta"
+                   maxlength="19"
+                   placeholder="0000 0000 0000 0000"
+                   oninput="formatearNumeroTarjeta(this)"
+                   required>
+
+            <div class="card-row">
+                <div>
+                    <label>Fecha vencimiento</label>
+                    <input type="text"
+                           id="fechaVencimiento"
+                           placeholder="MM/AA"
+                           maxlength="5"
+                           required>
+                </div>
+
+                <div>
+                    <label>CVV</label>
+                    <input type="password"
+                           id="cvvTarjeta"
+                           maxlength="4"
+                           placeholder="•••"
+                           required>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+
+}
+function formatearNumeroTarjeta(input) {
+    let value = input.value.replace(/\D/g, "");
+    value = value.substring(0,16);
+    value = value.replace(/(.{4})/g, "$1 ").trim();
+    input.value = value;
+}
+
+async function confirmarPago(ordenId) {
+
+    const metodo = document.getElementById("metodoPago").value;
+    const numeroCompleto = document.getElementById("numeroTarjeta")?.value;
+    const ultimos4 = numeroCompleto ? numeroCompleto.slice(-4) : null;
+
+    if (!metodo) {
+        alert("Selecciona método de pago");
+        return;
+    }
+
+    const payload = {
+        orden: ordenId,
+        metodo: metodo,
+        referencia: document.getElementById("referenciaPago")?.value || null,
+        ultimos_digitos: ultimos4
+    
+    };
+
+    try {
+
+        const res = await fetch(`${API_BASE}/pago-online/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Error registrando pago");
+
+        alert("🎉 Pago registrado correctamente");
+
+        finalizarPedido();
+
+    } catch (err) {
+        console.error(err);
+        alert("Error procesando pago");
+    }
+}
+
+function finalizarPedido() {
+
+    carrito = [];
+    guardarCarrito();
+    renderCarrito();
+
+    cerrarModal();
+
+    alert("🎉 Pedido realizado con éxito");
+}
 
 /*modal y login*/
 
@@ -884,10 +1049,10 @@ async function cargarMisPedidos() {
                 <p><strong>Fecha:</strong> ${new Date(p.creado).toLocaleString()}</p>
                 <p><strong>Estado:</strong> <span class="estado-${p.estado}">${p.estado}</span></p>
 
-                <p><strong>Total:</strong> $${p.total}</p>
+                <p><strong>Total:</strong> ${formatearMoneda(p.total)}</p>
                 <ul>
                     ${p.items.map(i => `
-                        <li>${i.nombre_producto} x${i.cantidad} — $${i.precio}</li>
+                        <li>${i.nombre_producto} x${i.cantidad} — ${formatearMoneda(i.precio)}</li>
                     `).join("")}
                 </ul>
             `;
@@ -1032,6 +1197,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function abrirContacto() {
   document.getElementById("contactoModal").classList.add("active");
+   cargarEmpresaPublica(); 
 }
 
 function cerrarContacto() {
@@ -1074,7 +1240,7 @@ function abrirMenuModal() {
         <p>${prod.descripcion}</p>
 
         <div class="producto-footer">
-          <span class="producto-precio">$${prod.precio}</span>
+          <span class="producto-precio">${formatearMoneda(prod.precio)}</span>
 
           <div class="cantidad-control">
             <input type="number" min="1" value="1" id="modal-qty-${prod.id}">
@@ -1112,11 +1278,11 @@ async function cargarEmpresaPublica() {
     }
 
     // 📍 Dirección
-    const dir = document.getElementById("empresaDireccion");
+    const dir = document.getElementById("empresaDireccion2");
     if (dir) dir.textContent = e.direccion || "";
 
     // 📞 Teléfono
-    const tel = document.getElementById("empresaTelefono");
+    const tel = document.getElementById("empresaTelefono2");
     if (tel) tel.textContent = e.telefono || "";
 
     // ✉️ Email
@@ -1189,6 +1355,7 @@ async function cargarEmpresaFooter() {
     // Info contacto
     document.getElementById("empresaDireccion").textContent = `📍 ${e.direccion || ""}`;
     document.getElementById("empresaTelefono").textContent = `📞 ${e.telefono || ""}`;
+        document.getElementById("empresaTelefono2").textContent = `📞 ${e.telefono || ""}`;
     document.getElementById("empresaHorario").textContent = `🕒 ${e.horario || ""}`;
 
     // Redes
@@ -1285,5 +1452,24 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const slides = document.querySelectorAll("#carouselRestaurante .carousel-item");
 
+    slides.forEach(slide => {
+        const img = slide.querySelector(".slide-img");
+        if (!img) return;
 
+        // Crear fondo desenfocado dinámico
+        const bgDiv = document.createElement("div");
+        bgDiv.style.position = "absolute";
+        bgDiv.style.inset = "0";
+        bgDiv.style.backgroundImage = `url('${img.src}')`;
+        bgDiv.style.backgroundSize = "cover";
+        bgDiv.style.backgroundPosition = "center";
+        bgDiv.style.filter = "blur(30px) brightness(0.5)";
+        bgDiv.style.transform = "scale(1.1)";
+        bgDiv.style.zIndex = "1";
+
+        slide.prepend(bgDiv);
+    });
+});
