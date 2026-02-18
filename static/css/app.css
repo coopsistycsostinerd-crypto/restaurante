@@ -94,7 +94,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 1000;
+    z-index: 4000;
     box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
@@ -914,7 +914,7 @@ main {
 .producto-info h3 {
   margin: 0 0 10px 0;
   color: #1b2f27;
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -940,7 +940,7 @@ main {
 .producto-precio {
   font-weight: 700;
   color: #b48a4e;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.5px;
 }
 
@@ -950,11 +950,11 @@ main {
 .cantidad-control {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .cantidad-control input[type="number"] {
-  width: 50px;
+  width: 55px;
   padding: 6px 10px;
   border: 1px solid #b48a4e;
   border-radius: 10px;
@@ -979,7 +979,7 @@ main {
   padding: 8px 18px;
   border-radius: 25px;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(180,138,78,0.3);

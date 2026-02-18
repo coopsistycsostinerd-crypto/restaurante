@@ -54,3 +54,17 @@ class Reserva(models.Model):
     )
 
     creado = models.DateTimeField(auto_now_add=True)
+    orden = models.OneToOneField(
+    'ordenes.Orden',
+    null=True,
+    blank=True,
+    on_delete=models.SET_NULL
+    )
+
+    monto_deposito = models.DecimalField(
+    max_digits=10,
+    decimal_places=2,
+    default=1000  # monto fijo por ahora
+    )
+
+

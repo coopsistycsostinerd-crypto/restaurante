@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="{% static 'css/experiencias.css' %}">
  <link rel="stylesheet" href="{% static 'css/pos.css' %}">
 
+<!-- 1️⃣ jQuery primero -->
+
+
 
                   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
                   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -511,6 +514,112 @@
           stroke-linejoin="round"/>
   </svg>
 </button>
+
+
+<div class="pos-modal" id="modalPosConfirmacionVenta">
+
+    <div class="modal-content">
+
+        <!-- ================= HEADER ================= -->
+        <div class="modal-header">
+            <h2>Confirmar Venta</h2>
+            <button class="btn-close" onclick="cerrarModal()">✖</button>
+        </div>
+
+        <!-- ================= BODY ================= -->
+        <div class="modal-body">
+
+            <!-- ===== FILA SUPERIOR: CLIENTE + TOTAL ===== -->
+            <div class="modal-grid-top">
+
+                <!-- CLIENTE -->
+                <div class="checkout-section">
+                    <h3>Cliente</h3>
+                       <input type="text"
+                            id="buscarCliente"
+                            placeholder="Buscar por nombre o teléfono">
+
+                      <div id="listaClientes" class="lista-clientes"></div>
+
+                      <input type="hidden" id="clienteSeleccionadoId">
+
+                    <div class="nuevo-cliente">
+                        <input type="text" id="nuevoNombre" placeholder="Nombre del cliente">
+                        <input type="text" id="nuevoTelefono" placeholder="Teléfono">
+                    </div>
+                </div>
+
+                <!-- TOTAL -->
+                <div class="checkout-section total-box">
+                    <h3>Total a Cobrar</h3>
+
+                    <div class="total-cobro-box">
+                        <span>RD$</span>
+                        <input type="number"
+                               id="totalCobroInput"
+                               step="0.01"
+                               readonly>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== METODO DE PAGO ===== -->
+            <div class="checkout-section metodo-pago-section">
+                <h3>Método de Pago</h3>
+
+                <select id="metodoPago" onchange="mostrarCamposPago()">
+                    <option value="efectivo">Efectivo</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                </select>
+
+                <!-- EFECTIVO -->
+                <div id="pagoEfectivo" class="pago-opcion">
+                    <div class="input-group-inline">
+                        <input type="number"
+                               id="montoRecibido"
+                               placeholder="Monto recibido"
+                               oninput="calcularCambio()">
+                    </div>
+                    <p class="cambio-texto">
+                        Cambio: RD$ <span id="cambio">0.00</span>
+                    </p>
+                </div>
+
+                <!-- TARJETA -->
+                <div id="pagoTarjeta" class="pago-opcion" style="display:none;">
+                    <div class="grid-tarjeta">
+                        <input type="text" placeholder="Número de tarjeta">
+                        <input type="text" placeholder="MM/AA">
+                        <input type="text" placeholder="CVV">
+                    </div>
+                    <small class="demo-warning">
+                        ⚠️ Esto es una demostración. No almacenamos datos reales.
+                    </small>
+                </div>
+
+                <!-- TRANSFERENCIA -->
+                <div id="pagoTransferencia" class="pago-opcion" style="display:none;">
+                    <input type="text"
+                           id="referenciaTransferencia"
+                           placeholder="Número de referencia">
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <div class="modal-footer">
+            <button id="btnConfirmarCobro" class="btn-confirm" onclick="confirmarCobro()">
+                Confirmar Cobro
+            </button>
+        </div>
+
+    </div>
+
+</div>
 
 
 

@@ -36,5 +36,9 @@ class OrdenItem(models.Model):
     cantidad = models.PositiveIntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
 
+    @property
+    def total_linea(self):
+        return self.cantidad * self.precio
+
     def __str__(self):
         return f"{self.producto.nombre} x {self.cantidad}"

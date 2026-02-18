@@ -13,6 +13,18 @@ from .serializers import EmpresaSerializer
 
 from django.shortcuts import render
 from productos.models import Categoria, Producto
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
+from django.db.models import Sum, Count
+from django.utils.timezone import now
+from datetime import datetime
+from ordenes.models import Orden
+from reserva.models import Reserva
+from ordenes.models import OrdenItem
+from django.db.models import F, DecimalField, ExpressionWrapper
+
+
 
 def home(request):
     categorias = Categoria.objects.all()
@@ -60,14 +72,7 @@ class EmpresaConfigAPIView(APIView):
 
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
-from django.db.models import Sum, Count
-from django.utils.timezone import now
-from datetime import datetime
-from ordenes.models import Orden
-from reserva.models import Reserva
+
 
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
@@ -120,6 +125,33 @@ def admin_dashboard(request):
         .annotate(total=Count("id"))
         .order_by("fecha")
     )
+    # 🔥 Productos más vendidos (por cantidad)
+    ordenes_entregadas = ordenes.filter(estado="entregado")
+
+    productos_mas_vendidos = (
+        OrdenItem.objects
+        .filter(orden__in=ordenes_entregadas)
+        .values("producto__id", "producto__nombre")
+        .annotate(total_vendido=Sum("cantidad"))
+        .order_by("-total_vendido")[:5]
+    )
+
+    productos_mas_ingresos = (
+        OrdenItem.objects
+        .filter(orden__in=ordenes_entregadas)
+        
+        .annotate(
+            ingreso=ExpressionWrapper(
+                F("cantidad") * F("precio"),
+                output_field=DecimalField()
+            )
+        )
+        .values("producto__id", "producto__nombre")
+        .annotate(total_ingresos=Sum("ingreso"))
+        .order_by("-total_ingresos")[:5]
+    )
+
+
 
     return Response({
         "kpis": {
@@ -131,6 +163,9 @@ def admin_dashboard(request):
         "reservas_por_estado": list(reservas_por_estado),
         "ventas_por_dia": list(ventas_por_dia),
         "reservas_por_dia": list(reservas_por_dia),
+        "productos_mas_vendidos": list(productos_mas_vendidos),
+        "productos_mas_ingresos": list(productos_mas_ingresos),
+
     })
 
 

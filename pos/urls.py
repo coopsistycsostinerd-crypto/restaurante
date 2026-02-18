@@ -10,9 +10,10 @@ urlpatterns = [
     path("pos/productos/", views.api_productos_pos, name="api_productos_pos"),
 
     # 💳 API Crear Venta desde POS
-    path("api/pos/crear-venta/", views.api_crear_venta, name="api_crear_venta"),
-
+    path("pos/crear-venta/", views.api_crear_venta2, name="api_crear_venta"),
+   
     # 🧾 Ticket
-    path("ticket/<int:venta_id>/", views.ticket_venta, name="ticket_venta"),
+
+   path("pos/crear-venta-pos/", views.CrearVentaPOSAPIView.as_view(), name="crear_venta_pos"),
 
 ]

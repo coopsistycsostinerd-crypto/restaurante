@@ -214,7 +214,7 @@ def ticket_venta(request, venta_id):
 
     # Traer empresa activa
     empresa = Empresa.objects.filter(activo=True).first()
-
+    print("la venta",venta)
     html = render_to_string("ticket.html", {
         "venta": venta,
         "empresa": empresa  # 👈 la enviamos al template

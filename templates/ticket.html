@@ -52,34 +52,62 @@
 {% if empresa.direccion %}
 <p>{{ empresa.direccion }}</p>
 {% endif %}
-    <div class="linea"></div>
+<div class="linea"></div>
 
     <p><strong>Venta #{{ venta.id }}</strong></p>
+     <p><strong>{{ venta.orden }}</strong></p>
     <p>{{ venta.fecha|date:"d/m/Y H:i" }}</p>
 
-    <div class="linea"></div>
+  <div class="linea"></div>
 
-    <table>
+<table>
+    <thead>
         <tr>
-            <td>Total venta</td>
-            <td style="text-align:right;">${{ venta.total }}</td>
+            <th style="text-align:left;">Cant</th>
+            <th style="text-align:left;">Desc</th>
+            <th style="text-align:right;">Imp</th>
         </tr>
+    </thead>
+    <tbody>
+        {% for item in venta.orden.items.all %}
         <tr>
-            <td>Método</td>
-            <td style="text-align:right;">{{ venta.pagos.first.metodo|title }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>
+                {{ item.producto.nombre }}<br>
+                <small>${{ item.precio }} c/u</small>
+            </td>
+            <td style="text-align:right;">
+                ${{ item.total_linea }}
+            </td>
         </tr>
-    </table>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <div class="linea"></div>
-
-    <p class="total">TOTAL: ${{ venta.total }}</p>
-
-    <div class="linea"></div>
-
-{% if empresa.pie_factura %}
 <div class="linea"></div>
-<p>{{ empresa.pie_factura }}</p>
-{% endif %}
+
+<table>
+    <tr>
+        <td>Subtotal</td>
+        <td style="text-align:right;">${{ venta.subtotal }}</td>
+    </tr>
+    <tr>
+        <td>Impuestos</td>
+        <td style="text-align:right;">${{ venta.impuestos }}</td>
+    </tr>
+</table>
+
+<div class="linea"></div>
+
+<p class="total">TOTAL: ${{ venta.total }}</p>
+
+<div class="linea"></div>
+
+<p><strong>Método(s) de pago:</strong></p>
+{% for pago in venta.pagos.all %}
+<p>{{ pago.get_metodo_display }} - ${{ pago.monto }}</p>
+{% endfor %}
+
 
 
     <button onclick="window.print()">🖨️ Imprimir</button>

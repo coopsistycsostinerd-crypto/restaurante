@@ -3,14 +3,21 @@ from django.db import models
 
 # Create your models here.
 class Venta(models.Model):
-    orden = models.OneToOneField("ordenes.Orden", on_delete=models.PROTECT, related_name="venta")
+    orden = models.OneToOneField("ordenes.Orden", on_delete=models.PROTECT, related_name="venta",  null=True,
+        blank=True)
     cajero = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     fecha = models.DateTimeField(auto_now_add=True)
 
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     impuestos = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-
+    reserva = models.OneToOneField(
+        "reserva.Reserva",
+        on_delete=models.PROTECT,
+        related_name="venta",
+        null=True,
+        blank=True
+    )
     completada = models.BooleanField(default=False)  # Se marca cuando el pago cubre el total
 
     def __str__(self):

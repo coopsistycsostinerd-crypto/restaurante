@@ -1,106 +1,693 @@
-.pos-wrapper {
+/* ================================
+   CARRITO FIJO A LA DERECHA
+================================ */
+
+/* ================================
+   CARRITO LATERAL DERECHO
+================================ */
+
+.ticket-col {
+    position: fixed;
+    top: 110px; /* 🔥 igual que el sidebar */
+    right: 0;
+    width: 400px;
+    height: calc(100vh - 110px); /* 🔥 mismo cálculo que sidebar */
+    background: #ffffff;
+    color: rgb(0, 0, 0);
     display: flex;
-    height: 80vh;
+    flex-direction: column;
+    border-left: 1px solid #333;
+    z-index: 1030; /* 🔥 debajo del sidebar (1040) */
+}
+.ticket-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  background: #ffffff;
 }
 
-.pos-productos {
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
+.carrito-item:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
 }
 
-.pos-producto-btn {
-    background: #0F3D2E;
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    text-align: center;
+/* ================================
+   HEADER (FIJO ARRIBA)
+================================ */
+
+.ticket-header {
+  padding: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: #ffffff;
+  flex-shrink: 0; /* 🔥 nunca se encoge */
 }
 
-.pos-ticket {
-    flex: 1;
-    background: #1e1e1e;
-    color: white;
-    padding: 15px;
+/* ================================
+   SCROLL INTERNO DEL CARRITO
+================================ */
+
+.ticket-body {
+  flex: 1;                /* ocupa el espacio restante */
+  overflow-y: auto;       /* 🔥 SCROLL SOLO AQUÍ */
+  padding: 15px;
 }
 
-.pos-total {
-    font-size: 20px;
+/* Items */
+
+.carrito-item {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px 30px;
+  gap: 8px;
+  align-items: center;
+
+  background: #f8f9fb;          /* 🔥 fondo tipo tarjeta */
+  padding: 8px 10px;
+  border-radius: 8px;          /* 🔥 bordes redondeados */
+  margin-bottom: 12px;          /* 🔥 separación entre items */
+  font-size: 12px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04); /* 🔥 efecto flotante */
+  border: 1px solid #e6e6e6;     /* 🔥 borde suave */
+}
+
+
+
+.summary-row,
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.summary-total {
     font-weight: bold;
-    margin-top: 15px;
+    font-size: 15px;
+    margin: 10px 0;
 }
-
-.btn-cobrar {
+.summary-total-btn {
     width: 100%;
-    padding: 15px;
-    background: green;
-    color: white;
+    background: #16a34a;
     border: none;
-    margin-top: 15px;
-    font-weight: bold;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.pos-producto-btn {
-    background: #0F3D2E;
-    color: white;
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    text-align: center;
-    transition: 0.2s;
+.summary-total-btn:hover {
+    background: #15803d;
+    transform: scale(1.02);
 }
+
+.summary-total-btn .label {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.summary-total-btn .amount {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+
+.carrito-item strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tax-toggle {
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tax-toggle input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+
+.carrito-item span {
+  color: rgb(0, 0, 0);
+}
+
+/* ================================
+   FOOTER FIJO CON TOTAL + COBRAR
+================================ */
+
+.ticket-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: #ffffff;
+  flex-shrink: 0; /* 🔥 nunca se mueve */
+}
+
+/* Total */
+
+.ticket-total {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Botón cobrar */
+
+.btn-charge {
+  width: 100%;
+  padding: 15px;
+  background: #0F3D2E;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-charge:hover {
+  background: #145C44;
+}
+
+/* ================================
+   SCROLL ESTÉTICO
+================================ */
+
+.ticket-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ticket-body::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.ticket-body::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+.products-col {
+    position: fixed;
+    top: 110px;
+    left: 0;
+    right: 400px;
+    height: calc(100vh - 110px);
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: left 0.3s ease;
+}
+
+body.sidebar-open .products-col {
+    left: 250px; /* 🔥 se mueve cuando sidebar está visible */
+}
+
+
+
+
+.products-col .col-header {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+}
+
+.products-col input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+
+.products-body {
+    flex: 1;
+    overflow-y: auto;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+
+    align-content: start;
+}
+
+
+
+
+.pos-producto-btn {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
 
 .pos-producto-btn:hover {
-    transform: scale(1.05);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.pos-producto-btn strong {
+    display: block;
+    color: #000;
+    margin: 8px 0 5px;
+}
+
+.pos-producto-btn p {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
 }
 
 .producto-img {
     width: 100%;
-    height: 110px;
+    height: 120px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 8px;
 }
 
-
-.carrito-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #1a1a1a;
-    padding: 8px;
-    margin-bottom: 6px;
+.producto-sin-img {
+    height: 120px;
+    background: #e5e7eb;
     border-radius: 8px;
-    color: white;
-}
-
-.cantidad-control {
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
 }
 
-.cantidad-control input {
-    width: 50px;
-    text-align: center;
+
+
+
+@media (max-width: 992px) {
+
+    .products-col {
+        position: relative;
+        top: 0;
+        left: 0 !important;
+        right: 0;
+        height: auto;
+        width: 100%;
+    }
+
+    .ticket-col {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: 400px; /* altura fija tablet */
+    }
+
 }
 
-.cantidad-control button {
-    background: #0F3D2E;
+@media (max-width: 768px) {
+
+    .ticket-col {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        z-index: 2000;
+        transition: right 0.3s ease;
+    }
+
+    .ticket-col.open {
+        right: 0;
+    }
+
+}
+@media (max-width: 768px) {
+
+    .btn-open-cart {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #0F3D2E;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 50%;
+        font-size: 18px;
+        z-index: 2100;
+        cursor: pointer;
+    }
+
+}
+
+
+
+
+
+
+
+/* modal */
+
+/* ================= OVERLAY ================= */
+
+
+/* ================= CAJA PRINCIPAL ================= */
+
+#modalPosConfirmacionVenta .modal-content {
+    width: 1050px;
+    max-width: 94vw;
+    max-height: 92vh;
+    background: #f7f4ec;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+}
+#modalPosConfirmacionVenta {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    display: none; /* 👈 IMPORTANTE */
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+#modalPosConfirmacionVenta.active{
+    display: flex;
+}
+
+/* ================= HEADER ================= */
+
+#modalPosConfirmacionVenta .modal-header {
+    background: #6b7a40;
     color: white;
-    border: none;
-    padding: 4px 8px;
-    cursor: pointer;
-    border-radius: 4px;
+    padding: 22px 40px;
+    font-size: 20px;
+    letter-spacing: 1px;
 }
 
-.btn-eliminar {
-    background: red;
+/* ================= BODY ================= */
+
+#modalPosConfirmacionVenta .modal-body {
+    padding: 45px 60px;
+    background: #f7f4ec;
+     flex: 1;
+    overflow: auto; /* 👈 clave */
+}
+
+/* ================= GRID SUPERIOR ================= */
+
+.modal-grid-top {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+/* ================= TITULOS ================= */
+
+.checkout-section h3 {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8a8a6d;
+    margin-bottom: 16px;
+}
+
+/* ================= INPUTS ================= */
+
+#modalPosConfirmacionVenta input,
+#modalPosConfirmacionVenta select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #e4e1d6;
+    font-size: 14px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+#modalPosConfirmacionVenta input:focus,
+#modalPosConfirmacionVenta select:focus {
+    outline: none;
+    border-color: #6b7a40;
+    box-shadow: 0 0 0 3px rgba(107,122,64,0.15);
+}
+
+/* ================= TOTAL PROTAGONISTA ================= */
+
+.total-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.total-cobro-box {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 40px;
+    font-weight: 500;
+    color: #2f3a18;
+}
+
+#totalCobroInput {
+    width: 200px !important;
+    font-size: 40px;
+    font-weight: 500;
     border: none;
+    background: transparent;
+    border-bottom: 2px solid #6b7a40;
+    border-radius: 0;
+    text-align: right;
+}
+
+/* ================= METODO PAGO ================= */
+
+.metodo-pago-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.metodo-pago-section h3 {
+    grid-column: 1 / -1;
+}
+
+/* selector elegante */
+
+#metodoPago {
+    width: 140px !important;
+}
+
+/* ================= EFECTIVO ================= */
+
+#pagoEfectivo {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+#montoRecibido {
+    width: 200px !important;
+}
+
+.cambio-texto {
+    font-size: 18px;
+    font-weight: 500;
+    color: #6b7a40;
+}
+
+/* ================= FOOTER ================= */
+
+.modal-footer {
+    padding: 30px 60px;
+    display: flex;
+    justify-content: flex-end;
+     flex-shrink: 0;
+}
+
+/* Botón elegante tipo restaurante */
+
+.btn-confirm {
+    background: #6b7a40;
     color: white;
-    padding: 4px 6px;
+    padding: 14px 55px;
+    border-radius: 50px;
+    border: none;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     cursor: pointer;
-    border-radius: 4px;
+    transition: all 0.25s ease;
+}
+
+.btn-confirm:hover {
+    background: #55642f;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+}
+
+
+/* ============================= */
+/* ========== TABLET =========== */
+/* ============================= */
+
+@media (max-width: 1024px) {
+
+    #modalPosConfirmacionVenta .modal-content {
+        width: 90vw;
+        max-height: 95vh;
+    }
+
+    #modalPosConfirmacionVenta .modal-body {
+        padding: 35px 40px;
+    }
+
+    .modal-grid-top {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .metodo-pago-section {
+        grid-template-columns: 1fr;
+    }
+
+    #pagoEfectivo {
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    #totalCobroInput {
+        width: 160px !important;
+        font-size: 34px;
+    }
+
+    .total-cobro-box {
+        font-size: 34px;
+    }
+
+    .modal-footer {
+        padding: 25px 40px;
+    }
+}
+
+
+/* ============================= */
+/* =========== MOBILE ========== */
+/* ============================= */
+
+@media (max-width: 640px) {
+
+    #modalPosConfirmacionVenta .modal-content {
+        width: 95vw;
+        height: 95vh;
+        border-radius: 18px;
+    }
+
+    #modalPosConfirmacionVenta .modal-header {
+        padding: 18px 25px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    #modalPosConfirmacionVenta .modal-body {
+        padding: 25px 25px;
+    }
+
+    .modal-grid-top {
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .checkout-section h3 {
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+
+    #modalPosConfirmacionVenta input,
+    #modalPosConfirmacionVenta select {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .total-cobro-box {
+        font-size: 28px;
+        flex-wrap: wrap;
+    }
+
+    #totalCobroInput {
+        width: 140px !important;
+        font-size: 28px;
+    }
+
+    #pagoEfectivo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px 25px;
+        justify-content: center;
+    }
+
+    .btn-confirm {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
+
+
+
+.adminpos-categorias-wrapper {
+    margin-top: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 5px;
+}
+
+.adminpos-categorias-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.adminpos-categorias {
+    display: inline-flex;
+    gap: 10px;
+}
+
+.adminpos-categoria-btn {
+    background: #1f2d2a;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: 0.2s ease;
+}
+
+.adminpos-categoria-btn:hover {
+    background: #145C44;
+}
+
+.adminpos-categoria-btn.active {
+    background: #D6B77C;
+    color: black;
 }

@@ -468,6 +468,7 @@ function cargarSeccion(seccion) {
      if (seccion === "pos") {
         titulo.textContent = "Punto de Venta";
     cargarPuntodeVenta();
+  
 
 
     }
@@ -624,73 +625,168 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+let pedidosGlobal = [];
+
 
 
 async function cargarPedidosAdmin() {
+
     const token = localStorage.getItem("token");
     const contenedor = document.getElementById("adminBody");
-    
 
     contenedor.innerHTML = "Cargando pedidos...";
 
-    const res = await fetch("/api/panel-admin/ordenes/", {
-        headers: { "Authorization": `Token ${token}` }
-    });
+    try {
 
-    const pedidos = await res.json();
+        const res = await fetch("/api/panel-admin/ordenes/", {
+            headers: {
+                "Authorization": `Token ${token}`
+            }
+        });
 
-    if (!pedidos.length) {
-        contenedor.innerHTML = "<p>No hay pedidos aún</p>";
-        return;
-    }
+        const pedidos = await res.json();
 
-    contenedor.innerHTML = ""; // Limpiamos el contenedor
+        if (!pedidos.length) {
+            contenedor.innerHTML = "<p>No hay pedidos aún</p>";
+            return;
+        }
 
-    // Creamos las tarjetas de pedido
-    pedidos.forEach(p => {
-        const card = document.createElement("div");
-        card.className = "admin-card"; // Asegúrate de que las tarjetas tienen la clase admin-card
-        card.setAttribute("data-estado", p.estado);
+        // 🔹 ESTRUCTURA PRINCIPAL (NAV + GRID)
+        contenedor.innerHTML = `
+            <div class="pedidosadmin-topnav">
+                <div class="pedidosadmin-estados">
+                    <button class="pedidosadmin-btn activo" data-estado="todos">Todos</button>
+                    <button class="pedidosadmin-btn" data-estado="pendiente">Pendiente</button>
+                    <button class="pedidosadmin-btn" data-estado="preparando">Preparando</button>
+                    <button class="pedidosadmin-btn" data-estado="entregado">Entregado</button>
+                </div>
+            </div>
 
-        card.innerHTML = `
-            <h3>Pedido #${p.id}</h3>
-            <p><strong>Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
-            <p><strong>Total:</strong> $${p.total}</p>
-
-            <p><strong>Estado:</strong>
-                <select onchange="cambiarEstado(${p.id}, this.value)">
-                    <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}>Pendiente</option>
-                    <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}>Preparando</option>
-                    <option value="entregado" ${p.estado === "entregado" ? "selected" : ""}>Entregado</option>
-                </select>
-            </p>
-
-            <ul>
-                ${p.items.map(i => `<li>${i.nombre_producto} x${i.cantidad}</li>`).join("")}
-            </ul>
+            <div id="gridPedidos" class="pedidos-grid"></div>
         `;
 
-        contenedor.appendChild(card); // Añadimos la tarjeta al contenedor
-    });
+        const grid = document.getElementById("gridPedidos");
+
+        // 🔹 CREAR TARJETAS
+        pedidos.forEach(p => {
+
+            const card = document.createElement("div");
+            card.className = "admin-card";
+            card.dataset.estado = p.estado;
+
+            card.innerHTML = `
+                <h3>Pedido #${p.id}</h3>
+                <p><strong>Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
+                <p><strong>Total:</strong> $${p.total}</p>
+                <p><strong>Estado:</strong> 
+                    ${
+                        p.estado === "entregado"
+                        ? `<span class="estado-entregado">Entregado</span>`
+                        : `
+                            <select onchange="cambiarEstado(${p.id}, this.value)">
+                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}>Pendiente</option>
+                                <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}>Preparando</option>
+                            </select>
+                        `
+                    }
+                </p>
+                <ul>
+                    ${p.items.map(i => `<li>${i.nombre_producto} x${i.cantidad}</li>`).join("")}
+                </ul>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        // 🔹 ACTIVAR FILTROS
+        const botones = document.querySelectorAll(".pedidosadmin-btn");
+
+        botones.forEach(btn => {
+            btn.addEventListener("click", function () {
+
+                // Quitar activo
+                botones.forEach(b => b.classList.remove("activo"));
+                this.classList.add("activo");
+
+                const estado = this.dataset.estado;
+                filtrarPedidos(estado);
+            });
+        });
+
+    } catch (error) {
+        contenedor.innerHTML = "<p>Error al cargar pedidos</p>";
+        console.error(error);
+    }
 }
 
 
 
 
 
+function filtrarPedidos(estado) {
 
-async function cambiarEstado(id, estado) {
+    const cards = document.querySelectorAll(".admin-card");
+
+    cards.forEach(card => {
+
+        if (estado === "todos") {
+            card.style.display = "block";
+            return;
+        }
+
+        if (card.dataset.estado === estado) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+}
+
+
+
+function filtrarEstado(estado) {
+    if (estado === "todos") {
+        renderPedidos(pedidosGlobal);
+        return;
+    }
+
+    const filtrados = pedidosGlobal.filter(p => p.estado === estado);
+    renderPedidos(filtrados);
+}
+
+function filtrarPorFecha() {
+    const desde = document.getElementById("fechaDesde").value;
+    const hasta = document.getElementById("fechaHasta").value;
+
+    if (!desde || !hasta) return;
+
+    const filtrados = pedidosGlobal.filter(p => {
+        const fecha = new Date(p.creado).toISOString().split("T")[0];
+        return fecha >= desde && fecha <= hasta;
+    });
+
+    renderPedidos(filtrados);
+}
+
+
+
+async function cambiarEstado(id, nuevoEstado) {
+
     const token = localStorage.getItem("token");
 
-    await fetch(`/api/panel-admin/ordenes/${id}/estado/`, {
+    await fetch(`/api/panel-admin/ordenes/${id}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Token ${token}`
         },
-        body: JSON.stringify({ estado })
+        body: JSON.stringify({
+            estado: nuevoEstado
+        })
     });
 
+    // Recargamos pedidos
     cargarPedidosAdmin();
 }
 
@@ -883,6 +979,18 @@ function renderDashboard(data) {
         </div>
       </div>
 
+    <div class="top-row">
+    <div class="top-card">
+        <h3>🔥 Productos Más Vendidos</h3>
+        <div id="topVendidos"></div>
+    </div>
+
+    <div class="top-card">
+        <h3>💰 Productos con Más Ingresos</h3>
+        <div id="topIngresos"></div>
+    </div>
+    </div>
+
     </section>
   `;
 
@@ -933,6 +1041,8 @@ function renderDashboard(data) {
       }
     }
   );
+renderTopVendidos(data.productos_mas_vendidos);
+renderTopIngresos(data.productos_mas_ingresos);
 
   document.getElementById("btnFiltrar").onclick = () => {
     cargarDashboardAdmin(
@@ -940,6 +1050,65 @@ function renderDashboard(data) {
       dashHasta.value
     );
   };
+}
+function renderTopVendidos(productos) {
+  const contenedor = document.getElementById("topVendidos");
+  contenedor.innerHTML = "";
+
+  if (!productos || productos.length === 0) {
+    contenedor.innerHTML = "<p>No hay datos</p>";
+    return;
+  }
+
+  const max = productos[0].total_vendido;
+
+  productos.forEach((p, index) => {
+    const porcentaje = (p.total_vendido / max) * 100;
+
+    contenedor.innerHTML += `
+      <div class="top-item">
+        <div class="top-info">
+          <span>#${index + 1} ${p.producto__nombre}</span>
+          <strong>${p.total_vendido} vendidos</strong>
+        </div>
+        <div class="top-bar">
+          <div class="top-bar-fill" style="width:${porcentaje}%"></div>
+        </div>
+      </div>
+    `;
+  });
+}
+function renderTopIngresos(productos) {
+  const contenedor = document.getElementById("topIngresos");
+  contenedor.innerHTML = "";
+
+  if (!productos || productos.length === 0) {
+    contenedor.innerHTML = "<p>No hay datos</p>";
+    return;
+  }
+
+  const max = Number(productos[0].total_ingresos);
+
+  productos.forEach((p, index) => {
+    const ingresos = Number(p.total_ingresos);
+    const porcentaje = (ingresos / max) * 100;
+
+    const ingresoFormateado = ingresos.toLocaleString("es-DO", {
+      minimumFractionDigits: 2
+    });
+
+    contenedor.innerHTML += `
+      <div class="top-item">
+        <div class="top-info">
+          <span>#${index + 1} ${p.producto__nombre}</span>
+          <strong>RD$ ${ingresoFormateado}</strong>
+        </div>
+        <div class="top-bar">
+          <div class="top-bar-fill ingresos" style="width:${porcentaje}%"></div>
+        </div>
+      </div>
+    `;
+  });
 }
 
 async function cargarPuntodeVenta() {
@@ -961,32 +1130,129 @@ async function cargarPuntodeVenta() {
     }
 
     const productos = await res.json();
+window.productosAdminPOS = productos;
+
+
+
+// =============================
+// EXTRAER CATEGORÍAS ÚNICAS
+// =============================
+      // ===============================
+// EXTRAER CATEGORÍAS ÚNICAS
+// ===============================
+const categoriasUnicas = [...new Set(
+    productos.map(p => p.categoria)
+)];
+
+
+
 
     // 🧠 Layout base del POS
-    contenedor.innerHTML = `
-        <div class="pos-wrapper">
-            <div class="pos-productos" id="posProductos"></div>
+contenedor.innerHTML = `
+<div class="pos">
 
-            <div class="pos-ticket">
-                <h3>Venta Actual</h3>
-                <div id="posCarrito"></div>
+    <!-- ================= COLUMNA PRODUCTOS ================= -->
+    <div class="pos-col products-col">
 
-                <div class="pos-total">
-                    TOTAL: RD$ <span id="posTotal">0.00</span>
-                </div>
+          <div class="col-header">
 
-                <button onclick="cobrarVenta()" class="btn-cobrar">
-                    💳 COBRAR
-                </button>
-            </div>
+    <input type="text"
+       placeholder="Buscar producto..."
+       oninput="filtrarProductos(this.value)">
+
+    <!-- 🔥 NUEVA BARRA DE CATEGORÍAS -->
+   <div class="adminpos-categorias-wrapper">
+    <div class="adminpos-categorias" id="adminposCategorias"></div>
+</div>
+
+
+</div>
+
+
+        <div class="col-body products-body" id="posProductos">
         </div>
-    `;
+
+    </div>
+
+    <!-- ================= COLUMNA TICKET ================= -->
+    <div class="pos-col ticket-col">
+
+        <div class="col-header ticket-header">
+            Ticket
+        </div>
+
+        <div class="col-body ticket-body" id="posCarrito">
+        </div>
+
+       <div class="col-footer ticket-footer">
+<div class="tax-toggle">
+    <label>
+       <input type="checkbox"
+       id="activarImpuesto"
+       checked
+       onchange="actualizarTotales()">
+
+        Aplicar ITBIS (18%)
+    </label>
+</div>
+
+    <div class="summary-row">
+        <span>SubTotal</span>
+        <span>RD$ <span id="posSubtotal">0.00</span></span>
+    </div>
+ 
+
+    <div class="summary-row">
+        <span>ITBIS (18%)</span>
+        <span>RD$ <span id="posTax">0.00</span></span>
+    </div>
+
+
+
+<button class="summary-total-btn  btn-charge" onclick="abrirModalCobro()">
+    <span class="label">COBRAR</span>
+    <span class="amount">RD$ <span id="posTotal">0.00</span></span>
+</button>
+
+</div>
+
+
+    </div>
+
+</div>
+`;
+
+
+const categoriasContainer = document.getElementById("adminposCategorias");
+
+// Botón TODOS
+const btnTodos = document.createElement("div");
+btnTodos.className = "adminpos-categoria-btn active";
+btnTodos.textContent = "Todos";
+btnTodos.onclick = () => filtrarAdminPOS("all", btnTodos);
+categoriasContainer.appendChild(btnTodos);
+
+// Botones por categoría
+categoriasUnicas.forEach(cat => {
+    const btn = document.createElement("div");
+    btn.className = "adminpos-categoria-btn";
+    btn.textContent = cat;
+
+    btn.onclick = () => filtrarAdminPOS(cat, btn);
+
+    categoriasContainer.appendChild(btn);
+});
+
+
+
 
     const grid = document.getElementById("posProductos");
 
     productos.forEach(p => {
         const btn = document.createElement("div");
         btn.className = "pos-producto-btn";
+        btn.setAttribute("data-categoria", p.categoria?.id || "");
+
 
         btn.innerHTML = `
     ${p.imagen 
@@ -995,7 +1261,8 @@ async function cargarPuntodeVenta() {
     }
 
     <strong>${p.nombre}</strong>
-    <p>RD$ ${p.precio}</p>
+   <p>RD$ ${formatoRD.format(p.precio)}</p>
+
 `;
 
 
@@ -1003,6 +1270,349 @@ async function cargarPuntodeVenta() {
 
         grid.appendChild(btn);
     });
+    filtrarAdminPOS();
+
+}
+
+function filtrarAdminPOS(categoriaNombre, botonActivo) {
+
+    document.querySelectorAll(".adminpos-categoria-btn")
+        .forEach(b => b.classList.remove("active"));
+
+    botonActivo.classList.add("active");
+
+    const grid = document.getElementById("posProductos");
+    grid.innerHTML = "";
+
+    let filtrados;
+
+    if (categoriaNombre === "all") {
+        filtrados = window.productosAdminPOS;
+    } else {
+        filtrados = window.productosAdminPOS.filter(
+            p => p.categoria === categoriaNombre
+        );
+    }
+
+    filtrados.forEach(p => {
+        const btn = document.createElement("div");
+        btn.className = "pos-producto-btn";
+
+        btn.innerHTML = `
+            ${p.imagen 
+                ? `<img src="${p.imagen}" class="producto-img">`
+                : `<div class="producto-sin-img">Sin imagen</div>`
+            }
+            <strong>${p.nombre}</strong>
+            <p>RD$ ${formatoRD.format(parseFloat(p.precio))}</p>
+        `;
+
+        btn.onclick = () => agregarProducto(p);
+        grid.appendChild(btn);
+    });
+}
+
+
+function abrirModalCobro() {
+
+    if (!carrito2.length) {
+        alert("No hay productos en la venta");
+        return;
+    }
+
+    let subtotal = 0;
+
+    carrito2.forEach(item => {
+        subtotal += item.precio * item.cantidad;
+    });
+
+    const aplicarImpuesto = document.getElementById("activarImpuesto")?.checked;
+    const impuesto = aplicarImpuesto ? subtotal * 0.18 : 0;
+    const total = subtotal + impuesto;
+
+    const inputTotal = document.getElementById("totalCobroInput");
+    inputTotal.value = total.toFixed(2);
+
+    document
+        .getElementById("modalPosConfirmacionVenta")
+        .classList.add("active");
+
+    cargarClientesconfirmacion();
+}
+
+let clientesGlobal = [];
+
+async function cargarClientesconfirmacion() {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("/api/panel-admin/clientes/", {
+        headers: { "Authorization": `Token ${token}` }
+    });
+
+    clientesGlobal = await res.json();
+}
+
+
+// 🔥 EVENTO BUSCADOR
+document.getElementById("buscarCliente").addEventListener("input", function () {
+
+    const filtro = this.value.toLowerCase();
+    const lista = document.getElementById("listaClientes");
+    lista.innerHTML = "";
+
+    if (!filtro) {
+        document.getElementById("clienteSeleccionadoId").value = "";
+        return;
+    }
+
+    const textoBusqueda = filtro.replace(/\s+/g, "").toLowerCase();
+
+    const filtrados = clientesGlobal.filter(cliente => {
+
+        if (!cliente) return false;
+
+        const nombre = String(cliente.nombre || "").toLowerCase();
+        const telefono = String(cliente.telefono || "").replace(/\s+/g, "");
+        const correo = String(cliente.correo || "").toLowerCase();
+        const cedula = String(cliente.cedula || "").replace(/\s+/g, "");
+
+        return (
+            nombre.includes(textoBusqueda) ||
+            telefono.includes(textoBusqueda) ||
+            correo.includes(textoBusqueda) ||
+            cedula.includes(textoBusqueda)
+        );
+    });
+
+    // 🔥 Si no encuentra nada
+    if (filtrados.length === 0) {
+        const div = document.createElement("div");
+        div.className = "cliente-item";
+        div.textContent = "No se encontraron clientes";
+        div.style.opacity = "0.6";
+        lista.appendChild(div);
+        return;
+    }
+
+    // 🔥 CREAR LISTA
+    filtrados.slice(0, 8).forEach(cliente => {
+
+        const div = document.createElement("div");
+        div.className = "cliente-item";
+        div.textContent = `${cliente.nombre} - ${cliente.telefono || ""}`;
+
+        div.onclick = () => {
+
+            // Mostrar en buscador
+            document.getElementById("buscarCliente").value =
+                `${cliente.nombre} - ${cliente.telefono || ""}`;
+
+            // Guardar ID
+            document.getElementById("clienteSeleccionadoId").value = cliente.id;
+
+            // Llenar inputs inferiores
+            document.getElementById("nuevoNombre").value = cliente.nombre || "";
+            document.getElementById("nuevoTelefono").value = cliente.telefono || "";
+
+            // Limpiar lista visual
+            lista.innerHTML = "";
+        };
+
+        lista.appendChild(div);
+    });
+
+});
+
+
+
+
+function actualizarTotales() {
+
+    let subtotal = 0;
+
+    carrito2.forEach(item => {
+        subtotal += item.precio * item.cantidad;
+    });
+
+    const aplicarImpuesto = document.getElementById("activarImpuesto").checked;
+
+    const impuesto = aplicarImpuesto ? subtotal * 0.18 : 0;
+    const total = subtotal + impuesto;
+
+    document.getElementById("posSubtotal").textContent = formatoRD.format(subtotal);
+    document.getElementById("posTax").textContent = formatoRD.format(impuesto);
+    document.getElementById("posTotal").textContent = formatoRD.format(total);
+
+}
+
+
+const formatoRD = new Intl.NumberFormat("es-DO", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
+
+
+function cerrarModal() {
+    document
+        .getElementById("modalPosConfirmacionVenta")
+        .classList.remove("active");
+}
+
+function mostrarCamposPago() {
+
+    const metodo = document.getElementById("metodoPago").value;
+
+    document.getElementById("pagoEfectivo").style.display = "none";
+    document.getElementById("pagoTarjeta").style.display = "none";
+    document.getElementById("pagoTransferencia").style.display = "none";
+
+    if (metodo === "efectivo")
+        document.getElementById("pagoEfectivo").style.display = "block";
+
+    if (metodo === "tarjeta")
+        document.getElementById("pagoTarjeta").style.display = "block";
+
+    if (metodo === "transferencia")
+        document.getElementById("pagoTransferencia").style.display = "block";
+}
+async function confirmarCobro() {
+
+    const btn = document.getElementById("btnConfirmarCobro");
+
+    // 🔒 Evita doble clic
+    if (btn.disabled) return;
+
+    btn.disabled = true;
+    btn.innerText = "Procesando...";
+
+    try {
+
+        const token = localStorage.getItem("token");
+        const metodo = document.getElementById("metodoPago").value;
+        const nombre = document.getElementById("nuevoNombre").value;
+        const telefono = document.getElementById("nuevoTelefono").value;
+
+        const productosEnviar = carrito2.map(p => ({
+            id: p.id,
+            cantidad: p.cantidad
+        }));
+
+        const totalFinal = parseFloat(document.getElementById("totalCobroInput").value) || 0;
+
+        const res = await fetch("/api/pos/crear-venta-pos/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${token}`
+            },
+            body: JSON.stringify({
+                productos: productosEnviar,
+                metodo_pago: metodo,
+                total: totalFinal,
+                cliente_nombre: nombre,
+                cliente_telefono: telefono
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+
+            cerrarModal();
+
+            // 🖨 Abrir ticket
+            const url = `/api/caja/ticket/${data.orden_id}/`;
+            window.open(url, "_blank");
+
+            // 🧹 Limpiar carrito
+            carrito2 = [];
+            renderCarrito2();
+              document.getElementById("nuevoNombre").value = "";
+    document.getElementById("nuevoTelefono").value = "";
+    document.getElementById("metodoPago").value = "";
+    document.getElementById("totalCobroInput").value = "";
+
+        } else {
+            alert("Error procesando la venta");
+            btn.disabled = false;
+            btn.innerText = "Confirmar";
+        }
+
+    } catch (error) {
+
+        alert("Error de conexión");
+        btn.disabled = false;
+        btn.innerText = "Confirmar";
+
+    }
+}
+
+
+function calcularCambio() {
+
+    const totalInput = document.getElementById("totalCobroInput");
+    const recibidoInput = document.getElementById("montoRecibido");
+    const cambioSpan = document.getElementById("cambio");
+
+    if (!totalInput || !recibidoInput || !cambioSpan) return;
+
+    // 🔹 Limpiar separadores de miles
+    const total = parseFloat(totalInput.value.replace(/,/g, "")) || 0;
+    const recibido = parseFloat(recibidoInput.value.replace(/,/g, "")) || 0;
+
+    const cambio = recibido - total;
+
+    if (cambio >= 0) {
+        cambioSpan.textContent = cambio.toLocaleString("es-DO", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        cambioSpan.style.color = "green";
+    } else {
+        cambioSpan.textContent = "0.00";
+        cambioSpan.style.color = "red";
+    }
+}
+
+
+
+function mostrarConfirmacionImpresion(ventaId) {
+
+    const overlay = document.createElement("div");
+    overlay.className = "print-confirm-overlay";
+
+    overlay.innerHTML = `
+        <div class="print-confirm-box">
+            <h3>Venta realizada con éxito</h3>
+            <p>¿Desea imprimir el ticket?</p>
+            <div class="buttons">
+                <button id="btnNoPrint">No</button>
+                <button id="btnPrint">Imprimir</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    document.getElementById("btnPrint").onclick = () => {
+       window.location.href = `/api/caja/ticket/${ventaId}/`;
+
+        overlay.remove();
+    };
+
+    document.getElementById("btnNoPrint").onclick = () => {
+        overlay.remove();
+    };
+}
+
+
+
+function cerrarModal() {
+   const modal = document.getElementById("modalPosConfirmacionVenta");
+    if (modal) {
+        modal.classList.remove("active");
+    }
+
 }
 
 function cargarProductospos() {
@@ -1013,16 +1623,18 @@ function cargarProductospos() {
             contenedor.innerHTML = "";
 
             data.forEach(p => {
-                contenedor.innerHTML += `
-                    <div class="producto-btn"
-                        onclick="agregarProducto(${p.id}, '${p.nombre}', ${p.precio})">
-                        <h4>${p.nombre}</h4>
-                        <p>$${p.precio}</p>
-                    </div>
-                `;
+             contenedor.innerHTML += `
+    <div class="producto-btn"
+        onclick="agregarProducto(${p.id}, '${p.nombre}', ${p.precio})">
+        <h4>${p.nombre}</h4>
+    <p>RD$ ${formatoRD.format(p.precio)}</p>
+    </div>
+`;
+
             });
         });
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarProductos();
@@ -1033,7 +1645,7 @@ async function cobrarVenta() {
 
     const token = localStorage.getItem("token");
 
-    if (!carrito.length) {
+    if (!carrito2.length) {
         alert("No hay productos en la venta");
         return;
     }
@@ -1045,7 +1657,7 @@ async function cobrarVenta() {
             "Authorization": `Token ${token}`
         },
         body: JSON.stringify({
-            productos: carrito
+            productos: carrito2
         })
     });
 
@@ -1053,8 +1665,8 @@ async function cobrarVenta() {
 
     if (data.success) {
         window.open(`/caja/ticket/${data.venta_id}/`);
-        carrito = [];
-        renderCarrito();
+        carrito2 = [];
+        renderCarrito2();
     }
 }
 
@@ -1067,9 +1679,9 @@ function agregarProducto(producto) {
     const existe = carrito2.find(p => p.id === producto.id);
 
     if (existe) {
-        existe.cantidad += 1;
+        existe.cantidad += 1; // 🔥 aquí suma 1
     } else {
-        carrito.push({
+        carrito2.push({
             ...producto,
             cantidad: 1
         });
@@ -1078,16 +1690,16 @@ function agregarProducto(producto) {
     renderCarrito2();
 }
 
+
 function renderCarrito2() {
 
     const contenedor = document.getElementById("posCarrito");
-    const totalSpan = document.getElementById("posTotal");
 
     contenedor.innerHTML = "";
 
     let total = 0;
 
-    carrito.forEach(p => {
+    carrito2.forEach(p => {
 
         const subtotal = p.precio * p.cantidad;
         total += subtotal;
@@ -1097,15 +1709,13 @@ function renderCarrito2() {
                 <span>${p.nombre}</span>
 
                 <div class="cantidad-control">
-          
                     <input type="number" 
                            value="${p.cantidad}" 
                            min="1"
                            onchange="editarCantidad(${p.id}, this.value)">
-
                </div>
 
-                <span>RD$ ${subtotal.toFixed(2)}</span>
+                <span>RD$ ${formatoRD.format(subtotal)}</span>
 
                 <button class="btn-eliminar"
                         onclick="eliminarProducto(${p.id})">
@@ -1115,8 +1725,10 @@ function renderCarrito2() {
         `;
     });
 
-    totalSpan.textContent = total.toFixed(2);
+    actualizarTotales();
 }
+
+
 
 function cambiarCantidad(id, cambio) {
 
@@ -1151,6 +1763,64 @@ function eliminarProducto(id) {
     renderCarrito2();
 }
 
+
+function filtrarProductos(texto) {
+
+    texto = texto.toLowerCase().trim();
+
+    const productos = document.querySelectorAll(".pos-producto-btn");
+
+    productos.forEach(producto => {
+
+        const nombre = producto.querySelector("strong")?.textContent.toLowerCase() || "";
+
+        producto.hidden = !nombre.includes(texto);
+
+    });
+}
+ 
+async function cargarCategoriasAdminPOS() {
+
+    try {
+        const res = await fetch("/api/categorias/");
+        const categorias = await res.json();
+
+        const contenedor = document.getElementById("adminposCategorias");
+        contenedor.innerHTML = "";
+
+        // Botón Todos
+        const btnTodos = document.createElement("div");
+        btnTodos.className = "adminpos-categoria-btn active";
+        btnTodos.textContent = "Todos";
+        btnTodos.onclick = () => filtrarAdminPOS(null, btnTodos);
+        contenedor.appendChild(btnTodos);
+
+        categorias.forEach(cat => {
+            const btn = document.createElement("div");
+            btn.className = "adminpos-categoria-btn";
+            btn.textContent = cat.nombre;
+
+            btn.onclick = () => filtrarAdminPOS(cat.id, btn);
+
+            contenedor.appendChild(btn);
+        });
+
+    } catch (error) {
+        console.error("Error cargando categorias POS:", error);
+    }
+}
+
+
+document.querySelectorAll(".producto-btn")
+document.addEventListener("DOMContentLoaded", function () {
+
+    const check = document.getElementById("activarImpuesto");
+
+    if (check) {
+        check.addEventListener("change", actualizarTotales);
+    }
+
+});
 
 // 🔥 Exponer funciones para onclick del HTML
 window.cargarSeccion = cargarSeccion;

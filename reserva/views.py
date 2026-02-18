@@ -71,31 +71,56 @@ def disponibilidad(request):
 
 
 
+DEPOSITO_FIJO = 1000
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def crear_reserva(request):
-    print("llego algo al backend", request.data)
+
     serializer = ReservaSerializer(
         data=request.data,
         context={"request": request}
     )
 
     if serializer.is_valid():
+
+        # 🔥 Guardamos la reserva primero
         reserva = serializer.save()
+
+        # Asignamos depósito fijo
+        reserva.monto_deposito = DEPOSITO_FIJO
+        reserva.estado = "pendiente"
+        reserva.save()
+
+        # 🔥 Creamos Orden asociada
+        from ordenes.models import Orden
+
+        orden = Orden.objects.create(
+            usuario=reserva.user,
+            total=DEPOSITO_FIJO,
+            estado="pendiente",
+            cliente_nombre=reserva.nombre,
+            cliente_telefono=reserva.telefono,
+            tipo_pedido="retirar"  # luego puedes crear tipo "reserva"
+        )
+
+        # Vinculamos orden a reserva
+        reserva.orden = orden
+        reserva.save()
+
         return Response(
             {
                 "id": reserva.id,
-                "mensaje": "Reserva enviada correctamente",
-                "estado": reserva.estado
+                "mensaje": "Reserva creada y enviada a caja",
+                "estado": reserva.estado,
+                "orden_id": orden.id
             },
             status=status.HTTP_201_CREATED
         )
 
-    return Response(
-        serializer.errors,
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

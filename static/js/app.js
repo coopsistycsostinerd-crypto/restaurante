@@ -1452,24 +1452,3 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const slides = document.querySelectorAll("#carouselRestaurante .carousel-item");
-
-    slides.forEach(slide => {
-        const img = slide.querySelector(".slide-img");
-        if (!img) return;
-
-        // Crear fondo desenfocado dinámico
-        const bgDiv = document.createElement("div");
-        bgDiv.style.position = "absolute";
-        bgDiv.style.inset = "0";
-        bgDiv.style.backgroundImage = `url('${img.src}')`;
-        bgDiv.style.backgroundSize = "cover";
-        bgDiv.style.backgroundPosition = "center";
-        bgDiv.style.filter = "blur(30px) brightness(0.5)";
-        bgDiv.style.transform = "scale(1.1)";
-        bgDiv.style.zIndex = "1";
-
-        slide.prepend(bgDiv);
-    });
-});
