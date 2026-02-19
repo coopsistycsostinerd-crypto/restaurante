@@ -1521,7 +1521,7 @@ async function confirmarCobro() {
             cerrarModal();
 
             // 🖨 Abrir ticket
-            const url = `/api/caja/ticket/${data.orden_id}/`;
+            const url = `/api/caja/ticket/${data.venta_id}/`;
             window.open(url, "_blank");
 
             // 🧹 Limpiar carrito
@@ -1744,6 +1744,7 @@ function cambiarCantidad(id, cambio) {
 
     renderCarrito2();
 }
+
 function editarCantidad(id, nuevaCantidad) {
 
     const producto = carrito2.find(p => p.id === id);
