@@ -12,16 +12,25 @@ class Venta(models.Model):
     impuestos = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     reserva = models.OneToOneField(
-        "reserva.Reserva",
-        on_delete=models.PROTECT,
-        related_name="venta",
-        null=True,
-        blank=True
-    )
+    "reserva.Reserva",
+    on_delete=models.PROTECT,
+    null=True,
+    blank=True,
+    related_name="venta"
+)
+
     completada = models.BooleanField(default=False)  # Se marca cuando el pago cubre el total
 
     def __str__(self):
-        return f"Venta #{self.id} - Orden {self.orden.id}"
+
+        if self.orden:
+            return f"Venta #{self.id} - Orden {self.orden.id}"
+
+        if self.reserva:
+            return f"Venta #{self.id} - Reserva {self.reserva.id}"
+
+        return f"Venta #{self.id} - Venta directa"
+
 
 
 

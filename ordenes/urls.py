@@ -15,7 +15,7 @@ urlpatterns = [
 
 
       path("panel-admin/ordenes/", AdminOrdenListAPIView.as_view()),
-    path("panel-admin/ordenes/<int:pk>/", AdminOrdenDetailAPIView.as_view()),
+    path("panel-admin/ordenes/<int:pk>/", AdminCambiarEstadoOrdenAPIView.as_view()),
     path("panel-admin/ordenes/<int:pk>/estado/", AdminCambiarEstadoOrdenAPIView.as_view()),
    
 

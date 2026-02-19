@@ -93,27 +93,14 @@ def crear_reserva(request):
         reserva.save()
 
         # 🔥 Creamos Orden asociada
-        from ordenes.models import Orden
-
-        orden = Orden.objects.create(
-            usuario=reserva.user,
-            total=DEPOSITO_FIJO,
-            estado="pendiente",
-            cliente_nombre=reserva.nombre,
-            cliente_telefono=reserva.telefono,
-            tipo_pedido="retirar"  # luego puedes crear tipo "reserva"
-        )
-
-        # Vinculamos orden a reserva
-        reserva.orden = orden
-        reserva.save()
+   
 
         return Response(
             {
                 "id": reserva.id,
                 "mensaje": "Reserva creada y enviada a caja",
                 "estado": reserva.estado,
-                "orden_id": orden.id
+         
             },
             status=status.HTTP_201_CREATED
         )
@@ -183,3 +170,35 @@ def cerrar_reservas_expiradas():
         r.estado = "cerrada"
         r.resultado = "no_show"
         r.save()
+
+
+
+from rest_framework.permissions import IsAdminUser
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])  # solo admin
+def cambiar_estado_reserva(request, reserva_id):
+
+    try:
+        reserva = Reserva.objects.get(id=reserva_id)
+    except Reserva.DoesNotExist:
+        return Response(
+            {"error": "Reserva no encontrada"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    nuevo_estado = request.data.get("estado")
+
+    if nuevo_estado not in ["pendiente", "confirmada", "cancelada", "cerrada"]:
+        return Response(
+            {"error": "Estado inválido"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    reserva.estado = nuevo_estado
+    reserva.save()
+
+    return Response({
+        "mensaje": "Estado actualizado",
+        "estado": reserva.estado
+    })

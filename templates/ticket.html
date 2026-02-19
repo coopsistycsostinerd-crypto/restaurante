@@ -54,8 +54,14 @@
 {% endif %}
 <div class="linea"></div>
 
-    <p><strong>Venta #{{ venta.id }}</strong></p>
-     <p><strong>{{ venta.orden }}</strong></p>
+ {% if venta.orden %}
+    <p><strong>Pedido #{{ venta.orden.id }}</strong></p>
+{% elif venta.reserva %}
+    <p><strong>Reserva #{{ venta.reserva.id }}</strong></p>
+{% else %}
+    <p><strong>Venta directa</strong></p>
+{% endif %}
+
     <p>{{ venta.fecha|date:"d/m/Y H:i" }}</p>
 
   <div class="linea"></div>
@@ -69,18 +75,49 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in venta.orden.items.all %}
-        <tr>
-            <td>{{ item.cantidad }}</td>
-            <td>
-                {{ item.producto.nombre }}<br>
-                <small>${{ item.precio }} c/u</small>
-            </td>
-            <td style="text-align:right;">
-                ${{ item.total_linea }}
-            </td>
-        </tr>
-        {% endfor %}
+       {% if venta.orden %}
+
+    {% for item in venta.orden.items.all %}
+    <tr>
+        <td>{{ item.cantidad }}</td>
+        <td>
+            {{ item.producto.nombre }}<br>
+            <small>${{ item.precio }} c/u</small>
+        </td>
+        <td style="text-align:right;">
+            ${{ item.total_linea }}
+        </td>
+    </tr>
+    {% endfor %}
+
+{% elif venta.reserva %}
+
+    <tr>
+        <td>1</td>
+        <td>
+            Reserva<br>
+            <small>
+                {{ venta.reserva.fecha|date:"d/m/Y" }}
+                {{ venta.reserva.hora }}
+            </small>
+        </td>
+        <td style="text-align:right;">
+            ${{ venta.total }}
+        </td>
+    </tr>
+
+{% else %}
+
+    <tr>
+        <td>1</td>
+        <td>Venta directa</td>
+        <td style="text-align:right;">
+            ${{ venta.total }}
+        </td>
+    </tr>
+
+{% endif %}
+
     </tbody>
 </table>
 

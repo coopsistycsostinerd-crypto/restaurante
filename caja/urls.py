@@ -9,4 +9,6 @@ urlpatterns = [
 
     path("caja/generar-comprobante/<int:venta_id>/", GenerarComprobanteAPIView.as_view()),
      path('caja/ticket/<int:venta_id>/', ticket_venta),
+     path("caja/crear-venta/", CrearVentaAPIView.as_view()),
+
 ]
