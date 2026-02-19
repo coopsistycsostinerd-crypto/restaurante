@@ -47,6 +47,7 @@ INSTALLED_APPS = [
                      'carrito',  
                                  'caja',
                                   'reserva',
+                                       'analytics',
           'pos',                           
 ]
 # settings.py

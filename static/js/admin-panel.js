@@ -457,6 +457,11 @@ function cargarSeccion(seccion) {
         cargarDashboardAdmin();
         iniciarAutoRefresh();
     }
+ if (seccion === "analitica") {
+        titulo.textContent = "Analitica";
+        cargarAnalytics();
+      
+    }
 
  if (seccion === "reservas") {
         titulo.textContent = "Gestion de Reservas";

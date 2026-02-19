@@ -28,6 +28,7 @@ urlpatterns = [
         path("api/", include("caja.urls")),
          path("api/", include("reserva.urls")),
                   path("api/", include("pos.urls")),
+                    path("api/", include("analytics.urls")),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
