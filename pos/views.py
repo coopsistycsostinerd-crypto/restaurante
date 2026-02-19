@@ -84,7 +84,7 @@ def api_crear_venta2(request):
 
     return JsonResponse({
         "success": True,
-        "venta_id": venta.orden.id
+        "venta_id": venta.id 
     })
 
 
