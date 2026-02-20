@@ -18,12 +18,13 @@ class CategoriaListView(APIView):
 class ProductoListView(APIView):
     def get(self, request):
         productos = Producto.objects.filter(disponible=True)
+      
         serializer = ProductoSerializer(productos, many=True)
         return Response(serializer.data)
 
 
 class AdminProductoViewSet(ModelViewSet):
-    queryset = Producto.objects.all().order_by("id")
+    queryset = Producto.objects.select_related("categoria").all().order_by("id")
     serializer_class = AdminProductoSerializer
-    permission_class = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     

@@ -843,8 +843,6 @@ function actualizarMenuUsuario() {
 
  ${user.is_superuser ? `<a href="#" onclick="irPanelAdmin()">⚙️ Panel Admin</a>` : ``}
 
-${user.is_superuser ? `<a href="/super-panel.html">👑 Super Panel</a>` : ``}
-
 
 
                 <a href="#" onclick="cerrarSesion()">🚪 Cerrar sesión</a>

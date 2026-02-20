@@ -682,6 +682,13 @@ async function cargarPedidosAdmin() {
             card.innerHTML = `
                 <h3>Pedido #${p.id}</h3>
                 <p><strong>Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
+        <p><strong>Tipo:</strong> 
+        ${
+            p.tipo_pedido === "delivery"
+            ? `<span class="tipo-delivery">Delivery</span>`
+            : `<span class="tipo-retirar">Retirar en local</span>`
+        }
+    </p>
                 <p><strong>Total:</strong> $${p.total}</p>
                 <p><strong>Estado:</strong> 
                     ${
@@ -1458,15 +1465,21 @@ const formatoRD = new Intl.NumberFormat("es-DO", {
 
 
 function cerrarModal() {
-    document
-        .getElementById("modalPosConfirmacionVenta")
-        .classList.remove("active");
+    const modal = document.getElementById("modalPosConfirmacionVenta");
+
+    console.log("Modal encontrado:", modal);
+
+    if (modal) {
+        modal.classList.remove("active");
+    } else {
+        alert("Modal no encontrado");
+    }
 }
 
-function mostrarCamposPago() {
+function mostrarCamposPago2() {
 
     const metodo = document.getElementById("metodoPago").value;
-
+    console.log("Método seleccionado:", metodo);
     document.getElementById("pagoEfectivo").style.display = "none";
     document.getElementById("pagoTarjeta").style.display = "none";
     document.getElementById("pagoTransferencia").style.display = "none";
@@ -1551,7 +1564,66 @@ async function confirmarCobro() {
 
     }
 }
+function validarYConfirmar() {
 
+    const metodo = document.getElementById("metodoPago").value;
+    const total = parseFloat(document.getElementById("totalCobroInput").value) || 0;
+
+    // ================= EFECTIVO =================
+    if (metodo === "efectivo") {
+
+        const recibido = parseFloat(document.getElementById("montoRecibido").value) || 0;
+
+        if (!recibido) {
+            alert("Debe ingresar el monto recibido.");
+            return;
+        }
+
+        if (recibido < total) {
+            alert("El monto recibido es menor que el total.");
+            return;
+        }
+    }
+
+    // ================= TARJETA =================
+    if (metodo === "tarjeta") {
+
+        const inputs = document.querySelectorAll("#pagoTarjeta input");
+
+        const numero = inputs[0].value.trim();
+        const fecha = inputs[1].value.trim();
+        const cvv = inputs[2].value.trim();
+
+        if (numero.length < 13) {
+            alert("Número de tarjeta inválido.");
+            return;
+        }
+
+        if (!/^\d{2}\/\d{2}$/.test(fecha)) {
+            alert("Formato de fecha inválido (MM/AA).");
+            return;
+        }
+
+        if (!/^\d{3,4}$/.test(cvv)) {
+            alert("CVV inválido.");
+            return;
+        }
+    }
+
+    // ================= TRANSFERENCIA =================
+    if (metodo === "transferencia") {
+
+        const referencia = document.getElementById("referenciaTransferencia").value.trim();
+
+        if (referencia === "") {
+            alert("Debe ingresar la referencia de la transferencia.");
+            return;
+        }
+    }
+
+    // ✅ Si todo pasa las validaciones
+    confirmarCobro();
+}
 
 function calcularCambio() {
 

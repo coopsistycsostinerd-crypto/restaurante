@@ -9,7 +9,7 @@ async function cargarProductosAdmin() {
     });
 
     const productos = await res.json();
-
+console.log ("categoria", productos)
     contenedor.innerHTML = `
     <div class ="admin-container">
         <div class="productos-header">
@@ -39,7 +39,7 @@ async function cargarProductosAdmin() {
 
 
   <td>${p.nombre}</td>
-                            <td>${p.categoria_nombre || ''}</td>
+                            <td>${p.categoria_nombre|| ''}</td>
                             <td>$${p.precio}</td>
                             <td>${p.disponible ? '✅' : '❌'}</td>
                             <td>

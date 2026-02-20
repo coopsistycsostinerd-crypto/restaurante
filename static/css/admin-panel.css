@@ -382,6 +382,24 @@ textarea { min-height: 80px; resize: vertical; }
 }
 
 /* Card */
+
+.tipo-delivery {
+    background: #ff9800;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.tipo-retirar {
+    background: #4caf50;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+
 .admin-contactos__card {
   background: #ffffff;
   padding: 20px;

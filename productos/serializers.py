@@ -18,6 +18,10 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'productos']
         
 class AdminProductoSerializer(serializers.ModelSerializer):
+    categoria_nombre = serializers.CharField(
+        source="categoria.nombre",
+        read_only=True
+    )
     class Meta:
         model = Producto
         fields = "__all__"
