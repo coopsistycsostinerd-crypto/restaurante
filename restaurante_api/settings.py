@@ -174,4 +174,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
 EMAIL_HOST_PASSWORD = "fxgh hytf ohxz tzxi"
 
-DEFAULT_FROM_EMAIL = "Sistema POS <grupodemonografico53@gmail.com>"
+DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
