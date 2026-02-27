@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.models import Token, settings
 
 from users.models import Usuariohtp
 from .serializers import LoginSerializer
@@ -25,6 +25,8 @@ class LoginAPIView(APIView):
             print("ANTES DE LLAMAR NOTIFICAR_LOGIN", flush=True)
             notificar_login(user)
             print("DESPUÉS DE LLAMAR NOTIFICAR_LOGIN", flush=True)
+            print("FROM:", settings.DEFAULT_FROM_EMAIL, flush=True)
+            print("API KEY:", settings.EMAIL_HOST_PASSWORD, flush=True)
             # Crear o recuperar token
             token, _ = Token.objects.get_or_create(user=user)
 
