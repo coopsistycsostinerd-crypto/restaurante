@@ -79,7 +79,7 @@ def notificar_login(usuario, request=None):
     threading.Thread(
         target=_enviar_email_async,
         args=(email,),
-        daemon=True
+      #  daemon=True
     ).start()
  
 
