@@ -11,7 +11,7 @@
   align-items: flex-start; /* 🔥 CAMBIO */
   z-index: 5000;
    
-  padding: 120px 20px 40px; /* 🔥 MÁS ESPACIO ARRIBA */
+  padding: 50px 15px 30px; /* 🔥 MÁS ESPACIO ARRIBA */
   overflow-y: auto; /* 🔥 IMPORTANTE */
 }
 
