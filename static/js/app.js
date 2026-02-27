@@ -377,7 +377,7 @@ function filtrarCategoria(categoriaNombre, e) {
 ========================= */
 
 
-
+let checkoutHTMLOriginal = "";
 
 /* boton ordenar ahora*/
 
@@ -448,6 +448,9 @@ function abrirCheckout() {
 function cerrarModal() {
     document.getElementById("checkoutModal").classList.remove("active");
 }
+function cerrarModalconfirmarpedido() {
+    document.getElementById("checkoutModal").classList.remove("active");
+}
 document.getElementById("checkoutModal")
     .addEventListener("click", function (e) {
         if (e.target.id === "checkoutModal") {
@@ -480,84 +483,71 @@ function precargarDatos() {
     telefono.value = user.telefono || "";
     direccion.value = user.direccion || "";
 }
-
 document.addEventListener("DOMContentLoaded", () => {
-    document
-        .getElementById("checkoutForm")
-        .addEventListener("submit", async e => {
-            e.preventDefault();
+    const modalContent = document.querySelector("#checkoutModal .modal-content");
+    checkoutHTMLOriginal = modalContent.innerHTML;
 
-          const payload = {
-  cliente_nombre: nombre.value,
-  cliente_telefono: telefono.value,
-  tipo_pedido: tipoPedido.value,
-  direccion: tipoPedido.value === "delivery" ? direccion.value : null,
-  items: carrito.map(p => ({
-    producto_id: p.id,
-    cantidad: p.cantidad,
-    precio: p.precio
-  })),
-  total: totalPrecio()
-};
+    conectarCheckoutForm();
+});
 
 
-            console.log("📦 Confirmando pedido:", payload);
+function conectarCheckoutForm() {
 
-            // aquí va el POST real
+    const form = document.getElementById("checkoutForm");
+    if (!form) return;
 
-    try {
-  const token = localStorage.getItem("token");
+    form.addEventListener("submit", async e => {
 
-  const res = await fetch(`${API_BASE}/ordenes/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: "Token " + token }) // 🔥 SOLO si existe token
-    },
-    body: JSON.stringify(payload)
-  });
+        e.preventDefault();
 
-  if (!res.ok) throw new Error("Error al crear orden");
+        const payload = {
+            cliente_nombre: nombre.value,
+            cliente_telefono: telefono.value,
+            cliente_correo: correo.value, 
+            tipo_pedido: tipoPedido.value,
+            direccion: tipoPedido.value === "delivery" ? direccion.value : null,
+            items: carrito.map(p => ({
+                producto_id: p.id,
+                cantidad: p.cantidad,
+                precio: p.precio
+            })),
+            total: totalPrecio()
+        };
 
- const data = await res.json();
-console.log("✅ Orden creada:", data);
+        try {
 
-// 🔥 LIMPIAR CARRITO BACKEND SI ESTÁ LOGUEADO
-if (localStorage.getItem("token")) {
-    await fetch(`${API_BASE}/carrito/limpiar/`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Token ${localStorage.getItem("token")}`
+            const token = localStorage.getItem("token");
+
+            const res = await fetch(`${API_BASE}/ordenes/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token && { Authorization: "Token " + token })
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) throw new Error("Error al crear orden");
+
+            const data = await res.json();
+
+            carrito = [];
+            guardarCarrito();
+            renderCarrito();
+
+            if (data.tipo_pedido === "delivery") {
+                mostrarPasoPago(data);
+            } else {
+                finalizarPedido();
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("No se pudo procesar el pedido");
         }
+
     });
 }
-
-
-// 🧹 LIMPIAR CARRITO LOCAL
-carrito = [];
-guardarCarrito();
-renderCarrito();
-// cerrarModal();
-
-
-
-
-if (data.tipo_pedido === "delivery") {
-    mostrarPasoPago(data);
-} else {
-    finalizarPedido();
-}
-
-
-
-
-} catch (err) {
-  console.error("❌ Error:", err);
-  alert("No se pudo procesar el pedido");
-}
-
-        });
-});
 
 
 function mostrarPasoPago(orden) {
@@ -580,7 +570,7 @@ function mostrarPasoPago(orden) {
         <div id="camposPago"></div>
 
         <div class="modal-actions">
-            <button onclick="cerrarModal()">Cancelar</button>
+            <button onclick="cerrarModalconfirmarpedido()">Cancelar</button>
             <button onclick="confirmarPago(${orden.id})" class="btn-primary">
                 Confirmar pago
             </button>
@@ -652,8 +642,17 @@ function formatearNumeroTarjeta(input) {
     input.value = value;
 }
 function cerrarModalconfirmarpedido() {
-  const modal = document.getElementById("checkoutModal");
-  modal.style.display = "none";
+
+    const modal = document.getElementById("checkoutModal");
+    const modalContent = document.querySelector("#checkoutModal .modal-content");
+
+    modal.classList.remove("active");
+
+    // 🔥 RESTAURAR HTML ORIGINAL
+    modalContent.innerHTML = checkoutHTMLOriginal;
+
+    // 🔥 VOLVER A CONECTAR FORM
+    conectarCheckoutForm();
 }
 async function confirmarPago(ordenId) {
 
@@ -702,7 +701,7 @@ function finalizarPedido() {
     guardarCarrito();
     renderCarrito();
 
-    cerrarModal();
+       cerrarModalconfirmarpedido(); 
 
     alert("🎉 Pedido realizado con éxito");
 }

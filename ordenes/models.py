@@ -19,6 +19,7 @@ class Orden(models.Model):
     # Campos extra
     cliente_nombre = models.CharField(max_length=200, blank=True, null=True)
     cliente_telefono = models.CharField(max_length=20, blank=True, null=True)
+    cliente_correo = models.EmailField(blank=True, null=True)  # 🔥 NUEVO
     TIPO_PEDIDO = (
         ("delivery", "Delivery"),
         ("retirar", "Retirar en local"),

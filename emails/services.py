@@ -70,12 +70,18 @@ def notificar_cambio_password(usuario):
     )
 
 def notificar_nueva_orden(orden):
-    if not orden.usuario or not orden.usuario.email:
-        return False
+
+    # 🔥 Determinar correo correcto
+    if orden.usuario and orden.usuario.email:
+        destinatario = orden.usuario.email
+    elif orden.cliente_correo:
+        destinatario = orden.cliente_correo
+    else:
+        return False  # No hay correo disponible
 
     return enviar_email_sendgrid(
-        destinatario=orden.usuario.email,
-        asunto=f"Nueva Orden #{orden.id}",
+        destinatario=destinatario,
+        asunto=f"Confirmación de tu Orden #{orden.id}",
         template="emails/nueva_orden.html",
         contexto={"orden": orden}
     )

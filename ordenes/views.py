@@ -33,13 +33,14 @@ class OrdenListCreateAPIView(generics.ListCreateAPIView):
         return context
 
     def perform_create(self, serializer):
-        """
-        Si el usuario está autenticado se guarda en la orden.
-        Si no, se guarda como invitado (usuario = None)
-        """
         user = self.request.user if self.request.user.is_authenticated else None
-
         orden = serializer.save(usuario=user)
+
+        # 🔥 Si el usuario está autenticado, usar su email
+        if user and user.email:
+            orden.cliente_correo = user.email
+            orden.save()
+
         notificar_nueva_orden(orden)
        # serializer.save(usuario=user)
 

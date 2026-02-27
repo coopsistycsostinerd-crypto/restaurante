@@ -29,6 +29,7 @@ class OrdenSerializer(serializers.ModelSerializer):
             'id',
             'cliente_nombre',
             'cliente_telefono',
+            'cliente_correo', 
             'tipo_pedido',
             'direccion',
             'total',
@@ -46,6 +47,17 @@ class OrdenSerializer(serializers.ModelSerializer):
             OrdenItem.objects.create(orden=orden, **item)
 
         return orden
+    def validate(self, data):
+        request = self.context.get("request")
+
+        # Si es invitado, exigir correo
+        if not request.user.is_authenticated:
+            if not data.get("cliente_correo"):
+                raise serializers.ValidationError({
+                    "cliente_correo": "El correo es obligatorio para pedidos sin cuenta."
+                })
+
+        return data
 
 class OrdenAdminSerializer(serializers.ModelSerializer):
     usuario_nombre = serializers.SerializerMethodField()
