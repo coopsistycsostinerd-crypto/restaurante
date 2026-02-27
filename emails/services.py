@@ -37,61 +37,42 @@ def enviar_correo_bienvenida(usuario):
 
 
 
+import threading
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.timezone import now
+from django.conf import settings
+
+
+def _enviar_email_async(email):
+    email.send(fail_silently=True)
+
+
 def notificar_login(usuario, request=None):
-    print("Usuario:", usuario)
-    print("Email:", usuario.email)
 
     asunto = "Nuevo inicio de sesión"
 
-    ip = None
-    if request:
-        ip = request.META.get("REMOTE_ADDR")
+    ip = request.META.get("REMOTE_ADDR") if request else "No disponible"
 
     contexto = {
         "nombre": usuario.nombre,
         "fecha": now().strftime("%d/%m/%Y %H:%M"),
-        "ip": ip or "No disponible",
+        "ip": ip,
     }
 
-    html_content = render_to_string("emails/login.html", contexto)
-
-    email = EmailMessage(
-        subject=asunto,
-        body=html_content,
-        from_email=settings.EMAIL_HOST_USER,
-        to=[usuario.email],
-    )
-
-    email.content_subtype = "html"  # 🔥 Esto hace que sea HTML
-    email.send()
-    print("el usuario", usuario)
-    print("el usuario", usuario.email)
-    asunto = "Nuevo inicio de sesión"
-
-    ip = None
-    if request:
-        ip = request.META.get("REMOTE_ADDR")
-
-    contexto = {
-        "nombre": usuario.nombre,
-        "fecha": now().strftime("%d/%m/%Y %H:%M"),
-        "ip": ip or "No disponible",
-    }
-
-   # text_content = render_to_string("emails/login.txt", contexto)
     html_content = render_to_string("emails/login.html", contexto)
 
     email = EmailMultiAlternatives(
         asunto,
-     #   text_content,
+        "",  # texto plano vacío opcional
         settings.EMAIL_HOST_USER,
         [usuario.email],
     )
 
     email.attach_alternative(html_content, "text/html")
-    email.send()
 
-
+    # 🔥 Enviar en segundo plano
+    threading.Thread(target=_enviar_email_async, args=(email,)).start()
 
 
  
