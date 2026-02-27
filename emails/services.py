@@ -45,7 +45,11 @@ from django.conf import settings
 
 
 def _enviar_email_async(email):
-    email.send(fail_silently=True)
+    try:
+        result = email.send()
+        print("RESULTADO ENVÍO:", result)
+    except Exception as e:
+        print("ERROR SMTP:", e)
 
 
 def notificar_login(usuario, request=None):
@@ -64,17 +68,19 @@ def notificar_login(usuario, request=None):
 
     email = EmailMultiAlternatives(
         asunto,
-        "",  # texto plano vacío opcional
-        settings.EMAIL_HOST_USER,
+        "",  # texto plano opcional
+        settings.DEFAULT_FROM_EMAIL,
         [usuario.email],
     )
 
     email.attach_alternative(html_content, "text/html")
 
-    # 🔥 Enviar en segundo plano
-    threading.Thread(target=_enviar_email_async, args=(email,)).start()
-
-
+    # 🔥 AQUÍ es donde lo conectamos
+    threading.Thread(
+        target=_enviar_email_async,
+        args=(email,),
+        daemon=True
+    ).start()
  
 
 
