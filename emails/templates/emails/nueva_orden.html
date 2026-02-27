@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; background:#f5f5f5; padding:20px;">
+
+<div style="max-width:700px; margin:auto; background:#ffffff;">
+
+    <div style="background:#111; color:#fff; padding:20px;">
+        <h2>Nueva Orden #{{ orden.id }}</h2>
+        <p>Fecha: {{ orden.creado }}</p>
+    </div>
+
+    <div style="padding:20px;">
+
+        <h3>Información del Cliente</h3>
+        <p><strong>Nombre:</strong> {{ orden.cliente_nombre|default:"No especificado" }}</p>
+        <p><strong>Teléfono:</strong> {{ orden.cliente_telefono|default:"No especificado" }}</p>
+        <p><strong>Tipo de Pedido:</strong> {{ orden.get_tipo_pedido_display }}</p>
+
+        {% if orden.tipo_pedido == "delivery" %}
+            <p><strong>Dirección:</strong> {{ orden.direccion }}</p>
+        {% endif %}
+
+        <hr>
+
+        <h3>Detalle de la Orden</h3>
+
+        <table width="100%" style="border-collapse:collapse;">
+            <thead style="background:#f0f0f0;">
+                <tr>
+                    <th align="left" style="padding:8px;">Producto</th>
+                    <th style="padding:8px;">Cantidad</th>
+                    <th align="right" style="padding:8px;">Precio</th>
+                    <th align="right" style="padding:8px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in orden.items.all %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {{ item.producto.nombre }}
+                    </td>
+                    <td align="center">{{ item.cantidad }}</td>
+                    <td align="right">RD$ {{ item.precio }}</td>
+                    <td align="right">
+                        RD$ {{ item.total_linea }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="text-align:right; margin-top:20px; font-size:18px;">
+            <strong>Total General: RD$ {{ orden.total }}</strong>
+        </div>
+
+    </div>
+
+    <div style="background:#111; color:#fff; padding:10px; text-align:center;">
+        Sistema automático de pedidos
+    </div>
+
+</div>
+
+</body>
+</html>

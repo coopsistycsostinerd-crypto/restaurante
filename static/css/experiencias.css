@@ -112,3 +112,117 @@
 .experiencia-cta a:hover {
   background: #b88b4f;
 }
+
+
+
+
+
+
+/* =========================
+   EXPERIENCIAS RESPONSIVE PRO
+========================= */
+
+@media (max-width: 1024px) {
+
+  .experiencia-hero-overlay h1 {
+    font-size: 2.4rem;
+  }
+
+  .experiencia-hero-overlay p {
+    font-size: 1.1rem;
+  }
+
+  .experiencia-galeria img {
+    height: 300px;
+  }
+}
+
+
+/* TABLET */
+@media (max-width: 768px) {
+
+  /* HERO */
+  .experiencia-hero {
+    height: 60vh;
+  }
+
+  .experiencia-hero-overlay h1 {
+    font-size: 2rem;
+  }
+
+  .experiencia-hero-overlay p {
+    font-size: 1rem;
+  }
+
+  /* INFO */
+  .experiencia-info {
+    padding: 50px 20px;
+  }
+
+  .experiencia-card {
+    padding: 22px;
+  }
+
+  .experiencia-card h3 {
+    font-size: 1.2rem;
+  }
+
+  /* GALERÍA */
+  .experiencia-galeria {
+    padding: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  .experiencia-galeria img {
+    height: 250px;
+    padding: 8px;
+  }
+
+  /* CTA */
+  .experiencia-cta {
+    padding: 50px 20px;
+  }
+
+  .experiencia-cta h2 {
+    font-size: 1.6rem;
+  }
+
+  .experiencia-cta a {
+    width: 100%;
+    max-width: 320px;
+    min-height: 48px; /* táctil */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+
+/* MÓVILES PEQUEÑOS */
+@media (max-width: 480px) {
+
+  .experiencia-hero {
+    height: 55vh;
+  }
+
+  .experiencia-hero-overlay h1 {
+    font-size: 1.7rem;
+  }
+
+  .experiencia-hero-overlay p {
+    font-size: 0.95rem;
+  }
+
+  .experiencia-info {
+    padding: 40px 15px;
+  }
+
+  .experiencia-galeria img {
+    height: 220px;
+  }
+
+  .experiencia-cta h2 {
+    font-size: 1.4rem;
+  }
+
+}

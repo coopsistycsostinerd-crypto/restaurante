@@ -86,6 +86,7 @@ function abrirPasswordModal() {
 function cerrarPasswordModal() {
   const modal = document.getElementById("passwordModal");
   const form = document.getElementById("passwordForm");
+  
 
   // Cerrar modal
   modal.classList.remove("active");
@@ -115,7 +116,8 @@ passwordForm.addEventListener("submit", async e => {
     },
     body: JSON.stringify({
       actual: pass_actual.value,
-      nueva: pass_nueva.value
+      nueva: pass_nueva.value,
+      confirmar: pass_confirmar.value
     })
   });
 

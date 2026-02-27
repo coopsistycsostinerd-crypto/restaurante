@@ -88,18 +88,19 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    background: var(--verde-principal);
+    backdrop-filter: blur(12px);
+    background: rgba(15, 61, 46, 0.85);
     color: var(--texto-principal);
-    padding: 12px 24px;
+    padding: 7px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 4000;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(214, 183, 124, 0.2);
 }
 
 header h2 {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--dorado);
 }
 
@@ -112,7 +113,7 @@ header nav {
 header nav a {
     color: var(--texto-principal);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     padding: 6px 10px;
     border-radius: 6px;
     transition: background 0.2s ease, color 0.2s ease;
@@ -121,19 +122,25 @@ header nav a {
 header nav a:hover {
     background: rgba(255,255,255,0.15);
 }
-header nav a.login-btn {
-    background: #2563eb; /* igual que user-btn */
-    color:  var(--texto-principal);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    border: none;
+
+
+#userMenuContainer button {
+  background: linear-gradient(135deg, #d6b77c, #b89655);
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 25px;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .3px;
+  border: 1px solid rgba(255,255,255,.15);
+  cursor: pointer;
+  transition: all .3s ease;
 }
 
-header nav a.login-btn:hover {
-    background: #1e40af;
+#userMenuContainer button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,.2);
 }
-
 /* =========================
    CART ICON
 ========================= */
@@ -213,6 +220,7 @@ main {
     border-top: 1px solid var(--gris-borde);
     border-bottom: 1px solid var(--gris-borde);
 }
+
 
 /* Cada item */
 #lista-carrito li {
@@ -1530,8 +1538,12 @@ main {
   background: rgba(15, 15, 15, 0.65);
   backdrop-filter: blur(4px);
   display: none;
-  align-items: center;
+
+  align-items: flex-start;
   justify-content: center;
+
+  padding: 120px 20px 40px 20px; /* arriba y abajo */
+  overflow-y: auto;              /* 👈 ESTO AGREGA SCROLL */
   z-index: 999;
 }
 
@@ -1770,27 +1782,21 @@ main {
   justify-content: center;
   align-items: center;
   z-index: 3000;
+  align-items: flex-start;
+  padding-top: 80px; 
 }
 
 /* =========================
    MODAL LOGIN
 ========================= */
-.modalLogin {
-  background: #c2ddd4;
-  width: 760px;
-  max-width: 96%;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(71, 35, 35, 0.788);
-}
-
 /* =========================
-   MODAL BASE (REUTILIZABLE)
+   MODAL BASE
 ========================= */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.233);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
   display: none;
   justify-content: center;
   align-items: center;
@@ -1798,300 +1804,201 @@ main {
 }
 
 /* =========================
-   MODAL LOGIN
+   MODAL LOGIN CONTENEDOR
 ========================= */
 .modalLogin {
-  background: #c2ddd4;
+  background: #ffffffd2;
   width: 760px;
-  max-width: 96%;
-  border-radius: 16px;
+  max-width: 95%;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(71, 35, 35, 0.788);
+  box-shadow: 0 30px 60px rgba(0,0,0,.25);
 }
 
-/* Slider */
+/* =========================
+   SLIDER
+========================= */
 .modalLogin-slider {
   display: flex;
   width: 200%;
-  transition: transform 0.45s ease-in-out;
+  transition: transform .45s ease-in-out;
 }
 
-/* Estado registro */
 .modalLogin-slider.show-register {
   transform: translateX(-50%);
 }
 
-/* Panel (login / registro) */
+/* =========================
+   PANEL LOGIN / REGISTRO
+========================= */
 .auth-panel {
   width: 50%;
-  padding: 40px 45px;
+  padding: 45px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+}
+.btn-confirmar-pedido {
+  background: linear-gradient(135deg, #019966, #017a52);
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  padding: 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .3s ease;
 }
 
+.btn-confirmar-pedido:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(1,153,102,.3);
+}
 /* Logo */
 .empresaLogoAuth {
-  max-width: 150px;
-  margin: 0 auto 10px;
+  max-width: 140px;
+  margin: 0 auto 15px;
   display: block;
 }
 
 /* Títulos */
 .auth-panel h3 {
   text-align: center;
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
-/* Inputs */
+/* =========================
+   INPUTS
+========================= */
 .auth-panel input {
   width: 100%;
   padding: 14px 16px;
   font-size: 15px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
   outline: none;
+  transition: .3s ease;
 }
 
 .auth-panel input:focus {
-  border-color: #111827;
-}
-
-/* Acciones */
-.modal-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 15px;
-}
-
-.modal-actions button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-}
-
-.modal-actions button:first-child {
-  background: #111827;
-  color: #fff;
-}
-
-.modal-actions button:last-child {
-  background: #2b2b2c;
-}
-
-/* Texto inferior */
-.auth-panel p {
-  text-align: center;
-  margin-top: 12px;
-  font-size: 14px;
-}
-
-.auth-panel a {
-  font-weight: 600;
-  cursor: pointer;
-  color: #111827;
+  border-color: #019966;
+  box-shadow: 0 0 0 3px rgba(1,153,102,.15);
 }
 
 /* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 768px) {
-  .modalLogin {
-    width: 95%;
-  }
-
-  .auth-panel {
-    padding: 25px;
-  }
-}
-/* =========================
-   REGISTRO EN 2 COLUMNAS
-========================= */
-
-/* Solo el formulario de registro */
-.auth-panel form#registerForm {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-/* Inputs que deben ocupar toda la fila */
-.auth-panel form#registerForm input[name="direccion"],
-
-.auth-panel form#registerForm .modal-actions {
-  grid-column: span 2;
-}
-
-/* =========================
-   RESPONSIVE (1 columna)
-========================= */
-@media (max-width: 768px) {
-  .auth-panel form#registerForm {
-    grid-template-columns: 1fr;
-  }
-
-  .auth-panel form#registerForm input,
-  .auth-panel form#registerForm .modal-actions {
-    grid-column: span 1;
-  }
-}
-
-/* Slider */
-.modalLogin-slider {
-  display: flex;
-  width: 200%;
-  transition: transform 0.45s ease-in-out;
-}
-
-/* Estado registro */
-.modalLogin-slider.show-register {
-  transform: translateX(-50%);
-}/* =========================
-   INPUTS LOGIN – ESPACIADO
+   LOGIN FORM WIDTH
 ========================= */
 #loginForm {
   display: flex;
   flex-direction: column;
-  gap: 14px; /* separación entre inputs */
-}
-
-/* =========================
-   ANCHO CONTROLADO INPUTS
-========================= */
-#loginForm input {
+  gap: 14px;
   max-width: 360px;
   margin: 0 auto;
 }
 
-/* Botones alineados al mismo ancho */
-#loginForm .modal-actions {
-  max-width: 360px;
-  margin: 10px auto 0;
-}
-
-
-/* Panel (login / registro) */
-.auth-panel {
-  width: 50%;
-  padding: 40px 45px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* Logo */
-.empresaLogoAuth {
-  max-width: 150px;
-  margin: 0 auto 10px;
-  display: block;
-}
-
-/* Títulos */
-.auth-panel h3 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* Inputs */
-.auth-panel input {
-  width: 100%;
-  padding: 14px 16px;
-  font-size: 15px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  outline: none;
-}
-
-.auth-panel input:focus {
-  border-color: #111827;
-}
-
-/* Acciones */
+/* =========================
+   BOTONES
+========================= */
 .modal-actions {
   display: flex;
   gap: 12px;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .modal-actions button {
   flex: 1;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 13px;
+  border-radius: 10px;
   font-size: 14px;
   cursor: pointer;
   border: none;
+  transition: .3s ease;
 }
 
+/* Botón principal */
 .modal-actions button:first-child {
-  background: #019966;
+  background: linear-gradient(135deg, #019966, #017a52);
   color: #fff;
 }
 
-.modal-actions button:last-child {
-  background: #2b2b2c;
+.modal-actions button:first-child:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(1,153,102,.3);
 }
 
-/* Texto inferior */
+/* Botón secundario */
+
+
+/* =========================
+   TEXTO INFERIOR
+========================= */
 .auth-panel p {
   text-align: center;
-  margin-top: 12px;
   font-size: 14px;
+  margin-top: 12px;
 }
 
 .auth-panel a {
   font-weight: 600;
+  color: #019966;
   cursor: pointer;
-  color: #111827;
+}
+
+/* =========================
+   REGISTRO EN 2 COLUMNAS
+========================= */
+#registerForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+#registerForm input[name="direccion"],
+#registerForm .modal-actions {
+  grid-column: span 2;
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
+
   .modalLogin {
     width: 95%;
+    border-radius: 16px;
+     align-items: flex-start;
+    padding-top: 100px;
+  }
+
+  .modalLogin-slider {
+    display: flex;
+    flex-direction: row; /* 🔥 IMPORTANTE */
+    width: 200%; /* 🔥 mantener 200% */
   }
 
   .auth-panel {
-    padding: 25px;
+    width: 50%; /* 🔥 cada panel ocupa la mitad del slider */
+    padding: 30px 20px;
   }
-}
-/* =========================
-   REGISTRO EN 2 COLUMNAS
-========================= */
 
-/* Solo el formulario de registro */
-.auth-panel form#registerForm {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-/* Inputs que deben ocupar toda la fila */
-.auth-panel form#registerForm input[name="direccion"],
-
-.auth-panel form#registerForm .modal-actions {
-  grid-column: span 2;
-}
-
-/* =========================
-   RESPONSIVE (1 columna)
-========================= */
-@media (max-width: 768px) {
-  .auth-panel form#registerForm {
+  #registerForm {
     grid-template-columns: 1fr;
   }
 
-  .auth-panel form#registerForm input,
-  .auth-panel form#registerForm .modal-actions {
-    grid-column: span 1;
-  }
 }
+
+
+@media (max-width: 480px){
+
+  .modalLogin {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+}
+
+
 
 
 #btnScrollTop {
@@ -2332,7 +2239,7 @@ main {
     max-width: 90%;
     object-fit: contain;
     border-radius: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.5);
     transition: transform 0.5s ease;
 }
 
@@ -2364,10 +2271,10 @@ main {
     left: 50%;
     transform: translateX(-50%);
     z-index: 3;
-    width: 80%;
+    width: 35%;
     padding: 30px;
     border-radius: 0 0 25px 25px;
-    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.267), transparent);
     text-align: left;
     color: #fff;
 }
@@ -2391,11 +2298,14 @@ main {
     padding: 25px;
     border-radius: 50%;
     transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
 }
 
 .carousel-control-prev-icon:hover,
 .carousel-control-next-icon:hover {
-    background-color: rgba(0,0,0,0.8);
+    background-color: #D6B77C;
+    box-shadow: 0 0 20px rgba(214, 183, 124, 0.6);
+    transform: scale(1.12);
 }
 
 /* Responsive */
@@ -2416,4 +2326,5 @@ main {
     .custom-caption p {
         font-size: 0.95rem;
     }
+    
 }

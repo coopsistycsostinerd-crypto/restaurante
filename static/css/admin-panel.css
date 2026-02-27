@@ -100,12 +100,38 @@
 /* =========================
    ADMIN CARDS
 ========================= */
+.pedido-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.pedido-tabla th {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.pedido-tabla td {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.pedido-tabla td:last-child,
+.pedido-tabla th:last-child {
+  text-align: center;
+  width: 80px;
+}
+
 #adminBody {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
     padding: 10px;
+    margin-top: 20px;
 }
 
 .admin-card {
@@ -206,6 +232,8 @@ textarea { min-height: 80px; resize: vertical; }
     height: calc(100vh - 110px);
     transition: left 0.3s ease;
     z-index: 1040;
+
+    overflow-y: auto; /* 👈 ACTIVA SCROLL INTERNO */
 }
 
 
@@ -235,12 +263,25 @@ textarea { min-height: 80px; resize: vertical; }
 
 .sidebar.collapsed { left: -250px; }
 
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #d6b77c;
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 /* =========================
    ADMIN HEADER
 ========================= */
 .admin-header {
     position: fixed;
-    top: 50px;        /* debajo del menú base */
+    top: 70px;        /* debajo del menú base */
     left: 0;
     width: 100%;
     height: 60px;
@@ -468,6 +509,7 @@ textarea { min-height: 80px; resize: vertical; }
     inset: 0;
     background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(4px);
+        overflow-y: auto; /* 👈 ACTIVA SCROLL INTERNO */
 }
 
 /* Contenedor principal */

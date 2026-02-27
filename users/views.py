@@ -10,7 +10,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAdminUser
 from .models import Usuariohtp
 from .serializers import AdminUsuarioSerializer
-
+from emails.services import enviar_correo_bienvenida, notificar_cambio_password, notificar_login
 from django.contrib.auth import login
 
 class LoginAPIView(APIView):
@@ -22,6 +22,7 @@ class LoginAPIView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data["user"]
             login(request, user)
+            notificar_login(user)
             # Crear o recuperar token
             token, _ = Token.objects.get_or_create(user=user)
 
@@ -115,31 +116,58 @@ class CambiarPasswordAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = CambiarPasswordSerializer(data=request.data)
+        print("🔥 === INICIANDO CAMBIO DE PASSWORD ===")
 
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            print("Datos recibidos:", request.data)
 
-        user = request.user
-        actual = serializer.validated_data["actual"]
-        nueva = serializer.validated_data["nueva"]
+            serializer = CambiarPasswordSerializer(data=request.data)
 
-        # 🔐 Verificar contraseña actual
-        if not user.check_password(actual):
+            if not serializer.is_valid():
+                print("❌ Serializer inválido:", serializer.errors)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            user = request.user
+            print("Usuario autenticado:", user)
+            print("Email usuario:", user.email)
+
+            actual = serializer.validated_data["actual"]
+            nueva = serializer.validated_data["nueva"]
+
+            print("Password actual recibida:", actual)
+            print("Password nueva recibida:", nueva)
+
+            # 🔐 Verificar contraseña actual
+            if not user.check_password(actual):
+                print("❌ Password actual incorrecta")
+                return Response(
+                    {"error": "La contraseña actual es incorrecta"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            print("✅ Password actual correcta")
+
+            # 🔄 Cambiar contraseña
+            user.set_password(nueva)
+            user.save()
+            print("✅ Password guardada en BD")
+
+            print("📧 Intentando enviar correo...")
+            notificar_cambio_password(user)
+            print("✅ Función notificar_cambio_password ejecutada")
+
             return Response(
-                {"error": "La contraseña actual es incorrecta"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"message": "Contraseña actualizada correctamente"},
+                status=status.HTTP_200_OK
             )
 
-        # 🔄 Cambiar contraseña
-        user.set_password(nueva)
-        user.save()
-
-        return Response(
-            {"message": "Contraseña actualizada correctamente"},
-            status=status.HTTP_200_OK
-        )
-
+        except Exception as e:
+            print("💥 ERROR GENERAL EN CAMBIAR PASSWORD:")
+            print(str(e))
+            return Response(
+                {"error": "Error interno del servidor"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -166,6 +194,7 @@ def registro_cliente(request):
         user.direccion = data.get("direccion")
         user.rol = "cliente"
         user.save()
+        enviar_correo_bienvenida(user)
 
         return JsonResponse({"success": True})
 

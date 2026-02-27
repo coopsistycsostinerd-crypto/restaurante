@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; background:#f4f4f4; padding:20px;">
+
+<div style="max-width:600px; margin:auto; background:#fff; padding:20px;">
+
+    <h2>Actualización de tu Orden #{{ orden.id }}</h2>
+
+    <p>Hola {{ orden.cliente_nombre|default:"Cliente" }},</p>
+
+    {% if orden.estado == "preparando" %}
+        <p style="color:orange; font-weight:bold;">
+            👨‍🍳 Tu orden está siendo preparada.
+        </p>
+    {% elif orden.estado == "entregado" %}
+        <p style="color:green; font-weight:bold;">
+            ✅ Tu orden ha sido entregada.
+        </p>
+    {% endif %}
+
+    <p>Total: RD$ {{ orden.total }}</p>
+
+    <hr>
+
+    <p>Gracias por confiar en nosotros.</p>
+
+</div>
+
+</body>
+</html>

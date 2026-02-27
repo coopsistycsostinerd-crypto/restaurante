@@ -140,6 +140,8 @@
 
 <div class="linea"></div>
 
+
+<p><strong>Atendido por:</strong> {{ usuario.username }}</p>
 <p><strong>Método(s) de pago:</strong></p>
 {% for pago in venta.pagos.all %}
 <p>{{ pago.get_metodo_display }} - ${{ pago.monto }}</p>

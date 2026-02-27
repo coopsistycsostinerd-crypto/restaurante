@@ -7,6 +7,7 @@
 ================================ */
 
 .ticket-col {
+     margin-top: 20px; /* ajusta según altura del navbar */
     position: fixed;
     top: 110px; /* 🔥 igual que el sidebar */
     right: 0;
@@ -18,12 +19,15 @@
     flex-direction: column;
     border-left: 1px solid #333;
     z-index: 1030; /* 🔥 debajo del sidebar (1040) */
+    
+    
 }
 .ticket-body {
   flex: 1;
   overflow-y: auto;
   padding: 15px;
   background: #ffffff;
+
 }
 
 .carrito-item:hover {
@@ -42,6 +46,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.1);
   background: #ffffff;
   flex-shrink: 0; /* 🔥 nunca se encoge */
+   
 }
 
 /* ================================
@@ -52,6 +57,7 @@
   flex: 1;                /* ocupa el espacio restante */
   overflow-y: auto;       /* 🔥 SCROLL SOLO AQUÍ */
   padding: 15px;
+
 }
 
 /* Items */
@@ -315,39 +321,70 @@ body.sidebar-open .products-col {
     }
 
 }
+@media (max-width: 992px){
+
+    .products-body {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .producto-img,
+    .producto-sin-img {
+        height: 100px;
+    }
+
+}
+
+/* ============================= */
+/* ========== MOBILE PRO ======= */
+/* ============================= */
 
 @media (max-width: 768px) {
 
     .ticket-col {
-        position: fixed;
         top: 0;
-        right: -100%;
-        width: 100%;
-        height: 100vh;
-        z-index: 2000;
-        transition: right 0.3s ease;
+        height: 100dvh; /* mejor que 100vh en móvil */
+        border-left: none;
+        box-shadow: -10px 0 40px rgba(0,0,0,.2);
     }
 
-    .ticket-col.open {
-        right: 0;
+    .ticket-header {
+        font-size: 16px;
+        padding: 16px;
+    }
+
+    .ticket-body {
+        padding: 12px;
+    }
+
+    .carrito-item {
+        grid-template-columns: 1fr 60px 60px 25px;
+        font-size: 11px;
+    }
+
+    .summary-total-btn {
+        min-height: 60px;
+        font-size: 16px;
+    }
+
+    .btn-charge {
+        min-height: 50px;
+        font-size: 15px;
     }
 
 }
 @media (max-width: 768px) {
 
-    .btn-open-cart {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #0F3D2E;
-        color: white;
-        border: none;
-        padding: 15px;
+     .btn-open-cart {
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        font-size: 18px;
-        z-index: 2100;
-        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0,0,0,.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+
 
 }
 
@@ -381,7 +418,9 @@ body.sidebar-open .products-col {
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(3px);
     display: none; /* 👈 IMPORTANTE */
-    justify-content: center;
+     align-items: flex-start;
+    padding: 40px 20px;
+    overflow-y: auto;
     align-items: center;
     z-index: 3000;
 }
@@ -652,8 +691,29 @@ body.sidebar-open .products-col {
     }
 }
 
+@media (max-width: 640px){
 
+    #modalPosConfirmacionVenta {
+        padding: 20px 10px;
+    }
 
+    #modalPosConfirmacionVenta .modal-content {
+        height: auto;
+        max-height: 95dvh;
+    }
+
+}
+@media (max-width: 640px){
+
+    .total-box {
+        align-items: flex-start;
+    }
+
+    .total-cobro-box {
+        font-weight: 600;
+    }
+
+}
 
 .adminpos-categorias-wrapper {
     margin-top: 10px;

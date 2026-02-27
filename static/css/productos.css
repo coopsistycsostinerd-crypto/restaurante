@@ -1,0 +1,240 @@
+/* ===============================
+   MODAL PRODUCTO MODERNO
+================================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    width: 95%;
+    max-width: 500px;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: modalFade 0.25s ease;
+    position: relative;
+}
+
+/* Animación */
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Botón cerrar */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    font-size: 22px;
+    cursor: pointer;
+    color: #888;
+    transition: 0.2s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Título */
+.modal-content h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Labels */
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+}
+
+/* Inputs */
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
+}
+
+/* Textarea tamaño */
+.modal-content textarea {
+    resize: none;
+    min-height: 70px;
+}
+
+/* Checkbox */
+.modal-content input[type="checkbox"] {
+    width: auto;
+    margin-right: 6px;
+}
+
+/* Botón guardar */
+.btn-guardar {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-guardar:hover {
+    background: #43a047;
+}
+
+
+/* GRID 2 COLUMNAS */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+/* Columnas */
+.form-col label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+}
+
+.form-col input,
+.form-col textarea,
+.form-col select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* Checkbox mejor alineado */
+.checkbox-label {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* RESPONSIVE (en móvil se vuelve 1 columna) */
+/* ===============================
+   RESPONSIVE PRO MODAL PRODUCTO
+================================= */
+@media (max-width: 768px) {
+
+    /* Modal contenedor */
+    .modal {
+        padding: 15px;
+        align-items: flex-start; /* evita que quede muy centrado si es largo */
+        overflow-y: auto;
+    }
+
+    /* Contenido */
+    .modal-content {
+        width: 100%;
+        padding: 20px;
+        border-radius: 14px;
+        max-height: calc(100dvh - 30px);
+        overflow-y: auto;
+    }
+
+    /* Título */
+    .modal-content h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    /* Inputs más cómodos para tocar */
+    .modal-content input,
+    .modal-content textarea,
+    .modal-content select,
+    .form-col input,
+    .form-col textarea,
+    .form-col select {
+        min-height: 44px;
+        font-size: 16px; /* evita zoom automático en iPhone */
+    }
+
+    /* Textarea */
+    .modal-content textarea {
+        min-height: 90px;
+    }
+
+    /* Botón guardar */
+    .btn-guardar {
+        min-height: 48px;
+        font-size: 16px;
+    }
+
+    /* Grid pasa a 1 columna */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    /* Checkbox mejor alineado */
+    .checkbox-label {
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        align-items: flex-end;
+    }
+
+    .modal-content {
+        border-radius: 18px 18px 0 0;
+        animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+}

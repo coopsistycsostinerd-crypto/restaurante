@@ -6,7 +6,10 @@
   align-items: center;
   justify-content: center;
   z-index: 2000;
+   
+
 }
+
 
 .perfil-modal.active {
   display: flex;
@@ -19,6 +22,7 @@
   width: 700px;
   max-width: 95%;
   position: relative;
+      margin-top: 80px;
 }
 
 .perfil-card.small {
@@ -221,5 +225,39 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* ===============================
+   GRID INTERNO PERFIL INFO
+================================ */
+
+.perfil-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.info-col label {
+  font-size: 13px;
+  margin-top: 10px;
+  display: block;
+}
+
+.info-col input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .perfil-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-info-grid {
+    grid-template-columns: 1fr;
   }
 }

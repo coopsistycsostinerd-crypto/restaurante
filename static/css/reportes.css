@@ -1,0 +1,241 @@
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+.reporte-container {
+    padding: 30px;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* =========================
+   TITULO
+========================= */
+.reporte-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #0F3D2E;
+}
+
+/* =========================
+   BOTONES DE SECCIÓN
+========================= */
+.reporte-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.reporte-botones button {
+    background: #0F3D2E;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.reporte-botones button:hover {
+    background: #145C44;
+    transform: translateY(-2px);
+}
+
+.reporte-botones button.active {
+    background: #D6B77C;
+    color: #0F3D2E;
+}
+
+/* =========================
+   FILTRO DE FECHAS
+========================= */
+.reporte-filtros {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.reporte-filtros label {
+    font-weight: 600;
+    color: #333;
+}
+
+.reporte-filtros input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+.reporte-filtros button {
+    background: #D6B77C;
+    color: #0F3D2E;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.reporte-filtros button:hover {
+    background: #c5a867;
+}
+
+/* =========================
+   BOTONES EXPORTAR
+========================= */
+.reporte-exportar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.reporte-exportar button {
+    background: #145C44;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.reporte-exportar button:hover {
+    background: #0F3D2E;
+}
+
+/* =========================
+   TABLA
+========================= */
+.reporte-tabla-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    -webkit-overflow-scrolling: touch;
+}
+
+.reporte-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.reporte-tabla thead {
+    background: #0F3D2E;
+    color: white;
+}
+
+.reporte-tabla th,
+.reporte-tabla td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.reporte-tabla th {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reporte-tabla tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s;
+}
+
+.reporte-tabla tbody tr:hover {
+    background: #f3f7f6;
+}
+
+.reporte-tabla tbody td {
+    font-size: 14px;
+    color: #444;
+}
+
+/* =========================
+   MENSAJE VACÍO
+========================= */
+.reporte-empty {
+    text-align: center;
+    padding: 40px;
+    color: #777;
+    font-weight: 500;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+/* =========================
+   RESPONSIVE PRO
+========================= */
+@media (max-width: 768px) {
+
+    /* CONTENEDOR */
+    .reporte-container {
+        padding: 18px;
+    }
+
+    /* TÍTULO */
+    .reporte-title {
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    /* BOTONES SECCIÓN */
+    .reporte-botones {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .reporte-botones button {
+        width: 100%;
+        min-height: 44px; /* estándar táctil */
+    }
+
+    /* FILTROS */
+    .reporte-filtros {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .reporte-filtros input,
+    .reporte-filtros button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    /* EXPORTAR */
+    .reporte-exportar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .reporte-exportar button {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    /* TABLA */
+    .reporte-tabla {
+        min-width: 600px; /* reduce scroll exagerado */
+    }
+
+    .reporte-tabla th,
+    .reporte-tabla td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* MENSAJE VACÍO */
+    .reporte-empty {
+        padding: 25px;
+        font-size: 14px;
+    }
+}

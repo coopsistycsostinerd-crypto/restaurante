@@ -1,3 +1,5 @@
+
+
 let modoFormulario = "crear"; // o "editar"
 let usuarioEditandoId = null;
 
@@ -507,6 +509,10 @@ function cargarSeccion(seccion) {
         titulo.textContent = "Gestión de empresa";
         cargarEmpresaAdmin();
     }
+     if (seccion === "reportes") {
+        titulo.textContent = "Reportes";
+        cargarReportes2();
+    }
 }
 
 
@@ -702,9 +708,22 @@ async function cargarPedidosAdmin() {
                         `
                     }
                 </p>
-                <ul>
-                    ${p.items.map(i => `<li>${i.nombre_producto} x${i.cantidad}</li>`).join("")}
-                </ul>
+               <table class="pedido-tabla">
+  <thead>
+    <tr>
+      <th>Descripción</th>
+      <th>Cantidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${p.items.map(i => `
+      <tr>
+        <td>${i.nombre_producto}</td>
+        <td>${i.cantidad}</td>
+      </tr>
+    `).join("")}
+  </tbody>
+</table>
             `;
 
             grid.appendChild(card);
@@ -969,6 +988,21 @@ function renderDashboard(data) {
   const contenedor = document.getElementById("adminBody");
 
   contenedor.innerHTML = `
+  <section class="admin-dashboard">
+
+  <div class="dashboard-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="dashboard-sub">Resumen general del negocio</p>
+    </div>
+    <div class="dashboard-user">
+      <div class="user-avatar">A</div>
+      <div>
+        <strong>Administrador</strong>
+        <span>Panel principal</span>
+      </div>
+    </div>
+  </div>
     <section class="admin-dashboard">
 
       <div class="dashboard-filtros">
@@ -1063,6 +1097,9 @@ renderTopIngresos(data.productos_mas_ingresos);
     );
   };
 }
+
+
+
 function renderTopVendidos(productos) {
   const contenedor = document.getElementById("topVendidos");
   contenedor.innerHTML = "";
@@ -1904,3 +1941,4 @@ document.addEventListener("DOMContentLoaded", function () {
 window.cargarSeccion = cargarSeccion;
 window.toggleSidebar = toggleSidebar;
 window.logout = logout;
+

@@ -4,15 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{% block title %}Restaurante{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/app.css' %}">
+          <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}">
    <link rel="stylesheet" href="{% static 'css/modalmenu.css' %}">
-    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+
       <link rel="stylesheet" href="{% static 'css/seccion.css' %}">
-        <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}">
+      
           <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
   <link rel="stylesheet" href="{% static 'css/experiencias.css' %}">
  <link rel="stylesheet" href="{% static 'css/pos.css' %}">
   <link rel="stylesheet" href="{% static 'css/analytics.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reportes.css' %}">
+        <link rel="stylesheet" href="{% static 'css/productos.css' %}">
 
 <!-- 1️⃣ jQuery primero -->
 
@@ -53,8 +58,10 @@
 </a>
 
       
-    <div id="userMenuContainer">
-        <button class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</button>
+
+
+    <div id="userMenuContainer" >
+      <a href="#" class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</a>
     </div>
 
 
@@ -84,7 +91,7 @@
 
     <div class="carrito-footer">
         <p class="total">
-            Total: $<span id="total">0</span>
+            Total: <span id="total">0</span>
         </p>
 
    <button onclick="abrirCheckout()">Ordenar ahora</button>
@@ -135,10 +142,10 @@
       </p>
 
       <div class="modal-actions">
-        <button type="button" onclick="cerrarModal()">Cancelar</button>
-        <button type="submit" class="btn-primary">
-          Confirmar pedido
-        </button>
+        <button type="button" onclick="cerrarModalconfirmarpedido()">Cancelar</button>
+      <button type="submit" class="btn-confirmar-pedido">
+    Confirmar pedido
+  </button>
       </div>
     </form>
   </div>
@@ -360,28 +367,38 @@
         </div>
 
         <!-- INFO -->
-        <div class="perfil-info">
-          <label>Usuario</label>
-          <input id="perfil_username" readonly>
+     <div class="perfil-info">
 
-          <label>Email</label>
-          <input id="perfil_email" readonly>
+  <div class="perfil-info-grid">
 
-          <label>Nombre</label>
-          <input id="perfil_nombre" required>
+    <div class="info-col">
+      <label>Usuario</label>
+      <input id="perfil_username" readonly>
 
-          <label>Apellido</label>
-          <input id="perfil_apellido" required>
+      <label>Nombre</label>
+      <input id="perfil_nombre" required>
 
-          <label>Teléfono</label>
-          <input id="perfil_telefono">
+      <label>Teléfono</label>
+      <input id="perfil_telefono">
 
-          <label>Dirección</label>
-          <input id="perfil_direccion">
+      <label>Rol</label>
+      <input id="perfil_rol" readonly>
+    </div>
 
-          <label>Rol</label>
-          <input id="perfil_rol" readonly>
-        </div>
+    <div class="info-col">
+      <label>Email</label>
+      <input id="perfil_email" readonly>
+
+      <label>Apellido</label>
+      <input id="perfil_apellido" required>
+
+      <label>Dirección</label>
+      <input id="perfil_direccion">
+    </div>
+
+  </div>
+
+</div>
 
       </div>
 
@@ -427,16 +444,23 @@
 <div id="menuModal" class="menu-modal">
   <div class="menu-modal-content">
 
-     <button class="modal-close" onclick="cerrarMenuModal()">×</button>
+    <button class="modal-close" onclick="cerrarMenuModal()">×</button>
 
-    <h2>🍽️ Nuestro Menú</h2>
+    <div class="modal-header">
+      <h2>🍽️ Nuestro Menú</h2>
 
-    <!-- 👉 AQUÍ SE CLONAN LOS PRODUCTOS -->
+      <input 
+        type="text" 
+        id="buscadorMenu" 
+        placeholder="Buscar producto..."
+        oninput="filtrarProductosModal(this.value)"
+      >
+    </div>
+
     <div class="productos" id="productosModal"></div>
 
   </div>
 </div>
-
 
 
 <!-- MODAL CONTACTO -->
@@ -632,16 +656,18 @@
 
 
 {% block extra_js %}
-<script src="{% static 'js/admin-panel.js' %}"></script>
+
 <script src="{% static 'js/perfil.js' %}"></script>
 <script src="{% static 'js/reservas.js' %}"></script>
 <script src="{% static 'js/empresa.js' %}"></script>
 <script src="{% static 'js/productos.js' %}"></script>
 <script src="{% static 'js/caja.js' %}"></script>
-<script src="{% static 'js/app.js' %}"></script>
+
 <script src="{% static 'js/pos.js' %}"></script>
 <script src="{% static 'js/analytics.js' %}"></script>
-
+<script src="{% static 'js/reportes.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/admin-panel.js' %}"></script>
 {% endblock %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

@@ -190,6 +190,8 @@
     inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 
   animation: modalEntrada 0.35s ease;
+      margin-top: 80px;
+    overflow: auto;
 }
 
 .contacto-card::-webkit-scrollbar {
@@ -379,16 +381,29 @@
 
 
 @media (max-width: 768px) {
+
   .contacto-layout {
     grid-template-columns: 1fr;
   }
 
   .contacto-card {
     max-width: 100%;
-    padding: 22px;
+    padding: 20px;
+    margin-top: 0;
+    border-radius: 14px;
   }
 
   .contacto-map-col {
-    min-height: 240px;
+    min-height: 220px;
   }
+
+  .contacto-actions {
+    flex-direction: column;
+  }
+
+  .btn-enviar,
+  .btn-cancelar {
+    min-height: 44px;
+  }
+
 }

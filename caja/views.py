@@ -329,15 +329,21 @@ class OrdenesParaCajaAPIView(APIView):
 from caja.models import Venta
 from core.models import Empresa  # 👈 IMPORTANTE
 
+
 def ticket_venta(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
 
     # Traer empresa activa
     empresa = Empresa.objects.filter(activo=True).first()
-    print("la venta",venta)
+
     html = render_to_string("ticket.html", {
         "venta": venta,
-        "empresa": empresa  # 👈 la enviamos al template
+        "empresa": empresa,  # 👈 la enviamos al template
+        "usuario": request.user
+
+
+
+        
     })
 
     return HttpResponse(html)

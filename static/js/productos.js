@@ -60,30 +60,40 @@ console.log ("categoria", productos)
                 <h2 id="modalTitulo">Crear Producto</h2>
 
                 <form id="formProducto">
-                    <input type="hidden" id="productoId">
 
-                    <label>Nombre</label>
-                    <input type="text" id="nombreProducto" required>
+    <input type="hidden" id="productoId">
 
-                    <label>Descripción</label>
-                    <textarea id="descripcionProducto"></textarea>
+    <div class="form-grid">
 
-                    <label>Precio</label>
-                    <input type="number" step="0.01" id="precioProducto" required>
+        <div class="form-col">
+            <label>Nombre</label>
+            <input type="text" id="nombreProducto" required>
 
-                    <label>Categoría</label>
-                    <select id="categoriaProducto"></select>
+            <label>Precio</label>
+            <input type="number" step="0.01" id="precioProducto" required>
 
-                    <label>Imagen</label>
-                    <input type="file" id="imagenProducto">
+            <label>Categoría</label>
+            <select id="categoriaProducto"></select>
+        </div>
 
-                    <label>
-                        <input type="checkbox" id="disponibleProducto" checked>
-                        Disponible
-                    </label>
+        <div class="form-col">
+            <label>Descripción</label>
+            <textarea id="descripcionProducto"></textarea>
 
-                    <button type="submit" class="btn-guardar">Guardar</button>
-                </form>
+            <label>Imagen</label>
+            <input type="file" id="imagenProducto">
+
+            <label class="checkbox-label">
+                <input type="checkbox" id="disponibleProducto" checked>
+                Disponible
+            </label>
+        </div>
+
+    </div>
+
+    <button type="submit" class="btn-guardar">Guardar</button>
+
+</form>
             </div>
         </div>
     `;
@@ -109,12 +119,12 @@ function mostrarFormularioProducto(producto = null) {
     `;
 }
 function abrirModalProducto() {
-    document.getElementById("modalProducto").style.display = "block";
+    const modal = document.getElementById("modalProducto");
+    modal.style.display = "flex";  // IMPORTANTE
     document.getElementById("modalTitulo").textContent = "Crear Producto";
     document.getElementById("formProducto").reset();
     document.getElementById("productoId").value = "";
 }
-
 function cerrarModalProducto() {
     document.getElementById("modalProducto").style.display = "none";
 }

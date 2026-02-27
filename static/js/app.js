@@ -651,7 +651,10 @@ function formatearNumeroTarjeta(input) {
     value = value.replace(/(.{4})/g, "$1 ").trim();
     input.value = value;
 }
-
+function cerrarModalconfirmarpedido() {
+  const modal = document.getElementById("checkoutModal");
+  modal.style.display = "none";
+}
 async function confirmarPago(ordenId) {
 
     const metodo = document.getElementById("metodoPago").value;
@@ -1212,13 +1215,6 @@ function cerrarContacto() {
 }
 
 
-
-
-
-function cerrarMenuModal() {
-  document.getElementById("menuModal").classList.remove("active");
-}
-
 function abrirMenuModal() {
   const destino = document.getElementById("productosModal");
 
@@ -1259,7 +1255,70 @@ function abrirMenuModal() {
   });
 
   document.getElementById("menuModal").classList.add("active");
+  document.getElementById("buscadorMenu").value = "";
 }
+
+function filtrarProductosModal(texto) {
+  const destino = document.getElementById("productosModal");
+  const filtro = texto.toLowerCase();
+
+  destino.innerHTML = "";
+
+  const filtrados = productosGlobal.filter(prod =>
+    prod.nombre.toLowerCase().includes(filtro) ||
+    (prod.descripcion && prod.descripcion.toLowerCase().includes(filtro))
+  );
+
+  filtrados.forEach(prod => {
+    const article = document.createElement("article");
+    const imagen = prod.imagen ? prod.imagen : "/media/productos/default.png";
+
+    article.className = "producto-card";
+    article.innerHTML = `
+      <img src="${imagen}" class="producto-img">
+
+      <div class="producto-info">
+        <h3>${prod.nombre}</h3>
+        <p>${prod.descripcion || ""}</p>
+
+        <div class="producto-footer">
+          <span class="producto-precio">${formatearMoneda(prod.precio)}</span>
+
+          <div class="cantidad-control">
+            <input type="number" min="1" value="1" id="modal-qty-${prod.id}">
+            <button class="btn-agregar" onclick="agregarCarrito(
+              ${prod.id},
+              '${prod.nombre}',
+              ${prod.precio},
+              'modal-qty-${prod.id}'
+            )">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    destino.appendChild(article);
+  });
+}
+
+
+function cerrarMenuModal() {
+  document.getElementById("menuModal").classList.remove("active");
+}
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") {
+    cerrarMenuModal();
+  }
+});
+const menuModal = document.getElementById("menuModal");
+
+menuModal.addEventListener("click", function(e) {
+  if (e.target === menuModal) {
+    cerrarMenuModal();
+  }
+});
 
 
 async function cargarEmpresaPublica() {

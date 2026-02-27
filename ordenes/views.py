@@ -17,6 +17,7 @@ from .models import Orden
 from .serializers import OrdenSerializer
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
+from emails.services import notificar_nueva_orden
 
 
 # 🛒 Crear orden (usuario logueado o invitado)
@@ -37,7 +38,10 @@ class OrdenListCreateAPIView(generics.ListCreateAPIView):
         Si no, se guarda como invitado (usuario = None)
         """
         user = self.request.user if self.request.user.is_authenticated else None
-        serializer.save(usuario=user)
+
+        orden = serializer.save(usuario=user)
+        notificar_nueva_orden(orden)
+       # serializer.save(usuario=user)
 
 
 # 👤 Ver solo las órdenes del usuario logueado
@@ -137,6 +141,9 @@ class AdminOrdenDetailAPIView(RetrieveAPIView):
 
 
 
+from emails.services import notificar_cambio_estado_orden
+
+
 class AdminCambiarEstadoOrdenAPIView(UpdateAPIView):
     queryset = Orden.objects.all()
     serializer_class = OrdenAdminSerializer
@@ -146,15 +153,25 @@ class AdminCambiarEstadoOrdenAPIView(UpdateAPIView):
         orden = self.get_object()
         nuevo_estado = request.data.get("estado")
 
-        estados_validos = ["pendiente", "preparando", "entregado"]
+        estados_validos = ["preparando", "entregado"]
 
         if nuevo_estado not in estados_validos:
             return Response({"error": "Estado inválido"}, status=400)
 
+        # 🔥 Solo notificar si realmente cambió
+        if orden.estado == nuevo_estado:
+            return Response({"mensaje": "El estado ya es ese"}, status=200)
+
         orden.estado = nuevo_estado
         orden.save()
 
-        return Response({"mensaje": "Estado actualizado", "estado": orden.estado})
+        # 🚀 Notificar solo si es preparando o entregado
+        notificar_cambio_estado_orden(orden)
+
+        return Response({
+            "mensaje": "Estado actualizado",
+            "estado": orden.estado
+        })
 
 
 
