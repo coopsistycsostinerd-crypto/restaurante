@@ -1,218 +1,92 @@
-from django.core.mail import send_mail
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.conf import settings
-from django.utils.timezone import now
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.conf import settings
-from django.utils.timezone import now
-
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.conf import settings
-from django.utils.timezone import now
-from django.utils.timezone import localtime
-def enviar_correo_bienvenida(usuario):
-    asunto = "Bienvenido a nuestro sistema"
-
-    html_content = render_to_string(
-        "emails/bienvenida.html",
-        {
-            "nombre": usuario.nombre
-        }
-    )
-
-    email = EmailMultiAlternatives(
-        asunto,
-        "",  # texto plano opcional
-        settings.EMAIL_HOST_USER,
-        [usuario.email],
-    )
-
-    email.attach_alternative(html_content, "text/html")
-    email.send()
-
-
-
-
-
-import threading
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.timezone import now
-from django.conf import settings
-
-
-
-
+# utils/email_service.py
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
-from django.utils.timezone import now
 from django.conf import settings
+import traceback
+
+
+def enviar_email_sendgrid(destinatario, asunto, template, contexto):
+    try:
+        html_content = render_to_string(template, contexto)
+
+        message = Mail(
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to_emails=destinatario,
+            subject=asunto,
+            html_content=html_content,
+        )
+
+        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
+        response = sg.send(message)
+
+        print("📨 STATUS:", response.status_code)
+
+        return response.status_code == 202
+
+    except Exception:
+        print("❌ ERROR ENVIANDO EMAIL")
+        traceback.print_exc()
+        return False
+    
+from django.utils.timezone import now
+
+
+def enviar_correo_bienvenida(usuario):
+    return enviar_email_sendgrid(
+        destinatario=usuario.email,
+        asunto="Bienvenido a nuestro sistema",
+        template="emails/bienvenida.html",
+        contexto={
+            "nombre": usuario.nombre
+        }
+    )
 
 
 def notificar_login(usuario, request=None):
-    print("=== USANDO SENDGRID API ===", flush=True)
-
     ip = request.META.get("REMOTE_ADDR") if request else "No disponible"
 
-    contexto = {
-        "nombre": usuario.nombre,
-        "fecha": now().strftime("%d/%m/%Y %H:%M"),
-        "ip": ip,
-    }
-
-    html_content = render_to_string("emails/login.html", contexto)
-
-    message = Mail(
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to_emails=usuario.email,
-        subject="Nuevo inicio de sesión",
-        html_content=html_content,
+    return enviar_email_sendgrid(
+        destinatario=usuario.email,
+        asunto="Nuevo inicio de sesión",
+        template="emails/login.html",
+        contexto={
+            "nombre": usuario.nombre,
+            "fecha": now().strftime("%d/%m/%Y %H:%M"),
+            "ip": ip,
+        }
     )
-
-    try:
-        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
-        response = sg.send(message)
-        print("STATUS CODE:", response.status_code, flush=True)
-    except Exception as e:
-        print("ERROR SENDGRID API:", e, flush=True)
- 
-
 
 def notificar_cambio_password(usuario):
-    print("🔥 Iniciando notificar_cambio_password")
-
-    asunto = "Tu contraseña fue actualizada"
-
-    contexto = {
-        "nombre": usuario.nombre,
-        "fecha": now().strftime("%d/%m/%Y %H:%M"),
-    }
-
-    html_content = render_to_string(
-        "emails/password_changed.html",
-        contexto
+    return enviar_email_sendgrid(
+        destinatario=usuario.email,
+        asunto="Tu contraseña fue actualizada",
+        template="emails/password_changed.html",
+        contexto={
+            "nombre": usuario.nombre,
+            "fecha": now().strftime("%d/%m/%Y %H:%M"),
+        }
     )
-
-    email = EmailMessage(
-        subject=asunto,
-        body=html_content,
-        from_email=settings.EMAIL_HOST_USER,
-        to=[usuario.email],
-    )
-
-    email.content_subtype = "html"
-
-    resultado = email.send()
-    print("Resultado envío password:", resultado)
-
-
-
-
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
-from django.conf import settings
-import traceback
-
 
 def notificar_nueva_orden(orden):
-  
+    if not orden.usuario or not orden.usuario.email:
+        return False
 
-    try:
-  
-        html_content = render_to_string(
-            "emails/nueva_orden.html",
-            {"orden": orden}
-        )
-    
-
-    except Exception as e:
-       
-        traceback.print_exc()
-        return
-
-    try:
-      
-        email = EmailMultiAlternatives(
-            subject=f"Nueva Orden #{orden.id}",
-            body="Nueva orden recibida",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[orden.usuario.email],
-        )
-
-        email.attach_alternative(html_content, "text/html")
-
-        print("🚀 Enviando email...")
-        resultado = email.send()
-
-     
-
-        if resultado == 1:
-            print("✅ EMAIL ENVIADO CORRECTAMENTE")
-        else:
-            print("⚠️ Email NO enviado (resultado diferente de 1)")
-
-    except Exception as e:
-    
-        traceback.print_exc()
-
- 
-    asunto = f"Nueva Orden #{orden.id}"
-
-    html_content = render_to_string(
-        "emails/nueva_orden.html",
-        {"orden": orden}
+    return enviar_email_sendgrid(
+        destinatario=orden.usuario.email,
+        asunto=f"Nueva Orden #{orden.id}",
+        template="emails/nueva_orden.html",
+        contexto={"orden": orden}
     )
-
-    email = EmailMultiAlternatives(
-        asunto,
-        "Nueva orden recibida",
-        settings.DEFAULT_FROM_EMAIL,
-        [settings.DEFAULT_FROM_EMAIL],
-    )
-
-    email.attach_alternative(html_content, "text/html")
-    email.send()
-
-
-
-    from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
-from django.conf import settings
-import traceback
-
 
 def notificar_cambio_estado_orden(orden):
-    print("\n🔥 === NOTIFICANDO CAMBIO DE ESTADO ===")
-    print("Orden:", orden.id)
-    print("Nuevo estado:", orden.estado)
-
     if not orden.usuario or not orden.usuario.email:
-        print("❌ La orden no tiene usuario con email")
-        return
+        return False
 
-    try:
-        html_content = render_to_string(
-            "emails/cambio_estado_orden.html",
-            {"orden": orden}
-        )
-
-        email = EmailMultiAlternatives(
-            subject=f"Actualización de tu Orden #{orden.id}",
-            body="Tu orden cambió de estado",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[orden.usuario.email],
-        )
-
-        email.attach_alternative(html_content, "text/html")
-
-        print("📧 Enviando a:", orden.usuario.email)
-        resultado = email.send()
-        print("Resultado envío:", resultado)
-
-    except Exception:
-        traceback.print_exc()
+    return enviar_email_sendgrid(
+        destinatario=orden.usuario.email,
+        asunto=f"Actualización de tu Orden #{orden.id}",
+        template="emails/cambio_estado_orden.html",
+        contexto={"orden": orden}
+    )
