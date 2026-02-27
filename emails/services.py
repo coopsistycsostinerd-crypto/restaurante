@@ -44,19 +44,25 @@ from django.utils.timezone import now
 from django.conf import settings
 
 
-def _enviar_email_async(email):
-    try:
-        result = email.send()
-        print("RESULTADO ENVÍO:", result)
-    except Exception as e:
-        print("ERROR SMTP:", e)
+
+
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.timezone import now
+from django.conf import settings
 
 
 def notificar_login(usuario, request=None):
+    print("=== INICIANDO notificar_login ===", flush=True)
 
     asunto = "Nuevo inicio de sesión"
 
     ip = request.META.get("REMOTE_ADDR") if request else "No disponible"
+
+    print("Usuario:", usuario, flush=True)
+    print("Email destino:", usuario.email, flush=True)
+    print("From email:", settings.DEFAULT_FROM_EMAIL, flush=True)
 
     contexto = {
         "nombre": usuario.nombre,
@@ -64,23 +70,31 @@ def notificar_login(usuario, request=None):
         "ip": ip,
     }
 
-    html_content = render_to_string("emails/login.html", contexto)
+    try:
+        html_content = render_to_string("emails/login.html", contexto)
+        print("Template renderizado correctamente", flush=True)
+    except Exception as e:
+        print("ERROR RENDER TEMPLATE:", e, flush=True)
+        return
 
     email = EmailMultiAlternatives(
-        asunto,
-        "",  # texto plano opcional
-        settings.DEFAULT_FROM_EMAIL,
-        [usuario.email],
+        subject=asunto,
+        body="",  # texto plano opcional
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[usuario.email],
     )
 
     email.attach_alternative(html_content, "text/html")
 
-    # 🔥 AQUÍ es donde lo conectamos
-    threading.Thread(
-        target=_enviar_email_async,
-        args=(email,),
-      #  daemon=True
-    ).start()
+    print("ANTES DE ENVIAR EMAIL", flush=True)
+
+    try:
+        resultado = email.send(fail_silently=False)
+        print("EMAIL ENVIADO, RESULTADO:", resultado, flush=True)
+    except Exception as e:
+        print("ERROR SMTP:", e, flush=True)
+
+    print("=== FIN notificar_login ===", flush=True)
  
 
 
