@@ -22,7 +22,9 @@ class LoginAPIView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data["user"]
             login(request, user)
+            print("ANTES DE LLAMAR NOTIFICAR_LOGIN", flush=True)
             notificar_login(user)
+            print("DESPUÉS DE LLAMAR NOTIFICAR_LOGIN", flush=True)
             # Crear o recuperar token
             token, _ = Token.objects.get_or_create(user=user)
 
