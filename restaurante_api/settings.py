@@ -166,12 +166,25 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#EMAIL_HOST = "smtp.gmail.com"
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+
+# EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
+# EMAIL_HOST_PASSWORD = "fxgh hytf ohxz tzxi"
+
+# DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
+
+import os
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
-EMAIL_HOST_PASSWORD = "fxgh hytf ohxz tzxi"
+EMAIL_HOST_USER = "Vagos"
+EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_API_KEY")
 
-DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
