@@ -47,22 +47,17 @@ from django.conf import settings
 
 
 
-from django.core.mail import EmailMultiAlternatives
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.conf import settings
 
 
 def notificar_login(usuario, request=None):
-    print("=== INICIANDO notificar_login ===", flush=True)
-
-    asunto = "Nuevo inicio de sesión"
+    print("=== USANDO SENDGRID API ===", flush=True)
 
     ip = request.META.get("REMOTE_ADDR") if request else "No disponible"
-
-    print("Usuario:", usuario, flush=True)
-    print("Email destino:", usuario.email, flush=True)
-    print("From email:", settings.DEFAULT_FROM_EMAIL, flush=True)
 
     contexto = {
         "nombre": usuario.nombre,
@@ -70,31 +65,21 @@ def notificar_login(usuario, request=None):
         "ip": ip,
     }
 
-    try:
-        html_content = render_to_string("emails/login.html", contexto)
-        print("Template renderizado correctamente", flush=True)
-    except Exception as e:
-        print("ERROR RENDER TEMPLATE:", e, flush=True)
-        return
+    html_content = render_to_string("emails/login.html", contexto)
 
-    email = EmailMultiAlternatives(
-        subject=asunto,
-        body="",  # texto plano opcional
+    message = Mail(
         from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[usuario.email],
+        to_emails=usuario.email,
+        subject="Nuevo inicio de sesión",
+        html_content=html_content,
     )
 
-    email.attach_alternative(html_content, "text/html")
-
-    print("ANTES DE ENVIAR EMAIL", flush=True)
-
     try:
-        resultado = email.send(fail_silently=False)
-        print("EMAIL ENVIADO, RESULTADO:", resultado, flush=True)
+        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
+        response = sg.send(message)
+        print("STATUS CODE:", response.status_code, flush=True)
     except Exception as e:
-        print("ERROR SMTP:", e, flush=True)
-
-    print("=== FIN notificar_login ===", flush=True)
+        print("ERROR SENDGRID API:", e, flush=True)
  
 
 
