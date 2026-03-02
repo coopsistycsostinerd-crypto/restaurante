@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Reserva recibida</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.05);">
+
+<tr>
+<td style="background:#111827;padding:25px;text-align:center;color:white;">
+<h1 style="margin:0;font-size:22px;">🍽️ Reserva Recibida</h1>
+</td>
+</tr>
+
+<tr>
+<td style="padding:30px;color:#374151;">
+
+<p style="font-size:16px;">
+Hola <strong>{{ reserva.nombre }}</strong>,
+</p>
+
+<p>
+Hemos recibido tu reserva correctamente. Nuestro equipo la revisará y pronto será confirmada.
+</p>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:25px 0;">
+
+<h3 style="margin-bottom:10px;">📅 Detalles de la reserva</h3>
+
+<p><strong>Fecha:</strong> {{ reserva.fecha }}</p>
+<p><strong>Hora:</strong> {{ reserva.hora_inicio }}</p>
+<p><strong>Mesas:</strong> {{ reserva.mesas }}</p>
+<p><strong>Sillas:</strong> {{ reserva.sillas }}</p>
+<p><strong>Depósito:</strong> RD$ {{ reserva.monto_deposito }}</p>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:25px 0;">
+
+<p style="font-size:14px;color:#6b7280;">
+Te notificaremos cuando tu reserva sea confirmada.
+</p>
+
+</td>
+</tr>
+
+<tr>
+<td style="background:#f9fafb;padding:20px;text-align:center;font-size:12px;color:#6b7280;">
+© {{ reserva.fecha|date:"Y" }} Restaurante — Todos los derechos reservados
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

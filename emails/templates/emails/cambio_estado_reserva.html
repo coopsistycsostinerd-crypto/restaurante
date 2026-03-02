@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Actualización de Reserva</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="620" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,0.08);">
+
+<!-- HEADER -->
+<tr>
+<td style="background:
+{% if reserva.estado == 'confirmada' %}
+linear-gradient(90deg,#16a34a,#22c55e);
+{% elif reserva.estado == 'cancelada' %}
+linear-gradient(90deg,#dc2626,#ef4444);
+{% else %}
+linear-gradient(90deg,#111827,#1f2937);
+{% endif %}
+padding:30px;text-align:center;color:white;">
+
+<h1 style="margin:0;font-size:24px;letter-spacing:1px;">
+{% if reserva.estado == 'confirmada' %}
+✅ RESERVA CONFIRMADA
+{% elif reserva.estado == 'cancelada' %}
+❌ RESERVA CANCELADA
+{% elif reserva.estado == 'cerrada' %}
+🔒 RESERVA CERRADA
+{% else %}
+📌 ACTUALIZACIÓN DE RESERVA
+{% endif %}
+</h1>
+
+</td>
+</tr>
+
+<!-- BODY -->
+<tr>
+<td style="padding:35px;color:#374151;">
+
+<p style="font-size:17px;margin-top:0;">
+Hola <strong>{{ reserva.nombre }}</strong>,
+</p>
+
+{% if reserva.estado == "confirmada" %}
+<p style="font-size:15px;">
+Tu reserva ha sido confirmada 🎉  
+Te esperamos para brindarte una experiencia increíble.
+</p>
+{% elif reserva.estado == "cancelada" %}
+<p style="font-size:15px;">
+Tu reserva fue cancelada. Si necesitas ayuda puedes contactarnos.
+</p>
+{% elif reserva.estado == "cerrada" %}
+<p style="font-size:15px;">
+Tu reserva fue cerrada automáticamente.
+</p>
+{% else %}
+<p style="font-size:15px;">
+Tu reserva cambió de estado.
+</p>
+{% endif %}
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:30px 0;">
+
+<h3 style="margin-bottom:15px;color:#111827;">📅 Detalles de tu Reserva</h3>
+
+<table width="100%" cellpadding="8" cellspacing="0" style="background:#f9fafb;border-radius:8px;">
+<tr>
+<td><strong>Fecha:</strong></td>
+<td>{{ reserva.fecha }}</td>
+</tr>
+<tr>
+<td><strong>Hora:</strong></td>
+<td>{{ reserva.hora_inicio }}</td>
+</tr>
+<tr>
+<td><strong>Mesas:</strong></td>
+<td>{{ reserva.mesas }}</td>
+</tr>
+<tr>
+<td><strong>Sillas:</strong></td>
+<td>{{ reserva.sillas }}</td>
+</tr>
+<tr>
+<td><strong>Estado:</strong></td>
+<td><strong>{{ reserva.estado|title }}</strong></td>
+</tr>
+</table>
+
+<!-- BOTONES -->
+<div style="margin-top:35px;text-align:center;">
+
+<a href="https://wa.me/1809XXXXXXX"
+style="background:#25D366;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;
+display:inline-block;margin:5px;font-weight:bold;">
+💬 WhatsApp
+</a>
+
+<a href="https://maps.google.com/?q=TU+DIRECCION+AQUI"
+style="background:#2563eb;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;
+display:inline-block;margin:5px;font-weight:bold;">
+📍 Ver en Google Maps
+</a>
+
+</div>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:35px 0;">
+
+<p style="font-size:14px;color:#6b7280;">
+📍 Dirección: Calle Ejemplo #123, Santo Domingo  
+📞 Teléfono: (809) 000-0000  
+✉ Email: reservas@turestaurante.com
+</p>
+
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td style="background:#111827;padding:20px;text-align:center;color:#9ca3af;font-size:12px;">
+© {{ reserva.fecha|date:"Y" }} Tu Restaurante — Todos los derechos reservados
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
