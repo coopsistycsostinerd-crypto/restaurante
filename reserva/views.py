@@ -95,6 +95,10 @@ def crear_reserva(request):
         reserva.monto_deposito = DEPOSITO_FIJO
         reserva.estado = "pendiente"
         reserva.save()
+        reserva.user = request.user
+
+        # 🔥 Usar email del usuario logueado
+        reserva.email = request.user.email
         notificar_nueva_reserva(reserva)
 
         # 🔥 Creamos Orden asociada
