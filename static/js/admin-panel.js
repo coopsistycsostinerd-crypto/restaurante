@@ -6,7 +6,9 @@ let usuarioEditandoId = null;
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+  //  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
 
     if (!user || (!user.is_staff && !user.is_superuser)) {
      //   alert("No tienes permisos para acceder aquí");
@@ -17,7 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 async function cargarClientesAdmin() {
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const cuerpo = document.getElementById("adminBody");
   
     cuerpo.innerHTML = `
@@ -58,7 +61,9 @@ async function cargarClientesAdmin() {
 }
 
 async function cargarTablaUsuarios(rol) {
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
     const contenedorTabla = document.getElementById("tablaUsuarios");
 
     contenedorTabla.innerHTML = "Cargando usuarios...";
@@ -365,7 +370,8 @@ document.addEventListener("submit", async function (e) {
     }
 
     const rol = document.getElementById("rolUsuario").value;
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
 
     const data = {
         username: document.getElementById("usernameUsuario").value,
@@ -517,7 +523,8 @@ function cargarSeccion(seccion) {
 
 
 async function cargarContactoAdmin() {
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const contenedor = document.getElementById("adminBody");
 
     contenedor.innerHTML = "Cargando mensajes...";
@@ -578,7 +585,8 @@ async function cargarContactoAdmin() {
 
 
 async function marcarLeido(id, estado) {
-  const token = localStorage.getItem("token");
+ // const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   try {
     const res = await fetch(`/panel_admin/contacto/${id}/leido/`, {
@@ -609,6 +617,9 @@ async function marcarLeido(id, estado) {
 function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+
     window.location.href = "/";
 }
 
@@ -642,7 +653,9 @@ let pedidosGlobal = [];
 
 async function cargarPedidosAdmin() {
 
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
     const contenedor = document.getElementById("adminBody");
 
     contenedor.innerHTML = "Cargando pedidos...";
@@ -804,7 +817,8 @@ function filtrarPorFecha() {
 
 async function cambiarEstado(id, nuevoEstado) {
 
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     await fetch(`/api/panel-admin/ordenes/${id}/`, {
         method: "PATCH",
@@ -836,7 +850,9 @@ async function cambiarEstado(id, nuevoEstado) {
 /* RESERVAS*/
  
   async function cargarReservasAdmin() {
-    const token = localStorage.getItem("token");
+ //   const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
     const contenedor = document.getElementById("adminBody");
 
     contenedor.innerHTML = "Cargando reservas...";
@@ -896,7 +912,8 @@ async function cambiarEstado(id, nuevoEstado) {
     }
 }
 async function cambiarEstadoReserva(reservaId, nuevoEstado) {
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
         await fetch(`/api/panel-admin/reservas/${reservaId}/estado/`, {
@@ -920,7 +937,9 @@ let reservasChart = null;
 let dashboardTimer = null;
 
 async function cargarDashboardAdmin(desde = "", hasta = "") {
-  const token = localStorage.getItem("token");
+ // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+ 
 
   let url = "/dashboard/";
   if (desde && hasta) {
@@ -970,7 +989,8 @@ function crearKPI(contenedor, titulo, valor, prefijo = "") {
   }, 20);
 }
 async function cargarDashboardAdminFiltrado(desde, hasta) {
-  const token = localStorage.getItem("token");
+ // const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const res = await fetch(
     `/dashboard/?from=${desde}&to=${hasta}`,
@@ -1162,7 +1182,8 @@ function renderTopIngresos(productos) {
 
 async function cargarPuntodeVenta() {
 
-    const token = localStorage.getItem("token");
+    //const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const contenedor = document.getElementById("adminBody");
 
     contenedor.innerHTML = "Cargando productos...";
@@ -1392,7 +1413,8 @@ function abrirModalCobro() {
 let clientesGlobal = [];
 
 async function cargarClientesconfirmacion() {
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+   const token = sessionStorage.getItem("token");
 
     const res = await fetch("/api/panel-admin/clientes/", {
         headers: { "Authorization": `Token ${token}` }
@@ -1542,7 +1564,8 @@ async function confirmarCobro() {
 
     try {
 
-        const token = localStorage.getItem("token");
+      //  const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const metodo = document.getElementById("metodoPago").value;
         const nombre = document.getElementById("nuevoNombre").value;
         const telefono = document.getElementById("nuevoTelefono").value;
@@ -1757,7 +1780,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function cobrarVenta() {
 
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if (!carrito2.length) {
         alert("No hay productos en la venta");

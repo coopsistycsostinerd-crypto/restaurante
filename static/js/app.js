@@ -32,7 +32,9 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 
 
 function usuarioLogueado() {
-    return !!localStorage.getItem("token");
+   
+  //  return !!localStorage.getItem("token");
+    return !!sessionStorage.getItem("token");
 }
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -77,7 +79,7 @@ async function agregarCarrito(id, nombre, precio, inputId) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Token ${localStorage.getItem("token")}`
+                "Authorization": `Token ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 producto_id: id,
@@ -109,7 +111,7 @@ async function aumentar(id) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Token ${localStorage.getItem("token")}`
+                "Authorization": `Token ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 producto_id: id,
@@ -136,7 +138,7 @@ async function disminuir(id) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Token ${localStorage.getItem("token")}`
+                "Authorization": `Token ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({ item_id: item.backend_id })
         });
@@ -207,7 +209,7 @@ async function eliminar(id) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Token ${localStorage.getItem("token")}`
+                "Authorization": `Token ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({ item_id: item.backend_id })
         });
@@ -476,7 +478,7 @@ function toggleDireccion() {
 
 
 function precargarDatos() {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
     if (!user) return;
 
     nombre.value = user.nombre || "";
@@ -515,8 +517,8 @@ function conectarCheckoutForm() {
         };
 
         try {
-
-            const token = localStorage.getItem("token");
+ const token = sessionStorage.getItem("token");
+      //      const token = localStorage.getItem("token");
 
             const res = await fetch(`${API_BASE}/ordenes/`, {
                 method: "POST",
@@ -741,8 +743,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Guardar token y datos de usuario
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify({
+         //   localStorage.setItem("token", data.token);
+         sessionStorage.setItem("token", data.token);
+
+         // localStorage.setItem("user", JSON.stringify({
+                 sessionStorage.setItem("user", JSON.stringify({
+
                 nombre: data.nombre,
                 apellido: data.apellido,
                 email: data.email,
@@ -772,10 +778,10 @@ renderCarrito();
     });
 });
 async function fusionarCarritoLocalConBackend() {
-    const carritoLocal = JSON.parse(localStorage.getItem("carrito")) || [];
+    const carritoLocal = JSON.parse(sessionStorage.getItem("carrito")) || [];
     if (carritoLocal.length === 0) return;
-
-    const token = localStorage.getItem("token");
+ const token = sessionStorage.getItem("token");
+ //   const token = localStorage.getItem("token");
 
     for (const item of carritoLocal) {
         await fetch("/api/carrito/agregar/", {
@@ -791,7 +797,7 @@ async function fusionarCarritoLocalConBackend() {
         });
     }
 
-    localStorage.removeItem("carrito");
+    sessionStorage.removeItem("carrito");
 }
 
 
@@ -827,7 +833,7 @@ function scrollToTop() {
 // Mostrar el menú según si hay usuario
 function actualizarMenuUsuario() {
     const container = document.getElementById("userMenuContainer");
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(sessionStorage.getItem("user"));
 
     // 🔓 SI HAY USUARIO LOGUEADO
     if (user) {
@@ -875,7 +881,8 @@ function toggleUserDropdown() {
 
 // Cerrar sesión
 async function cerrarSesion() {
-    const token = localStorage.getItem("token");
+     const token = sessionStorage.getItem("token");
+ //   const token = localStorage.getItem("token");
 
     try {
         if (token) {
@@ -894,6 +901,8 @@ async function cerrarSesion() {
     // Limpieza local (pase lo que pase arriba)
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("token");
     carrito = [];
     guardarCarrito();
     renderCarrito();
@@ -923,7 +932,9 @@ document.addEventListener("click", function (e) {
 
 
 function actualizarUIUsuario() {
-    const userData = JSON.parse(localStorage.getItem("user"));
+   // const userData = JSON.parse(localStorage.getItem("user"));
+    const userData = JSON.parse(sessionStorage.getItem("user"));
+
 
     if (!userData) return;
 
@@ -940,7 +951,8 @@ function actualizarUIUsuario() {
 
 
 async function cargarCarritoBackend() {
-    const token = localStorage.getItem("token");
+ //   const token = localStorage.getItem("token");
+     const token = sessionStorage.getItem("token");
     if (!token) return;
 
     const res = await fetch("/api/carrito/", {
@@ -961,7 +973,8 @@ async function cargarCarritoBackend() {
 
 
 async function agregarAlCarrito(producto) {
-    const token = localStorage.getItem("token");
+     const token = sessionStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
 
     if (token) {
         await fetch("/api/carrito/agregar/", {
@@ -985,7 +998,8 @@ async function agregarAlCarrito(producto) {
 
 
 async function eliminarDelCarrito(item) {
-    const token = localStorage.getItem("token");
+     const token = sessionStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
 
     if (token && item.backend_id) {
         await fetch("/api/carrito/eliminar/", {
@@ -1019,7 +1033,8 @@ function cerrarMisPedidos() {
 }
 
 async function cargarMisPedidos() {
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const contenedor = document.getElementById("listaPedidos");
 
     contenedor.innerHTML = "Cargando pedidos...";
@@ -1085,7 +1100,9 @@ function cerrarMisReservas() {
 }
 
 async function cargarMisReservas() {
-    const token = localStorage.getItem("token");
+ //   const token = localStorage.getItem("token");
+ const token = sessionStorage.getItem("token");
+
     const contenedor = document.getElementById("listaReservas");
 
     contenedor.innerHTML = "Cargando reservas...";
@@ -1495,14 +1512,14 @@ btn.addEventListener('click', () => {
   btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
 
   // guardar preferencia
-  localStorage.setItem(
+  sessionStorage.setItem(
     'theme',
     document.body.classList.contains('dark') ? 'dark' : 'light'
   );
 });
 
 // cargar preferencia
-if (localStorage.getItem('theme') === 'dark') {
+if (sessionStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
   btn.textContent = '☀️';
 }

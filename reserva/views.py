@@ -17,6 +17,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Reserva, CapacidadLocal
+from emails.services import (
+    notificar_nueva_reserva,
+    notificar_cambio_estado_reserva
+)
 
 
 @api_view(["POST"])
@@ -104,7 +108,7 @@ def crear_reserva(request):
             },
             status=status.HTTP_201_CREATED
         )
-
+        notificar_nueva_reserva(reserva)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -170,6 +174,7 @@ def cerrar_reservas_expiradas():
         r.estado = "cerrada"
         r.resultado = "no_show"
         r.save()
+        notificar_cambio_estado_reserva(r)
 
 
 
@@ -197,6 +202,7 @@ def cambiar_estado_reserva(request, reserva_id):
 
     reserva.estado = nuevo_estado
     reserva.save()
+    notificar_cambio_estado_reserva(reserva)
 
     return Response({
         "mensaje": "Estado actualizado",

@@ -4,8 +4,13 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.utils.timezone import now
 import traceback
 
+
+# =====================================================
+# 🔹 FUNCIÓN BASE PARA ENVIAR EMAIL CON SENDGRID
+# =====================================================
 
 def enviar_email_sendgrid(destinatario, asunto, template, contexto):
     try:
@@ -29,22 +34,49 @@ def enviar_email_sendgrid(destinatario, asunto, template, contexto):
         print("❌ ERROR ENVIANDO EMAIL")
         traceback.print_exc()
         return False
-    
-from django.utils.timezone import now
 
+
+# =====================================================
+# 🔹 FUNCIÓN AUXILIAR PARA OBTENER EMAIL DE UNA ORDEN
+# =====================================================
+
+def obtener_email_cliente_orden(orden):
+    """
+    Retorna el email correcto para una orden:
+    - Usuario autenticado
+    - Cliente invitado
+    """
+    if orden.usuario and orden.usuario.email:
+        return orden.usuario.email
+
+    if orden.cliente_correo:
+        return orden.cliente_correo
+
+    return None
+
+
+# =====================================================
+# 🔹 CORREOS DE USUARIO
+# =====================================================
 
 def enviar_correo_bienvenida(usuario):
+    if not usuario.email:
+        return False
+
     return enviar_email_sendgrid(
         destinatario=usuario.email,
         asunto="Bienvenido a nuestro sistema",
         template="emails/bienvenida.html",
         contexto={
-            "nombre": usuario.nombre
+            "nombre": getattr(usuario, "nombre", usuario.username)
         }
     )
 
 
 def notificar_login(usuario, request=None):
+    if not usuario.email:
+        return False
+
     ip = request.META.get("REMOTE_ADDR") if request else "No disponible"
 
     return enviar_email_sendgrid(
@@ -52,47 +84,93 @@ def notificar_login(usuario, request=None):
         asunto="Nuevo inicio de sesión",
         template="emails/login.html",
         contexto={
-            "nombre": usuario.nombre,
+            "nombre": getattr(usuario, "nombre", usuario.username),
             "fecha": now().strftime("%d/%m/%Y %H:%M"),
             "ip": ip,
         }
     )
 
+
 def notificar_cambio_password(usuario):
+    if not usuario.email:
+        return False
+
     return enviar_email_sendgrid(
         destinatario=usuario.email,
         asunto="Tu contraseña fue actualizada",
         template="emails/password_changed.html",
         contexto={
-            "nombre": usuario.nombre,
+            "nombre": getattr(usuario, "nombre", usuario.username),
             "fecha": now().strftime("%d/%m/%Y %H:%M"),
         }
     )
 
+
+# =====================================================
+# 🔹 CORREOS DE ÓRDENES
+# =====================================================
+
 def notificar_nueva_orden(orden):
 
-    # 🔥 Determinar correo correcto
-    if orden.usuario and orden.usuario.email:
-        destinatario = orden.usuario.email
-    elif orden.cliente_correo:
-        destinatario = orden.cliente_correo
-    else:
-        return False  # No hay correo disponible
+    destinatario = obtener_email_cliente_orden(orden)
+    if not destinatario:
+        return False
 
     return enviar_email_sendgrid(
         destinatario=destinatario,
         asunto=f"Confirmación de tu Orden #{orden.id}",
         template="emails/nueva_orden.html",
-        contexto={"orden": orden}
+        contexto={
+            "orden": orden
+        }
     )
 
+
 def notificar_cambio_estado_orden(orden):
-    if not orden.usuario or not orden.usuario.email:
+
+
+    destinatario = obtener_email_cliente_orden(orden)
+    if not destinatario:
         return False
 
     return enviar_email_sendgrid(
-        destinatario=orden.usuario.email,
+        destinatario=destinatario,
         asunto=f"Actualización de tu Orden #{orden.id}",
         template="emails/cambio_estado_orden.html",
-        contexto={"orden": orden}
+        contexto={
+            "orden": orden
+        }
+    )
+
+
+
+# =====================================================
+# 🔹 CORREOS DE RESERVAS
+# =====================================================
+
+def notificar_nueva_reserva(reserva):
+    if not reserva.email:
+        return False
+
+    return enviar_email_sendgrid(
+        destinatario=reserva.email,
+        asunto=f"Reserva recibida #{reserva.id}",
+        template="emails/nueva_reserva.html",
+        contexto={
+            "reserva": reserva
+        }
+    )
+
+
+def notificar_cambio_estado_reserva(reserva):
+    if not reserva.email:
+        return False
+
+    return enviar_email_sendgrid(
+        destinatario=reserva.email,
+        asunto=f"Actualización de tu reserva #{reserva.id}",
+        template="emails/cambio_estado_reserva.html",
+        contexto={
+            "reserva": reserva
+        }
     )

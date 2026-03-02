@@ -1,5 +1,6 @@
 async function cargarEmpresaAdmin() {
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const body = document.getElementById("adminBody");
 
     body.innerHTML = "Cargando datos de la empresa...";
@@ -113,7 +114,9 @@ async function cargarEmpresaAdmin() {
 }
 
 async function guardarEmpresa() {
-    const token = localStorage.getItem("token");
+
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const formData = new FormData();
 
     formData.append("nombre", empNombre.value);

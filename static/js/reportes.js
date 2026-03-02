@@ -62,7 +62,8 @@ function cambiarTipo(tipo) {
 // CARGAR DATOS DESDE API
 // =============================
 async function cargarDatosReporte() {
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const desde = document.getElementById("fechaDesde")?.value;
     const hasta = document.getElementById("fechaHasta")?.value;
 

@@ -13,7 +13,9 @@ function cerrarPerfil() {
 
 /* ---------- CARGAR PERFIL ---------- */
 async function cargarPerfil() {
-  const token = localStorage.getItem("token");
+
+ // const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const res = await fetch("/api/perfil/", {
     headers: { Authorization: "Token " + token }
@@ -36,7 +38,8 @@ async function cargarPerfil() {
 perfilForm.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const formData = new FormData();
 
   formData.append("nombre", perfil_nombre.value);
@@ -106,7 +109,8 @@ passwordForm.addEventListener("submit", async e => {
     return;
   }
 
-  const token = localStorage.getItem("token");
+  //const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
   const res = await fetch("/api/cambiar-password/", {
     method: "POST",

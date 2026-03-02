@@ -37,7 +37,10 @@ function cerrarReservaModal() {
    PRECARGAR USUARIO
 ================================ */
 function precargarDatosReserva() {
-    const user = JSON.parse(localStorage.getItem("user"));
+ //   const user = JSON.parse(localStorage.getItem("user"));
+
+const user = JSON.parse(sessionStorage.getItem("user"));
+
 console.log("el ususario", user)
     if (user) {
         reservaNombre.value = user.nombre ?? "";
@@ -145,7 +148,8 @@ if (!reservaNombre.value.trim() || !reservaTelefono.value.trim()) {
         };
 
         try {
-            const token = localStorage.getItem("token");
+          //  const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
             console.log("el payload", payload)
 
             const res = await fetch("/api/crear-reserva/", {

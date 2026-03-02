@@ -44,7 +44,8 @@ function actualizarEstadoBotones(accion) {
 // ===============================
 
 async function cargarCaja() {
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const body = document.getElementById("adminBody");
 
     body.innerHTML = "Cargando items listos para cobrar...";
@@ -146,7 +147,9 @@ function seleccionarItem(id, tipo, total) {
 
 async function crearVenta() {
 
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+
+    const token = sessionStorage.getItem("token");
 
     const res = await fetch(`/api/caja/crear-venta/`, {
         method: "POST",
@@ -178,7 +181,9 @@ async function crearVenta() {
 
 async function procesarPago(ventaId, metodo, monto, referencia) {
 
-    const token = localStorage.getItem("token");
+  //  const token = localStorage.getItem("token");
+
+    const token = sessionStorage.getItem("token");
 
     const res = await fetch(`/api/caja/agregar-pago/${ventaId}/`, {
         method: "POST",

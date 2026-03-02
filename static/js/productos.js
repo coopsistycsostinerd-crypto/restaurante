@@ -1,5 +1,6 @@
 async function cargarProductosAdmin() {
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const contenedor = document.getElementById("adminBody");
 
     contenedor.innerHTML = "Cargando productos...";
@@ -145,7 +146,8 @@ async function cargarCategoriasSelect() {
 async function guardarProducto(e) {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
     const id = document.getElementById("productoId").value;
 
     const formData = new FormData();
@@ -191,7 +193,8 @@ function editarProducto(p) {
 async function eliminarProducto(id) {
     if (!confirm("¿Eliminar este producto?")) return;
 
-    const token = localStorage.getItem("token");
+   // const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
 
     await fetch(`/api/panel-admin/productos/${id}/`, {
         method: "DELETE",
