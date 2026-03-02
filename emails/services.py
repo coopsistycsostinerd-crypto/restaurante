@@ -6,7 +6,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils.timezone import now
 import traceback
-
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
 # =====================================================
 # 🔹 FUNCIÓN BASE PARA ENVIAR EMAIL CON SENDGRID
@@ -151,15 +152,15 @@ def notificar_nueva_reserva(reserva):
     print("📩 [EMAIL] Intentando enviar nueva reserva...")
     print(f"➡ Reserva ID: {reserva.id}")
 
-    if not reserva.email:
+    if not User.email:
         print("❌ No hay email en la reserva")
         return False
 
-    print(f"📧 Enviando a: {reserva.email}")
+    print(f"📧 Enviando a: {User.email}")
     print("🧾 Template: emails/nueva_reserva.html")
 
     resultado = enviar_email_sendgrid(
-        destinatario=reserva.email,
+        destinatario=User.email,
         asunto=f"Reserva recibida #{reserva.id}",
         template="emails/nueva_reserva.html",
         contexto={
@@ -176,15 +177,15 @@ def notificar_cambio_estado_reserva(reserva):
     print(f"➡ Reserva ID: {reserva.id}")
     print(f"🔄 Nuevo estado: {reserva.estado}")
 
-    if not reserva.email:
+    if not User.email:
         print("❌ No hay email en la reserva")
         return False
 
-    print(f"📧 Enviando a: {reserva.email}")
+    print(f"📧 Enviando a: {User.email}")
     print("🧾 Template: emails/cambio_estado_reserva.html")
 
     resultado = enviar_email_sendgrid(
-        destinatario=reserva.email,
+        destinatario=User.email,
         asunto=f"Actualización de tu reserva #{reserva.id}",
         template="emails/cambio_estado_reserva.html",
         contexto={
