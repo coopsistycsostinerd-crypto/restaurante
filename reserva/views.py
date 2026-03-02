@@ -95,6 +95,7 @@ def crear_reserva(request):
         reserva.monto_deposito = DEPOSITO_FIJO
         reserva.estado = "pendiente"
         reserva.save()
+        notificar_nueva_reserva(reserva)
 
         # 🔥 Creamos Orden asociada
    
@@ -108,7 +109,7 @@ def crear_reserva(request):
             },
             status=status.HTTP_201_CREATED
         )
-        notificar_nueva_reserva(reserva)
+        
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

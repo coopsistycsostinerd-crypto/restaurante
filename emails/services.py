@@ -147,12 +147,18 @@ def notificar_cambio_estado_orden(orden):
 # =====================================================
 # 🔹 CORREOS DE RESERVAS
 # =====================================================
-
 def notificar_nueva_reserva(reserva):
+    print("📩 [EMAIL] Intentando enviar nueva reserva...")
+    print(f"➡ Reserva ID: {reserva.id}")
+
     if not reserva.email:
+        print("❌ No hay email en la reserva")
         return False
 
-    return enviar_email_sendgrid(
+    print(f"📧 Enviando a: {reserva.email}")
+    print("🧾 Template: emails/nueva_reserva.html")
+
+    resultado = enviar_email_sendgrid(
         destinatario=reserva.email,
         asunto=f"Reserva recibida #{reserva.id}",
         template="emails/nueva_reserva.html",
@@ -161,12 +167,23 @@ def notificar_nueva_reserva(reserva):
         }
     )
 
+    print(f"✅ Resultado envío nueva reserva: {resultado}")
+    return resultado
+
 
 def notificar_cambio_estado_reserva(reserva):
+    print("📩 [EMAIL] Cambio de estado de reserva...")
+    print(f"➡ Reserva ID: {reserva.id}")
+    print(f"🔄 Nuevo estado: {reserva.estado}")
+
     if not reserva.email:
+        print("❌ No hay email en la reserva")
         return False
 
-    return enviar_email_sendgrid(
+    print(f"📧 Enviando a: {reserva.email}")
+    print("🧾 Template: emails/cambio_estado_reserva.html")
+
+    resultado = enviar_email_sendgrid(
         destinatario=reserva.email,
         asunto=f"Actualización de tu reserva #{reserva.id}",
         template="emails/cambio_estado_reserva.html",
@@ -174,3 +191,6 @@ def notificar_cambio_estado_reserva(reserva):
             "reserva": reserva
         }
     )
+
+    print(f"✅ Resultado envío cambio estado: {resultado}")
+    return resultado
