@@ -38,7 +38,6 @@ async function cargarPerfil() {
 perfilForm.addEventListener("submit", async e => {
   e.preventDefault();
 
-  // const token = localStorage.getItem("token");
   const token = sessionStorage.getItem("token");
   const formData = new FormData();
 
@@ -51,20 +50,41 @@ perfilForm.addEventListener("submit", async e => {
     formData.append("imagen", perfilImagen.files[0]);
   }
 
+  Swal.fire({
+    title: "Guardando cambios...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
   const res = await fetch("/api/perfil/", {
     method: "PUT",
     headers: { Authorization: "Token " + token },
     body: formData
   });
 
+  Swal.close();
+
   if (res.ok) {
-    alert("✅ Perfil actualizado");
+
+    Swal.fire({
+      icon: "success",
+      title: "Perfil actualizado",
+      timer: 2000,
+      showConfirmButton: false
+    });
+
     cerrarPerfil();
+
   } else {
-    alert("❌ Error actualizando perfil");
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo actualizar el perfil"
+    });
+
   }
 });
-
 /* ---------- PREVIEW IMAGEN ---------- */
 perfilImagen.addEventListener("change", () => {
   if (perfilImagen.files.length > 0) {
@@ -105,7 +125,11 @@ passwordForm.addEventListener("submit", async e => {
   e.preventDefault();
 
   if (pass_nueva.value !== pass_confirmar.value) {
-    alert("Las contraseñas no coinciden");
+    Swal.fire({
+  icon: "warning",
+  title: "Contraseñas diferentes",
+  text: "Las contraseñas no coinciden"
+});
     return;
   }
 
@@ -126,10 +150,20 @@ passwordForm.addEventListener("submit", async e => {
   });
 
   if (res.ok) {
-    alert("🔐 Contraseña actualizada");
+  Swal.fire({
+  icon: "success",
+  title: "Contraseña actualizada",
+  text: "Tu contraseña se cambió correctamente",
+  timer: 2000,
+  showConfirmButton: false
+});
     cerrarPasswordModal();
     passwordForm.reset();
   } else {
-    alert("❌ Error cambiando contraseña");
+   Swal.fire({
+  icon: "error",
+  title: "Error",
+  text: "No se pudo cambiar la contraseña"
+});
   }
 });

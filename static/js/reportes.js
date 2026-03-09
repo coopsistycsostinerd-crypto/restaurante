@@ -62,7 +62,7 @@ function cambiarTipo(tipo) {
 // CARGAR DATOS DESDE API
 // =============================
 async function cargarDatosReporte() {
-// const token = localStorage.getItem("token");
+
     const token = sessionStorage.getItem("token");
     const desde = document.getElementById("fechaDesde")?.value;
     const hasta = document.getElementById("fechaHasta")?.value;
@@ -73,16 +73,49 @@ async function cargarDatosReporte() {
         url += `&from=${desde}&to=${hasta}`;
     }
 
-    const res = await fetch(url, {
-        headers: {
-            "Authorization": `Token ${token}`
+    // Loader
+    Swal.fire({
+        title: "Cargando reporte...",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
     });
 
-    const data = await res.json();
+    try {
 
-    renderTabla(data.columnas, data.data);
-    renderResumen(data.total_registros);
+        const res = await fetch(url, {
+            headers: {
+                "Authorization": `Token ${token}`
+            }
+        });
+
+        const data = await res.json();
+
+        Swal.close();
+
+        if (data.data.length === 0) {
+            Swal.fire({
+                icon: "info",
+                title: "Sin resultados",
+                text: "No hay datos para ese rango de fechas"
+            });
+        }
+
+        renderTabla(data.columnas, data.data);
+        renderResumen(data.total_registros);
+
+    } catch (error) {
+
+        Swal.close();
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo cargar el reporte"
+        });
+
+    }
 }
 
 // =============================
@@ -127,27 +160,37 @@ function renderResumen(total) {
 // =============================
 function imprimirReporte() {
 
-    const contenido = document.querySelector(".tabla-container").innerHTML;
+    Swal.fire({
+        title: "¿Imprimir reporte?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, imprimir"
+    }).then((result) => {
 
-    const ventana = window.open("", "", "width=900,height=700");
+        if (!result.isConfirmed) return;
 
-    ventana.document.write(`
-        <html>
-            <head>
-                <title>Reporte</title>
-                <style>
-                    table { width:100%; border-collapse: collapse; }
-                    th, td { border:1px solid #000; padding:8px; text-align:left; }
-                </style>
-            </head>
-            <body>
-                ${contenido}
-            </body>
-        </html>
-    `);
+        const contenido = document.querySelector(".tabla-container").innerHTML;
 
-    ventana.document.close();
-    ventana.print();
+        const ventana = window.open("", "", "width=900,height=700");
+
+        ventana.document.write(`
+            <html>
+                <head>
+                    <title>Reporte</title>
+                    <style>
+                        table { width:100%; border-collapse: collapse; }
+                        th, td { border:1px solid #000; padding:8px; text-align:left; }
+                    </style>
+                </head>
+                <body>
+                    ${contenido}
+                </body>
+            </html>
+        `);
+
+        ventana.document.close();
+        ventana.print();
+    });
 }
 
 // =============================

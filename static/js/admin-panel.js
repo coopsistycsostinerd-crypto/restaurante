@@ -351,45 +351,76 @@ function editarUsuario(id) {
     window.usuarioEditandoId = id;
 }
 function cerrarModalUsuario() {
+
     const modal = document.getElementById("modalUsuario");
-    if (modal) modal.remove();
+    if (modal) modal.style.display = "none";
+
+    const form = document.getElementById("formUsuario");
+    if (form) form.reset();
+
+    const adminFields = document.getElementById("adminFields");
+    if (adminFields) adminFields.style.display = "none";
+
+    window.usuarioEditandoId = null;
+
 }
 
-
 document.addEventListener("submit", async function (e) {
-    if (e.target.id !== "formUsuario") return;
 
+    if (e.target.id !== "formUsuario") return;
     e.preventDefault();
 
-    const password = document.getElementById("passwordUsuario").value;
-    const confirmPassword = document.getElementById("passwordConfirmUsuario").value;
-
-    if (password !== confirmPassword) {
-        alert("Las contraseñas no coinciden");
-        return;
-    }
-
-    const rol = document.getElementById("rolUsuario").value;
-   // const token = localStorage.getItem("token");
-        const token = sessionStorage.getItem("token");
-
-    const data = {
-        username: document.getElementById("usernameUsuario").value,
-        nombre: document.getElementById("nombreUsuario").value,
-        apellido: document.getElementById("apellidoUsuario").value,
-        email: document.getElementById("emailUsuario").value,
-        telefono: document.getElementById("telefonoUsuario").value,
-        direccion: document.getElementById("direccionUsuario").value,
-        rol: rol,
-        password: password,
-        is_active: document.getElementById("activoUsuario").checked,
-        is_admin: rol === "admin",
-        is_superuser: document.getElementById("isSuperUsuario").checked
-    };
-
     try {
-        const res = await fetch("/api/admin/usuarios/crear/", {
-            method: "POST",
+
+        const passwordInput = document.getElementById("passwordUsuario");
+        const confirmInput = document.getElementById("passwordConfirmUsuario");
+
+        let password = null;
+
+        if (passwordInput && confirmInput) {
+            password = passwordInput.value;
+            const confirmPassword = confirmInput.value;
+
+            if (password !== confirmPassword) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Las contraseñas no coinciden"
+                });
+            }
+        }
+
+        const rol = document.getElementById("rolUsuario").value;
+        const token = sessionStorage.getItem("token");
+        const superInput = document.getElementById("isSuperUsuario");
+
+        const data = {
+            username: document.getElementById("usernameUsuario").value,
+            nombre: document.getElementById("nombreUsuario").value,
+            apellido: document.getElementById("apellidoUsuario").value,
+            email: document.getElementById("emailUsuario").value,
+            telefono: document.getElementById("telefonoUsuario").value,
+            direccion: document.getElementById("direccionUsuario").value,
+            rol: rol,
+            is_active: document.getElementById("activoUsuario").checked,
+            is_admin: rol === "admin",
+            is_superuser: superInput ? superInput.checked : false
+        };
+
+        if (password) {
+            data.password = password;
+        }
+
+        let url = "/api/admin/usuarios/crear/";
+        let method = "POST";
+
+        if (window.usuarioEditandoId) {
+            url = `/api/panel-admin/usuarios/${window.usuarioEditandoId}/`;
+            method = "PATCH";
+        }
+
+        const res = await fetch(url, {
+            method: method,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Token ${token}`
@@ -397,25 +428,51 @@ document.addEventListener("submit", async function (e) {
             body: JSON.stringify(data)
         });
 
-        const result = await res.json();
+        let result = {};
 
-        if (!res.ok) {
-            alert("Error: " + JSON.stringify(result));
-            return;
+        try {
+            result = await res.json();
+        } catch {
+            result = {};
         }
 
-        cerrarModalUsuario();
-        cargarTablaUsuarios("");
-        alert("Usuario creado correctamente");
+        if (!res.ok) {
+            throw new Error(result.error || "Error al procesar el usuario");
+        }
+
+        // cerrar modal solo si existe
+        if (typeof cerrarModalUsuario === "function") {
+            cerrarModalUsuario();
+        }
+
+        // recargar tabla solo si existe
+        if (typeof cargarTablaUsuarios === "function") {
+            cargarTablaUsuarios("");
+        }
+
+        await Swal.fire({
+            icon: "success",
+            title: "Éxito",
+            text: window.usuarioEditandoId
+                ? "Usuario actualizado correctamente"
+                : "Usuario creado correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
 
     } catch (err) {
-        console.error(err);
-        alert("Error creando usuario");
+
+        console.error("Error:", err);
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: err.message || "Error procesando usuario"
+        });
+
     }
+
 });
-
-
-
 
 window.addEventListener("click", function (e) {
     const modal = document.getElementById("modalUsuario");
@@ -442,15 +499,6 @@ function abrirModalUsuario() {
     }
 }
 
-function cerrarModalUsuario() {
-    const modal = document.getElementById("modalUsuario");
-    if (modal) modal.style.display = "none";
-
-    const form = document.getElementById("formUsuario");
-    if (form) form.reset();
-
-    document.getElementById("adminFields").style.display = "none";
-}
 
 
 

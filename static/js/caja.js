@@ -49,12 +49,18 @@ async function cargarCaja() {
     const body = document.getElementById("adminBody");
 
     body.innerHTML = "Cargando items listos para cobrar...";
-
+  Swal.fire({
+        title: "Cargando items...",
+        time: 2000,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
     const res = await fetch("/api/caja/ordenes-listas/", {
         headers: { "Authorization": `Token ${token}` }
     });
 
     const items = await res.json();
+    Swal.close();
 
     body.innerHTML = `
         <div class="caja-layout">
@@ -166,7 +172,12 @@ async function crearVenta() {
     const data = await res.json();
 
     if (!res.ok) {
-        alert(data.error || "Error creando la venta");
+         Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: data.error || "Error creando la venta"
+        });
+
         return null;
     }
 
@@ -184,6 +195,11 @@ async function procesarPago(ventaId, metodo, monto, referencia) {
   //  const token = localStorage.getItem("token");
 
     const token = sessionStorage.getItem("token");
+   Swal.fire({
+        title: "Procesando pago...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
 
     const res = await fetch(`/api/caja/agregar-pago/${ventaId}/`, {
         method: "POST",
@@ -200,12 +216,23 @@ async function procesarPago(ventaId, metodo, monto, referencia) {
 
     const data = await res.json();
 
+    Swal.close();
     if (!res.ok) {
-        alert(data.error || "Error al procesar el pago");
+         Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: data.error || "Error al procesar el pago"
+        });
         return;
     }
 
-    alert("Pago realizado con éxito");
+    Swal.fire({
+        icon: "success",
+        title: "Pago realizado",
+        text: "El pago fue procesado correctamente",
+        timer: 2000,
+        showConfirmButton: false
+    });
 
     actualizarEstadoBotones("habilitarTicket");
 
@@ -217,11 +244,27 @@ async function procesarPago(ventaId, metodo, monto, referencia) {
 // ===============================
 // PROCESAR COBRO
 // ===============================
-
 async function procesarCobro() {
 
     if (!itemActual.id) {
-        alert("Selecciona un item primero");
+        Swal.fire({
+            icon: "warning",
+            title: "Selecciona un item",
+            text: "Debes seleccionar un pedido o reserva primero"
+        });
+        return;
+    }
+
+    const confirmacion = await Swal.fire({
+        title: "¿Confirmar cobro?",
+        text: "Se registrará el pago del pedido",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Cobrar",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmacion.isConfirmed) {
         return;
     }
 
@@ -236,7 +279,6 @@ async function procesarCobro() {
     }
 }
 
-
 // ===============================
 // IMPRIMIR TICKET
 // ===============================
@@ -244,12 +286,22 @@ async function procesarCobro() {
 function imprimirTicket() {
 
     if (!ventaGeneradaId) {
-        alert("No hay ticket disponible");
+     Swal.fire({
+            icon: "warning",
+            title: "Ticket no disponible",
+            text: "Primero debes procesar el pago"
+        });
+
         return;
     }
 
     window.open(`/api/caja/ticket/${ventaGeneradaId}/`, "_blank");
-
+  Swal.fire({
+        icon: "success",
+        title: "Ticket generado",
+        timer: 1500,
+        showConfirmButton: false
+    });
     // Ahora sí refrescamos
     setTimeout(() => {
         cargarCaja();

@@ -4,13 +4,21 @@ async function cargarEmpresaAdmin() {
     const body = document.getElementById("adminBody");
 
     body.innerHTML = "Cargando datos de la empresa...";
-
+Swal.fire({
+    title: "Cargando configuración...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+});
     const res = await fetch("/config/empresa/", {
         headers: { "Authorization": `Token ${token}` }
     });
-
+Swal.close();
     if (!res.ok) {
-        body.innerHTML = "Error cargando datos";
+       Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "No se pudieron cargar los datos de la empresa"
+});
         return;
     }
 
@@ -115,7 +123,6 @@ async function cargarEmpresaAdmin() {
 
 async function guardarEmpresa() {
 
-  //  const token = localStorage.getItem("token");
     const token = sessionStorage.getItem("token");
     const formData = new FormData();
 
@@ -136,6 +143,12 @@ async function guardarEmpresa() {
         formData.append("logo", empLogo.files[0]);
     }
 
+    Swal.fire({
+        title: "Guardando cambios...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
     const res = await fetch("/config/empresa/", {
         method: "PUT",
         headers: {
@@ -144,12 +157,28 @@ async function guardarEmpresa() {
         body: formData
     });
 
+    Swal.close();
+
     if (res.ok) {
-        alert("✅ Empresa actualizada");
+
+       Swal.fire({
+    icon: "success",
+    title: "Empresa actualizada",
+    text: "Los cambios se guardaron correctamente",
+    timer: 2000,
+    showConfirmButton: false
+});
+
         cargarEmpresaAdmin();
+
     } else {
-        alert("❌ Error guardando");
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo guardar la configuración"
+        });
+
     }
 }
-
 

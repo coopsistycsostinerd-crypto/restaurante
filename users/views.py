@@ -29,8 +29,9 @@ class LoginAPIView(APIView):
             print("API KEY:", settings.EMAIL_HOST_PASSWORD, flush=True)
             # Crear o recuperar token
             token, _ = Token.objects.get_or_create(user=user)
-
+            print("el ususario:", user.rol)
             return Response({
+                    "message": "Login exitoso",
                 "token": token.key,
                 "nombre": user.nombre,
                 "apellido": user.apellido,
@@ -40,6 +41,8 @@ class LoginAPIView(APIView):
                 "is_staff": user.is_staff,
                 "is_superuser": user.is_superuser,
                   "is_admin": user.is_admin,
+                     "rol": user.rol,
+
 
             })
 
@@ -229,7 +232,7 @@ User = get_user_model()
 
 
 @csrf_exempt
-@require_http_methods(["PATCH"])
+@require_http_methods(["PATCH","PUT"])
 def editar_usuario(request, user_id):
     # 🔐 Validación básica (ajústala si usas otra auth)
     if not request.user.is_authenticated:

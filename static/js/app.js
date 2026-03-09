@@ -72,34 +72,64 @@ function totalPrecio() {
    CARRITO ACTIONS
 ========================= */
 async function agregarCarrito(id, nombre, precio, inputId) {
+
     const cantidad = parseInt(document.getElementById(inputId).value) || 1;
 
-    if (usuarioLogueado()) {
-        await fetch("/api/carrito/agregar/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${sessionStorage.getItem("token")}`
-            },
-            body: JSON.stringify({
-                producto_id: id,
-                cantidad: cantidad
-            })
+    try {
+
+        if (usuarioLogueado()) {
+
+            const response = await fetch("/api/carrito/agregar/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Token ${sessionStorage.getItem("token")}`
+                },
+                body: JSON.stringify({
+                    producto_id: id,
+                    cantidad: cantidad
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Error al agregar producto");
+            }
+
+            await cargarCarritoBackend();
+
+        } else {
+
+            const producto = carrito.find(p => p.id === id);
+
+            if (producto) producto.cantidad += cantidad;
+            else carrito.push({ id, nombre, precio, cantidad });
+
+            guardarCarrito();
+            renderCarrito();
+        }
+
+        document.getElementById(inputId).value = 1;
+        abrirCarrito();
+
+        Swal.fire({
+         //   toast: true,
+            position: "top-end",
+            icon: "success",
+            title: `${nombre} agregado al carrito`,
+            showConfirmButton: false,
+            timer: 1500
         });
 
-        await cargarCarritoBackend();
-    } else {
-        const producto = carrito.find(p => p.id === id);
+    } catch (error) {
 
-        if (producto) producto.cantidad += cantidad;
-        else carrito.push({ id, nombre, precio, cantidad });
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo agregar el producto al carrito"
+        });
 
-        guardarCarrito();
-        renderCarrito();
+        console.error(error);
     }
-
-    document.getElementById(inputId).value = 1;
-    abrirCarrito();
 }
 
 async function aumentar(id) {
@@ -385,7 +415,11 @@ let checkoutHTMLOriginal = "";
 
 async function checkout() {
     if (carrito.length === 0) {
-        alert("Tu carrito está vacío");
+      Swal.fire({
+    icon: "warning",
+    title: "Carrito vacío",
+    text: "Agrega productos antes de continuar"
+});
         return;
     }
 
@@ -500,24 +534,35 @@ function conectarCheckoutForm() {
 
     form.addEventListener("submit", async e => {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        const payload = {
-            cliente_nombre: nombre.value,
-            cliente_telefono: telefono.value,
-            cliente_correo: correo.value, 
-            tipo_pedido: tipoPedido.value,
-            direccion: tipoPedido.value === "delivery" ? direccion.value : null,
-            items: carrito.map(p => ({
-                producto_id: p.id,
-                cantidad: p.cantidad,
-                precio: p.precio
-            })),
-            total: totalPrecio()
-        };
+    const confirmacion = await Swal.fire({
+        title: "¿Confirmar pedido?",
+        text: "Se enviará tu orden a la cocina",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Enviar pedido",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmacion.isConfirmed) return;
+
+    const payload = {
+        cliente_nombre: nombre.value,
+        cliente_telefono: telefono.value,
+        cliente_correo: correo.value,
+        tipo_pedido: tipoPedido.value,
+        direccion: tipoPedido.value === "delivery" ? direccion.value : null,
+        items: carrito.map(p => ({
+            producto_id: p.id,
+            cantidad: p.cantidad,
+            precio: p.precio
+        })),
+        total: totalPrecio()
+    };
 
         try {
- const token = sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
       //      const token = localStorage.getItem("token");
 
             const res = await fetch(`${API_BASE}/ordenes/`, {
@@ -656,6 +701,7 @@ function cerrarModalconfirmarpedido() {
     // 🔥 VOLVER A CONECTAR FORM
     conectarCheckoutForm();
 }
+
 async function confirmarPago(ordenId) {
 
     const metodo = document.getElementById("metodoPago").value;
@@ -663,16 +709,29 @@ async function confirmarPago(ordenId) {
     const ultimos4 = numeroCompleto ? numeroCompleto.slice(-4) : null;
 
     if (!metodo) {
-        alert("Selecciona método de pago");
+        Swal.fire({
+            icon: "warning",
+            title: "Selecciona método de pago"
+        });
         return;
     }
+
+    const confirmar = await Swal.fire({
+        title: "¿Confirmar cobro?",
+        text: "Se registrará el pago del pedido",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Cobrar",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmar.isConfirmed) return;
 
     const payload = {
         orden: ordenId,
         metodo: metodo,
         referencia: document.getElementById("referenciaPago")?.value || null,
         ultimos_digitos: ultimos4
-    
     };
 
     try {
@@ -687,13 +746,22 @@ async function confirmarPago(ordenId) {
 
         if (!res.ok) throw new Error("Error registrando pago");
 
-        alert("🎉 Pago registrado correctamente");
+        await Swal.fire({
+            icon: "success",
+            title: "Pago registrado",
+            text: "🎉 El pago se registró correctamente"
+        });
 
         finalizarPedido();
 
     } catch (err) {
         console.error(err);
-        alert("Error procesando pago");
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Error procesando pago"
+        });
     }
 }
 
@@ -705,7 +773,12 @@ function finalizarPedido() {
 
        cerrarModalconfirmarpedido(); 
 
-    alert("🎉 Pedido realizado con éxito");
+      Swal.fire({
+        icon: "success",
+        title: "Pedido realizado",
+        text: "🎉 Pedido realizado con éxito",
+        confirmButtonText: "OK"
+    });
 }
 
 /*modal y login*/
@@ -834,6 +907,7 @@ function scrollToTop() {
 function actualizarMenuUsuario() {
     const container = document.getElementById("userMenuContainer");
     const user = JSON.parse(sessionStorage.getItem("user"));
+    console.log("Usuario en actualizarMenuUsuario:", user);
 
     // 🔓 SI HAY USUARIO LOGUEADO
     if (user) {

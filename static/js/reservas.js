@@ -105,7 +105,11 @@ async function consultarDisponibilidad() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.error || "Error consultando disponibilidad");
+            Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: data.error || "Error consultando disponibilidad"
+                    });
             return;
         }
 
@@ -115,8 +119,12 @@ async function consultarDisponibilidad() {
 Mesas: ${data.mesas_disponibles} | Sillas: ${data.sillas_disponibles}`;
 
     } catch (err) {
-        console.error("Error disponibilidad:", err);
-        alert("Error de conexión");
+       // console.error("Error disponibilidad:", err);
+        Swal.fire({
+    icon: "error",
+    title: "Error de conexión",
+    text: "No se pudo consultar disponibilidad"
+});
     }
 }
 
@@ -131,7 +139,11 @@ if (reservaForm) {
 console.log("TEL:", JSON.stringify(reservaTelefono.value));
 
 if (!reservaNombre.value.trim() || !reservaTelefono.value.trim()) {
-    alert("⚠️ Debes ingresar nombre y teléfono");
+    Swal.fire({
+    icon: "warning",
+    title: "Datos incompletos",
+    text: "Debes ingresar nombre y teléfono"
+});
     return;
 }
 
@@ -164,21 +176,33 @@ if (!reservaNombre.value.trim() || !reservaTelefono.value.trim()) {
             const data = await res.json();
 
             if (!res.ok) {
-                alert(
-                    typeof data === "string"
-                        ? data
-                        : Object.values(data).join("\n")
-                );
+               Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: typeof data === "string"
+        ? data
+        : Object.values(data).join("\n")
+});
                 return;
             }
 
-            alert("✅ Reserva enviada correctamente");
+            Swal.fire({
+    icon: "success",
+    title: "Reserva creada",
+    text: "Tu reserva fue enviada correctamente",
+    timer: 2000,
+    showConfirmButton: false
+});
             reservaForm.reset();
             cerrarReservaModal();
 
         } catch (err) {
-            console.error("Error reserva:", err);
-            alert("Error creando la reserva");
+        //    console.error("Error reserva:", err);
+          Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "Error creando la reserva"
+});
         }
     });
 }

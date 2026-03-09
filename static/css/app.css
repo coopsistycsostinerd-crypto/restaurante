@@ -1542,7 +1542,7 @@ main {
   align-items: flex-start;
   justify-content: center;
 
-  padding: 120px 20px 40px 20px; /* arriba y abajo */
+  padding: 80px 20px 40px 20px; /* arriba y abajo */
   overflow-y: auto;              /* 👈 ESTO AGREGA SCROLL */
   z-index: 999;
 }
