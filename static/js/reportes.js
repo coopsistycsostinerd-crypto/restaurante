@@ -8,13 +8,13 @@ function cargarReportes2() {
     contenedor.innerHTML = `
         <div class="reporte-container">
 
-            <div class="reporte-title">Módulo de Reportes</div>
+            <div class="reporte-title"> <i class="fas fa-chart-line"></i> Módulo de Reportes</div>
 
             <div class="reporte-botones">
-                <button onclick="cambiarTipo('ordenes')">Órdenes</button>
-                <button onclick="cambiarTipo('ventas')">Ventas</button>
-                <button onclick="cambiarTipo('reservas')">Reservas</button>
-                <button onclick="cambiarTipo('clientes')">Clientes</button>
+                <button onclick="cambiarTipo('ordenes')"> <i class="fas fa-utensils"></i> Órdenes</button>
+                <button onclick="cambiarTipo('ventas')"> <i class="fas fa-chart-bar"></i> Ventas</button>
+                <button onclick="cambiarTipo('reservas')"> <i class="fas fa-calendar-check"></i> Reservas</button>
+                <button onclick="cambiarTipo('clientes')"> <i class="fas fa-users"></i> Clientes</button>
             </div>
 
             <div class="reporte-filtros">
@@ -24,14 +24,22 @@ function cargarReportes2() {
                 <label>Hasta:</label>
                 <input type="date" id="fechaHasta">
 
-                <button onclick="cargarDatosReporte()">Filtrar</button>
+                <button onclick="cargarDatosReporte()"> <i class="fas fa-filter"></i> Filtrar</button>
             </div>
 
-            <div class="reporte-exportar">
-                <button onclick="imprimirReporte()">🖨 </button>
-                <button onclick="exportarExcel()">📊 </button>
-                <button onclick="exportarPDF()">📄 </button>
-            </div>
+       <div class="reporte-exportar">
+    <button onclick="imprimirReporte()" title="Imprimir reporte">
+        <i class="fas fa-print"></i>
+    </button>
+
+    <button onclick="exportarExcel()" title="Exportar a Excel">
+        <i class="fas fa-file-excel"></i>
+    </button>
+
+    <button onclick="exportarPDF()" title="Exportar a PDF">
+        <i class="fas fa-file-pdf"></i>
+    </button>
+</div>
 
             <div id="resumenReporte"></div>
 
@@ -151,7 +159,7 @@ function renderTabla(columnas, filas) {
 // =============================
 function renderResumen(total) {
     document.getElementById("resumenReporte").innerHTML = `
-        <p><strong>Total registros:</strong> ${total}</p>
+        <p><strong> <i class="fas fa-list"></i> Total registros:</strong> ${total}</p>
     `;
 }
 

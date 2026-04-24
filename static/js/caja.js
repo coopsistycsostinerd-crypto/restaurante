@@ -66,7 +66,7 @@ async function cargarCaja() {
         <div class="caja-layout">
 
             <div class="caja-pedidos">
-                <h3>🧾 Items para Cobro</h3>
+                <h3> <i class="fas fa-list"></i> Items para Cobro</h3>
                 <div id="listaOrdenesCaja">
                     ${items.map(o => `
                         <div class="orden-item"
@@ -83,12 +83,12 @@ async function cargarCaja() {
             </div>
 
             <div class="caja-cobro">
-                <h3>💳 Cobrar</h3>
+                <h3> <i class="fas fa-money-bill"></i> Cobrar</h3>
 
-                <p><strong>Item:</strong> <span id="cajaPedidoId">—</span></p>
-                <p><strong>Total:</strong> $<span id="cajaTotal">0.00</span></p>
+                <p><strong> <i class="fas fa-list"></i> Item:</strong> <span id="cajaPedidoId">—</span></p>
+                <p><strong> <i class="fas fa-money-bill"></i> Total:</strong> $<span id="cajaTotal">0.00</span></p>
 
-                <label>Método de Pago</label>
+                <label> <i class="fas fa-wallet"></i> Método de Pago</label>
                 <select id="metodoPago">
                     <option value="efectivo">Efectivo</option>
                     <option value="tarjeta">Tarjeta</option>
@@ -104,14 +104,14 @@ async function cargarCaja() {
                         id="btnCobrar"
                         disabled
                         onclick="procesarCobro()">
-                        💰 Cobrar
+                        <i class="fas fa-money-bill"></i> Cobrar
                 </button>
 
                 <button class="btn-ticket"
                         id="btnTicket"
                         disabled
                         onclick="imprimirTicket()">
-                        🧾 Imprimir Ticket
+                        <i class="fas fa-ticket-alt"></i> Imprimir Ticket
                 </button>
             </div>
 

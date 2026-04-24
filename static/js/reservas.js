@@ -114,9 +114,11 @@ async function consultarDisponibilidad() {
         }
 
         disponibilidadInfo.textContent =
-            `Disponibles → Mesas: ${data.mesas_disponibles}, Sillas: ${data.sillas_disponibles}`;
- `🕒 ${formato12h(hora_inicio)} - ${formato12h(hora_fin)}
+            ` Disponibles → Mesas: ${data.mesas_disponibles}, Sillas: ${data.sillas_disponibles}`;
+ `   ${formato12h(hora_inicio)} - ${formato12h(hora_fin)}
 Mesas: ${data.mesas_disponibles} | Sillas: ${data.sillas_disponibles}`;
+
+  
 
     } catch (err) {
        // console.error("Error disponibilidad:", err);
@@ -156,7 +158,8 @@ if (!reservaNombre.value.trim() || !reservaTelefono.value.trim()) {
             mesas: parseInt(mesas.value, 10),
             sillas: parseInt(sillas.value, 10),
             nombre: reservaNombre.value,
-            telefono: reservaTelefono.value
+            telefono: reservaTelefono.value,
+            email: emailreserva.value
         };
 
         try {

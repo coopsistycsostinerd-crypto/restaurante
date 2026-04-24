@@ -41,26 +41,26 @@ async function cargarAnalytics() {
 
     contenedor.innerHTML = `
         <div class="analytics-container">
-            <h1>Analytics</h1>
+            <h1> <i class="fas fa-chart-bar"></i> Analytics</h1>
 
             <div class="cards">
                 <div class="card">
-                    <h3>Órdenes</h3>
+                    <h3> <i class="fas fa-shopping-cart"></i> Órdenes</h3>
                     <p id="totalOrdenes">Cargando...</p>
                 </div>
 
                 <div class="card">
-                    <h3>Ventas</h3>
+                    <h3> <i class="fas fa-dollar-sign"></i> Ventas</h3>
                     <p id="totalVentas">Cargando...</p>
                 </div>
 
                 <div class="card">
-                    <h3>Ticket Promedio</h3>
+                    <h3> <i class="fas fa-tag"></i> Ticket Promedio</h3>
                     <p id="ticketPromedio">Cargando...</p>
                 </div>
 
                 <div class="card">
-                    <h3>Reservas</h3>
+                    <h3> <i class="fas fa-calendar-alt"></i> Reservas</h3>
                     <p id="totalReservas">Cargando...</p>
                 </div>
             </div>

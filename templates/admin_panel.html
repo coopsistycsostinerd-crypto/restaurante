@@ -1,51 +1,64 @@
-{% extends "base.html" %}
-{% block title %}Panel Administracion{% endblock %}
+{% extends 'base.html' %}
+{% block title %}
+  Panel Administracion
+{% endblock %}
 
 {% block content %}
+  <div class="admin-layout">
+    <header class="admin-header">
+      <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-<div class="admin-layout">
-  <header class="admin-header">
-          <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-
-            <h1 id="adminTitle">Dashboard</h1>
-        </header>
+      <h1 id="adminTitle">Dashboard</h1>
+    </header>
     <aside class="sidebar" id="sidebar">
-        <h2>⚙️ Admin</h2>
+      <h2><i class="fas fa-cog"></i> Admin</h2>
 
-        <nav>
-           <a href="#" onclick="cargarSeccion('dashboard')">📊 Dashboard</a>
-<a href="#" onclick="cargarSeccion('pedidos')">🧾 Pedidos</a>
-<a href="#" onclick="cargarSeccion('reservas')">🧾 Reservas</a>
-<a href="#" onclick="cargarSeccion('clientes')">👥 Clientes</a>
-<a href="#" onclick="cargarSeccion('productos')">🍽️ Productos</a>
-<a href="#" onclick="cargarSeccion('caja')">🍽️ Caja</a>
-<a href="#" onclick="cargarSeccion('contacto')">📨 Mensajes</a>
+      <nav>
+           {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
+        <a href="#" onclick="cargarSeccion('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</a>
+ {% endif %}
+        <a href="#" onclick="cargarSeccion('pedidos')"><i class="fas fa-receipt"></i> Pedidos</a>
 
-<a href="#" onclick="cargarSeccion('empresa')">🍽️ Configuracionde Empresa</a>
-<a href="#" onclick="cargarSeccion('analitica')">🍽️ Analitica</a>
+        <a href="#" onclick="cargarSeccion('reservas')"><i class="fas fa-calendar-check"></i> Reservas</a>
 
-<a href="#" onclick="cargarSeccion('reportes')">🍽️ Reportes</a>
-<a href="#" onclick="cargarSeccion('pos')">🍽️ Punto de Venta</a>
+        {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
+          <a href="#" onclick="cargarSeccion('clientes')"><i class="fas fa-users"></i> Clientes</a>
+        {% endif %}
 
+        {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
+          <a href="#" onclick="cargarSeccion('productos')"><i class="fas fa-utensils"></i> Productos</a>
+        {% endif %}
 
+        {% if user.rol == 'admin' or user.rol == 'cajero' %}
+          <a href="#" onclick="cargarSeccion('caja')"><i class="fas fa-cash-register"></i> Caja</a>
+        {% endif %}
 
-        </nav>
+        {% if user.rol == 'admin' or user.rol == 'gerente' %}
+          <a href="#" onclick="cargarSeccion('contacto')"><i class="fas fa-envelope"></i> Mensajes</a>
+        {% endif %}
+
+        {% if user.rol == 'admin' %}
+          <a href="#" onclick="cargarSeccion('empresa')"><i class="fas fa-building"></i> Configuración de Empresa</a>
+        {% endif %}
+
+        {% if user.rol == 'admin' or user.rol == 'gerente' %}
+          <a href="#" onclick="cargarSeccion('analitica')"><i class="fas fa-chart-pie"></i> Analítica</a>
+        {% endif %}
+
+        {% if user.rol == 'admin' or user.rol == 'gerente' %}
+          <a href="#" onclick="cargarSeccion('reportes')"><i class="fas fa-file-alt"></i> Reportes</a>
+        {% endif %}
+
+        {% if user.rol == 'admin' or user.rol == 'empleado' %}
+          <a href="#" onclick="cargarSeccion('pos')"><i class="fas fa-desktop"></i> Punto de Venta</a>
+        {% endif %}
+      </nav>
     </aside>
-
     <main class="admin-content" id="adminContent">
-
-      
-
-        <section id="adminBody">
-            Bienvenido al panel administrativo
-        </section>
-
+      <section id="adminBody">Bienvenido al panel administrativo</section>
     </main>
-
-</div>
-<script>
-    const HOME_URL = "{% url 'home' %}";
-</script>
-
-
+  </div>
+  <script>
+    const HOME_URL = "{% url 'home' %}"
+  </script>
 {% endblock %}

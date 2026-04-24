@@ -142,7 +142,19 @@ def notificar_cambio_estado_orden(orden):
         }
     )
 
+def obtener_email_cliente_reserva(reserva):
+    """
+    Retorna el email correcto para una reserva:
+    - Usuario autenticado
+    - Cliente invitado
+    """
+    if reserva.user and reserva.user.email:
+        return reserva.user.email
 
+    if reserva.email:
+        return reserva.email
+
+    return None
 
 # =====================================================
 # 🔹 CORREOS DE RESERVAS
@@ -175,6 +187,7 @@ def notificar_cambio_estado_reserva(reserva):
     print("📩 [EMAIL] Cambio de estado de reserva...")
     print(f"➡ Reserva ID: {reserva.id}")
     print(f"🔄 Nuevo estado: {reserva.estado}")
+    print(f"🔄 Resultado: {reserva}")
 
     if not reserva.email:
         print("❌ No hay email en la reserva")

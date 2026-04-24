@@ -29,7 +29,7 @@ async function cargarProductosAdmin() {
         contenedor.innerHTML = `
         <div class ="admin-container">
             <div class="productos-header">
-                <button class="btn-crear" onclick="abrirModalProducto()">➕ Crear Producto</button>
+                <button class="btn-crear" onclick="abrirModalProducto()"> <i class="fas fa-plus"></i> Crear Producto</button>
             </div>
 
             <div class="usuarios-header">
@@ -58,8 +58,7 @@ async function cargarProductosAdmin() {
 <td>$${p.precio}</td>
 <td>${p.disponible ? '✅' : '❌'}</td>
 <td>
-<button onclick='editarProducto(${JSON.stringify(p)})'>✏️</button>
-<button onclick="eliminarProducto(${p.id})">🗑️</button>
+<button onclick='editarProducto(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
 </td>
 </tr>
                         `).join("")}
@@ -72,7 +71,7 @@ async function cargarProductosAdmin() {
         <div id="modalProducto" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="cerrarModalProducto()">&times;</span>
-                <h2 id="modalTitulo">Crear Producto</h2>
+                <h2 id="modalTitulo"> <i class="fas fa-box-open"></i> Crear Producto</h2>
 
                 <form id="formProducto">
 
@@ -106,7 +105,7 @@ Disponible
 
 </div>
 
-<button type="submit" class="btn-guardar">Guardar</button>
+<button type="submit" class="btn-guardar"> <i class="fas fa-save"></i> Guardar</button>
 
 </form>
             </div>
@@ -138,7 +137,7 @@ function mostrarFormularioProducto(producto = null) {
             
          
 
-            <button onclick="guardarProducto(${producto?.id || null})">💾 Guardar</button>
+            <button onclick="guardarProducto(${producto?.id || null})"> <i class="fas fa-save"></i> Guardar</button>
         </div>
     `;
 }

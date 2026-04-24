@@ -54,6 +54,8 @@ class Usuariohtp(AbstractBaseUser, PermissionsMixin):
     ROLES = (
         ("cliente", "Cliente"),
         ("empleado", "Empleado"),
+        ("gerente", "Gerente"),
+        ("cajero", "Cajero"),
         ("supervisor", "Supervisor"),
         ("admin", "Administrador"),
          ("superuser", "Superuser"),

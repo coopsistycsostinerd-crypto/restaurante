@@ -895,3 +895,20 @@ textarea { min-height: 80px; resize: vertical; }
     flex-wrap: wrap;
     gap: 20px;
 }
+
+
+.sidebar nav a i {
+    margin-right: 8px;
+}
+
+.kpi-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.kpi-title i {
+    font-size: 18px;
+    margin-right: 6px;
+}

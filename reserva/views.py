@@ -1,8 +1,8 @@
 from django.db.models import Sum
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
+
+
 from rest_framework import status
 
 from .models import CapacidadLocal, Reserva
@@ -12,9 +12,9 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Sum
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from rest_framework import status
+
 
 from .models import Reserva, CapacidadLocal
 from emails.services import (
@@ -80,6 +80,7 @@ DEPOSITO_FIJO = 1000
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def crear_reserva(request):
+    print("Datos recibidos:", request.data)
 
     serializer = ReservaSerializer(
         data=request.data,
@@ -88,34 +89,28 @@ def crear_reserva(request):
 
     if serializer.is_valid():
 
-        # 🔥 Guardamos la reserva primero
         reserva = serializer.save()
 
-        # Asignamos depósito fijo
+        # Email
+        if request.user.is_authenticated:
+            reserva.email = request.user.email
+            reserva.user = request.user
+        else:
+            reserva.email = request.data.get("email")
+
         reserva.monto_deposito = DEPOSITO_FIJO
         reserva.estado = "pendiente"
         reserva.save()
-        reserva.user = request.user
 
-        # 🔥 Usar email del usuario logueado
-        reserva.email = request.user.email
         notificar_nueva_reserva(reserva)
 
-        # 🔥 Creamos Orden asociada
-   
+        return Response({
+            "id": reserva.id,
+            "mensaje": "Reserva creada",
+            "estado": reserva.estado
+        }, status=201)
 
-        return Response(
-            {
-                "id": reserva.id,
-                "mensaje": "Reserva creada y enviada a caja",
-                "estado": reserva.estado,
-         
-            },
-            status=status.HTTP_201_CREATED
-        )
-        
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    return Response(serializer.errors, status=400)
 
 
 @api_view(["GET"])

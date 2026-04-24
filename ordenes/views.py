@@ -154,7 +154,7 @@ class AdminCambiarEstadoOrdenAPIView(UpdateAPIView):
         orden = self.get_object()
         nuevo_estado = request.data.get("estado")
 
-        estados_validos = ["preparando", "entregado"]
+        estados_validos = ["preparando", "entregado", "pendiente"]
 
         if nuevo_estado not in estados_validos:
             return Response({"error": "Estado inválido"}, status=400)

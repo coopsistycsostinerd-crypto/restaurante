@@ -26,7 +26,7 @@ Swal.close();
 
     body.innerHTML = `
     <div class="form-wrapper">
-        <h2 class="form-title">🏢 Configuración de la Empresa</h2>
+        <h2 class="form-title"> <i class="fas fa-building"></i> Configuración de la Empresa</h2>
 
         <div class="form-grid">
 
@@ -98,7 +98,7 @@ Swal.close();
 
         </div>
 
-        <button class="btn-save" onclick="guardarEmpresa()">Guardar Cambios</button>
+        <button class="btn-save" onclick="guardarEmpresa()"> <i class="fas fa-save"></i> Guardar Cambios</button>
     </div>
     `;
 

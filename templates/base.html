@@ -1,687 +1,549 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>{% block title %}Restaurante{% endblock %}</title>
+    <title>
+      {% block title %}
+        Restaurante
+      {% endblock %}
+    </title>
 
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modalmenu.css' %}" />
 
-        <link rel="stylesheet" href="{% static 'css/app.css' %}">
-          <link rel="stylesheet" href="{% static 'css/admin-panel.css' %}">
-   <link rel="stylesheet" href="{% static 'css/modalmenu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/seccion.css' %}" />
 
-      <link rel="stylesheet" href="{% static 'css/seccion.css' %}">
-      
-          <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
-  <link rel="stylesheet" href="{% static 'css/experiencias.css' %}">
- <link rel="stylesheet" href="{% static 'css/pos.css' %}">
-  <link rel="stylesheet" href="{% static 'css/analytics.css' %}">
-    <link rel="stylesheet" href="{% static 'css/reportes.css' %}">
-        <link rel="stylesheet" href="{% static 'css/productos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/experiencias.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/pos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/analytics.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reportes.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/productos.css' %}" />
 
-<!-- 1️⃣ jQuery primero -->
+    <!-- 1️⃣ jQuery primero -->
 
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <header>
+      <button class="menu-toggle-principal" id="menuToggleprincipal">☰</button>
 
+      <div class="empresa-header">
+        <img id="empresaLogo" alt="Logo" />
+        <h2 id="empresaNombre">Restaurante</h2>
+      </div>
 
-                  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-                  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+      <nav id="mainNav">
+        <a href="/">Inicio</a>
+        <a href="#" onclick="abrirMenuModal()"><i class="fas fa-utensils"></i> Menú</a>
+        <a href="#sobre-nosotros">Sobre Nosotros</a>
 
-</head>
-<body>
+        <a href="/experiencias/">Experiencias</a>
 
-<header>
-<button class="menu-toggle-principal" id="menuToggleprincipal">☰</button>
+        <a onclick="abrirReservaModal()">Reservar</a>
 
-    <div class="empresa-header">
-    <img id="empresaLogo" alt="Logo" />
-    <h2 id="empresaNombre">Restaurante</h2>
-</div>
+        <a onclick="event.preventDefault(); abrirContacto()">Contáctanos</a>
 
-
-
-    <nav id="mainNav">
-      <a href="/">Inicio</a>
-        <a href="#" onclick="abrirMenuModal()">🍽️ Menú</a>
-    <a href="#sobre-nosotros">Sobre Nosotros</a>
-
-    <a href="/experiencias/">Experiencias</a>
-
-
-       
-    <a onclick="abrirReservaModal()">Reservar</a>
-
-
-
-      <a  onclick="event.preventDefault(); abrirContacto()">
-  Contáctanos
-</a>
-
-      
-
-
-    <div id="userMenuContainer" >
-      <a href="#" class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</a>
-    </div>
-
-
+        <div id="userMenuContainer">
+          <a href="#" class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</a>
+        </div>
 
         <div class="cart-btn" onclick="toggleCarrito()">
-            🛒
-            <span class="cart-count" id="cart-count">0</span>
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
         </div>
-           <!--    <button id="themeToggle" class="theme-btn">🌙</button> -->
-     
+        <!-- <button id="themeToggle" class="theme-btn">🌙</button> -->
+      </nav>
+    </header>
 
-    </nav>
-</header>
+    <main>
+      {% block content %}
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+      {% endblock %}
+    </main>
 
-<!-- CARRITO -->
-<aside id="carrito">
-    <div class="carrito-header">
-        <h3>Tu orden</h3>
-        <button class="cerrar" onclick="toggleCarrito()">×</button>
-    </div>
+    <!-- CARRITO -->
+    <aside id="carrito">
+      <div class="carrito-header">
+        <h3> <i class="fas fa-shopping-cart"></i> Tu orden</h3>
+        <button class="cerrar" onclick="toggleCarrito()"><i class="fas fa-times"></i></button>
+      </div>
 
-    <ul id="lista-carrito"></ul>
+      <ul id="lista-carrito"></ul>
 
-    <div class="carrito-footer">
+      <div class="carrito-footer">
         <p class="total">
-            Total: <span id="total">0</span>
+          Total: <span id="total">0</span>
         </p>
 
-   <button onclick="abrirCheckout()">Ordenar ahora</button>
-
-
-    </div>
-</aside>
-
-
-<!-- OVERLAY -->
-<div id="overlay" onclick="toggleCarrito()"></div>
-
-
-
-
-
-
-<div class="modal" id="checkoutModal">
-  <div class="modal-content">
-    <h3>🛒 Confirmar pedido</h3>
-
-    <form id="checkoutForm">
-
-      <label>Nombre</label>
-      <input type="text" id="nombre" placeholder="Tu nombre" required>
-      <label>Correo electrónico</label>
-<input 
-  type="email" 
-  id="correo" 
-  placeholder="ejemplo@gmail.com"
-  required
->
-
-      <label>Teléfono</label>
-      <input type="tel" id="telefono" placeholder="809-000-0000" required>
-
-      <label>Tipo de pedido</label>
-      <select id="tipoPedido" onchange="toggleDireccion()" required>
-        <option value="">Selecciona una opción</option>
-        <option value="delivery">🚚 Delivery</option>
-        <option value="retirar">🏪 Retirar en local</option>
-      </select>
-
-      <!-- DIRECCIÓN -->
-      <div id="direccionBox" style="display:none">
-        <label>Dirección de entrega</label>
-        <textarea
-          id="direccion"
-          placeholder="Ej: Calle Duarte #23, Santo Domingo"
-        ></textarea>
+        <button onclick="abrirCheckout()"><i class="fas fa-shopping-cart"></i> Ordenar ahora</button>
       </div>
+    </aside>
 
-      <p class="total">
-        Total: <span id="modal-total">0</span>
-      </p>
+    <!-- OVERLAY -->
+    <div id="overlay" onclick="toggleCarrito()"></div>
 
-      <div class="modal-actions">
-        <button type="button" onclick="cerrarModalconfirmarpedido()">Cancelar</button>
-      <button type="submit" class="btn-confirmar-pedido">
-    Confirmar pedido
-  </button>
-      </div>
-    </form>
-  </div>
-</div>
+    <div class="modal" id="checkoutModal">
+      <div class="modal-content">
+        <h3> <i class="fas fa-check-circle"></i> Confirmar pedido</h3>
 
+        <form id="checkoutForm">
+          <label>Nombre</label>
+          <input type="text" id="nombre" placeholder="Tu nombre" required />
+          <label>Correo electrónico</label>
+          <input type="email" id="correo" placeholder="ejemplo@gmail.com" required />
 
+          <label>Teléfono</label>
+          <input type="tel" id="telefono" placeholder="809-000-0000" required />
 
+          <label> <i class="fas fa-utensils"></i> Tipo de pedido</label>
+          <select id="tipoPedido" onchange="toggleDireccion()" required>
+            <option value="">Selecciona una opción</option>
+            <option value="delivery"> <i class="fas fa-truck"></i> Delivery</option>
+            <option value="retirar"> <i class="fas fa-store"></i> Retirar en local</option>
+          </select>
 
-<!-- Modal Login -->
-<!-- Modal Login -->
-<!-- Modal Login -->
-<div id="loginModal" class="modal">
-  <div class="modalLogin">
+          <!-- DIRECCIÓN -->
+          <div id="direccionBox" style="display:none">
+            <label> <i class="fas fa-map-marker-alt"></i> Dirección de entrega</label>
+            <textarea id="direccion" placeholder="Ej: Calle Duarte #23, Santo Domingo"></textarea>
+          </div>
 
-    <div class="modalLogin-slider" id="authSlider">
-
-      <!-- LOGIN -->
-      <div class="auth-panel">
-        <img class="empresaLogoAuth" alt="Logo empresa" />
-
-        <h3>Iniciar sesión</h3>
-
-       <form id="loginForm">
-  <input
-    type="text"
-    id="loginUsername"
-    placeholder="Usuario"
-    required
-  />
-
-  <input
-    type="password"
-    id="loginPassword"
-    placeholder="Contraseña"
-    required
-  />
-
-  <div class="modal-actions">
-    <button type="submit">Entrar</button>
-    <button type="button" onclick="cerrarLoginModal()">Cancelar</button>
-  </div>
-</form>
-
-
-        <p>
-          ¿No tienes cuenta?
-          <a href="#" onclick="mostrarRegistro(event)">Hazte cliente aquí</a>
-        </p>
-      </div>
-
-      <!-- REGISTRO -->
-      <div class="auth-panel">
-        <img class="empresaLogoAuth" alt="Logo empresa" />
-
-        <h3>Registro</h3>
-
-        <form id="registerForm">
-          <input type="text" name="nombre" placeholder="Nombre" required />
-          <input type="text" name="apellido" placeholder="Apellido" required />
-          <input type="text" name="username" placeholder="Usuario" required />
-          <input type="email" name="email" placeholder="Correo" required />
-            <input type="password" name="password" placeholder="Contraseña" required />
-          <input type="text" name="telefono" placeholder="Teléfono" required />
-          <input type="text" name="direccion" placeholder="Dirección" required />
-        
+          <p class="total">
+            Total: <span id="modal-total">0</span>
+          </p>
 
           <div class="modal-actions">
-            <button type="submit">Registrarse</button>
-            <button type="button" onclick="mostrarLogin()">Volver</button>
+            <button type="button" onclick="cerrarModalconfirmarpedido()"> <i class="fas fa-times"></i> Cancelar</button>
+            <button type="submit" class="btn-confirmar-pedido"> <i class="fas fa-check"></i> Confirmar pedido</button>
           </div>
         </form>
       </div>
-
-    </div>
-  </div>
-</div>
-
-
-<div id="misPedidosModal" class="modal">
-  <div class="modal-content modal-pedidos">
-    <h3>🧾 Mis pedidos</h3>
-
-    <div id="listaPedidos" class="lista-pedidos"></div>
-
-    <div class="modal-actions">
-  <button type="button" onclick="cerrarMisPedidos()">
-    Cerrar
-</button>
-
-    </div>
-  </div>
-</div>
-
-<!-- MODAL misRESERVA -->
-
-<div id="misReservasModal" class="modal">
-  <div class="modal-content modal-pedidos">
-    <h3>📅 Mis reservas</h3>
-
-    <div id="listaReservas" class="lista-pedidos"></div>
-
-    <div class="modal-actions">
-      <button type="button" onclick="cerrarMisReservas()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- MODAL RESERVA -->
-<div id="reservaModal" class="modalreserva">
-
-  <div class="modalreserva-content">
-
-    <span class="modalreserva-close" onclick="cerrarReservaModal()">×</span>
-
-    <h2>📅 Reservar mesa</h2>
-
-    <form id="reservaForm" class="modalreserva-form">
-
-      <!-- FECHA / HORA / DURACIÓN -->
-      <div class="modalreserva-row">
-        <div>
-          <label>Fecha</label>
-          <input type="date" id="fecha" required>
-        </div>
-
-        <div>
-          <label>Entrada</label>
-        <select id="hora_inicio" required></select>
-
-        </div>
-
-        <div>
-          <label>Duración</label>
-          <select id="duracion">
-            <option value="1">1h</option>
-            <option value="2">2h</option>
-            <option value="3">3h</option>
-          </select>
-        </div>
-
-  <div>
-  <label>Salida</label>
-  <input type="text" id="hora_fin" readonly>
-</div>
-
-      </div>
-
-      <!-- MESAS / SILLAS -->
-      <div class="modalreserva-row">
-        <div>
-          <label>Mesas</label>
-          <input type="number" id="mesas" min="1" value="1">
-        </div>
-
-        <div>
-          <label>Sillas</label>
-          <input type="number" id="sillas" min="1" value="1">
-        </div>
-      </div>
-
-      <!-- NOMBRE / TELÉFONO -->
-      <div class="modalreserva-row">
-        <div>
-          <label>Nombre</label>
-          <input type="text" id="nombrereserva" name="nombrereserva" placeholder="Tu nombre" required>
-        </div>
-
-        <div>
-          <label>Teléfono</label>
-          <input type="text" id="telefonoreserva" name="telefonoreserva" placeholder="WhatsApp" required>
-        </div>
-      </div>
-
-      <!-- DISPONIBILIDAD -->
-      <p id="disponibilidad" class="modalreserva-info"></p>
-
-      <!-- BOTONES -->
-      <div class="modalreserva-actions">
-        <button type="submit" class="modalreserva-btn-primary">
-          Confirmar reserva
-        </button>
-
-        <button type="button"
-                onclick="cerrarReservaModal()"
-                class="modalreserva-btn-secondary">
-          Cancelar
-        </button>
-      </div>
-
-    </form>
-  </div>
-</div>
-
-
-
-<!-- MODAL PERFIL -->
-<!-- MODAL PERFIL -->
-<div id="perfilModal" class="perfil-modal">
-
-  <div class="perfil-card">
-
-    <span class="perfil-close" onclick="cerrarPerfil()">×</span>
-
-    <h2>👤 Mi perfil</h2>
-
-    <form id="perfilForm">
-
-      <div class="perfil-grid">
-
-        <!-- AVATAR -->
-        <div class="perfil-avatar">
-          <img id="perfilImagenPreview" src="/media/perfil/avatar.png">
-          <label class="btn-upload">
-            Cambiar foto
-            <input type="file" id="perfilImagen" hidden>
-          </label>
-        </div>
-
-        <!-- INFO -->
-     <div class="perfil-info">
-
-  <div class="perfil-info-grid">
-
-    <div class="info-col">
-      <label>Usuario</label>
-      <input id="perfil_username" readonly>
-
-      <label>Nombre</label>
-      <input id="perfil_nombre" required>
-
-      <label>Teléfono</label>
-      <input id="perfil_telefono">
-
-      <label>Rol</label>
-      <input id="perfil_rol" readonly>
     </div>
 
-    <div class="info-col">
-      <label>Email</label>
-      <input id="perfil_email" readonly>
+    <!-- Modal Login -->
+    <!-- Modal Login -->
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal">
+      <div class="modalLogin">
+        <div class="modalLogin-slider" id="authSlider">
+          <!-- LOGIN -->
+          <div class="auth-panel">
+            <img class="empresaLogoAuth" alt="Logo empresa" />
 
-      <label>Apellido</label>
-      <input id="perfil_apellido" required>
+            <h3> <i class="fas fa-user"></i> Iniciar sesión</h3>
 
-      <label>Dirección</label>
-      <input id="perfil_direccion">
-    </div>
+            <form id="loginForm">
+              <input type="text" id="loginUsername" placeholder="Usuario" required />
 
-  </div>
+              <input type="password" id="loginPassword" placeholder="Contraseña" required />
 
-</div>
+              <div class="modal-actions">
+                <button type="submit"> <i class="fas fa-sign-in-alt"></i> Entrar</button>
+                <button type="button" onclick="cerrarLoginModal()"> <i class="fas fa-times"></i> Cancelar</button>
+              </div>
+            </form>
 
-      </div>
-
-      <div class="perfil-actions">
-        <button type="button" class="btn-secondary" onclick="abrirPasswordModal()">
-          🔐 Cambiar contraseña
-        </button>
-
-        <button type="submit" class="btn-primary">
-          💾 Guardar cambios
-        </button>
-      </div>
-
-    </form>
-  </div>
-</div>
-
-
-
-<!-- MODAL CONTRASEÑA -->
-<div id="passwordModal" class="password-modal">
-  <div class="password-box">
-    <h3>🔐 Cambiar contraseña</h3>
-
-    <form id="passwordForm">
-      <label>Contraseña actual</label>
-      <input type="password" id="pass_actual" required>
-
-      <label>Nueva contraseña</label>
-      <input type="password" id="pass_nueva" required>
-
-      <label>Confirmar nueva contraseña</label>
-      <input type="password" id="pass_confirmar" required>
-
-      <div class="password-actions">
-        <button type="submit" class="btn-guardar">Guardar</button>
-        <button type="button" class="btn-cancelar" onclick="cerrarPasswordModal()">Cancelar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div id="menuModal" class="menu-modal">
-  <div class="menu-modal-content">
-
-    <button class="modal-close" onclick="cerrarMenuModal()">×</button>
-
-    <div class="modal-header">
-      <h2>🍽️ Nuestro Menú</h2>
-
-      <input 
-        type="text" 
-        id="buscadorMenu" 
-        placeholder="Buscar producto..."
-        oninput="filtrarProductosModal(this.value)"
-      >
-    </div>
-
-    <div class="productos" id="productosModal"></div>
-
-  </div>
-</div>
-
-
-<!-- MODAL CONTACTO -->
-<!-- MODAL CONTACTO -->
-<div id="contactoModal" class="contacto-modal">
-
-  <div class="contacto-card">
-
-    <span class="contacto-close" onclick="cerrarContacto()">×</span>
-
-    <h2>📩 Contáctanos</h2>
-    <p class="contacto-intro">
-      ¿Tienes alguna pregunta o sugerencia? Escríbenos y te responderemos pronto.
-    </p>
-
-    <!-- LAYOUT DOS COLUMNAS -->
-    <div class="contacto-layout">
-
-      <!-- COLUMNA IZQUIERDA -->
-      <div class="contacto-form-col">
-
-        <form id="contactoForm">
-
-          <label>Nombre</label>
-          <input type="text" id="contacto_nombre" required>
-
-          <label>Email</label>
-          <input type="email" id="contacto_email" required>
-
-          <label>Teléfono (opcional)</label>
-          <input type="text" id="contacto_telefono">
-
-          <label>Mensaje</label>
-          <textarea id="contacto_mensaje" required></textarea>
-
-          <div class="contacto-actions">
-            <button type="submit" class="btn-enviar">Enviar</button>
-           <button type="button" class="btn-cancelar" onclick="cerrarContacto()">Cancelar</button>
-
-        
-        
+            <p>
+              ¿No tienes cuenta?
+              <a href="#" onclick="mostrarRegistro(event)"> <i class="fas fa-user-plus"></i> Hazte cliente aquí</a>
+            </p>
           </div>
 
-        </form>
+          <!-- REGISTRO -->
+          <div class="auth-panel">
+            <img class="empresaLogoAuth" alt="Logo empresa" />
 
-       <div class="contacto-info">
-  <p><strong>📍 Dirección:</strong> <span id="empresaDireccion2"></span></p>
-  <p><strong>📞 Teléfono:</strong> <span id="empresaTelefono2"></span></p>
-  <p><strong>📧 Email:</strong> <span id="empresaEmail"></span></p>
-</div>
+            <h3> <i class="fas fa-user-plus"></i> Registro</h3>
 
+            <form id="registerForm">
+              <input type="text" name="nombre" placeholder="Nombre" required />
+              <input type="text" name="apellido" placeholder="Apellido" required />
+              <input type="text" name="username" placeholder="Usuario" required />
+              <input type="email" name="email" placeholder="Correo" required />
+              <input type="password" name="password" placeholder="Contraseña" required />
+              <input type="text" name="telefono" placeholder="Teléfono" required />
+              <input type="text" name="direccion" placeholder="Dirección" required />
 
+              <div class="modal-actions">
+                <button type="submit"> <i class="fas fa-user-plus"></i> Registrarse</button>
+                <button type="button" onclick="mostrarLogin()"> <i class="fas fa-arrow-left"></i> Volver</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-
-      <!-- COLUMNA DERECHA -->
-      <div class="contacto-map-col">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3785.4844118108836!2d-70.11325412620226!3d18.416302272353693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ea55f00400855eb%3A0xe00317666b9f241f!2sVagos%20Restaurante!5e0!3m2!1ses-419!2sdo!4v1770347441014!5m2!1ses-419!2sdo"
-          style="border:0; width:100%; height:100%;"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-      </div>
-
     </div>
-  </div>
-</div>
 
-<button id="btnScrollTop" onclick="scrollToTop()">
-  <svg viewBox="0 0 24 24">
-    <path d="M6 14l6-6 6 6" 
-          fill="none" 
-          stroke="white" 
-          stroke-width="2.5" 
-          stroke-linecap="round" 
-          stroke-linejoin="round"/>
-  </svg>
-</button>
+    <div id="misPedidosModal" class="modal">
+      <div class="modal-content modal-pedidos">
+        <h3><i class="fas fa-receipt"></i> Mis pedidos</h3>
 
+        <div id="listaPedidos" class="lista-pedidos"></div>
 
-<div class="pos-modal" id="modalPosConfirmacionVenta">
+        <div class="modal-actions">
+          <button type="button" onclick="cerrarMisPedidos()"> <i class="fas fa-times"></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
 
-    <div class="modal-content">
+    <!-- MODAL misRESERVA -->
 
+    <div id="misReservasModal" class="modal">
+      <div class="modal-content modal-pedidos">
+        <h3><i class="fas fa-calendar-alt"></i> Mis reservas</h3>
+
+        <div id="listaReservas" class="lista-pedidos"></div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="cerrarMisReservas()"> <i class="fas fa-times"></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL RESERVA -->
+    <div id="reservaModal" class="modalreserva">
+      <div class="modalreserva-content">
+        <span class="modalreserva-close" onclick="cerrarReservaModal()">×</span>
+
+        <h2><i class="fas fa-calendar-plus"></i> Reservar mesa</h2>
+
+        <form id="reservaForm" class="modalreserva-form">
+          <!-- FECHA / HORA / DURACIÓN -->
+          <div class="modalreserva-row">
+            <div>
+              <label><i class="fas fa-calendar"></i> Fecha</label>
+              <input type="date" id="fecha" required />
+            </div>
+
+            <div>
+              <label><i class="fas fa-clock"></i> Entrada</label>
+              <select id="hora_inicio" required></select>
+            </div>
+
+            <div>
+              <label><i class="fas fa-hourglass-half"></i> Duración</label>
+              <select id="duracion">
+                <option value="1">1h</option>
+                <option value="2">2h</option>
+                <option value="3">3h</option>
+              </select>
+            </div>
+
+            <div>
+              <label> <i class="fas fa-clock"></i> Salida</label>
+              <input type="text" id="hora_fin" readonly />
+            </div>
+          </div>
+
+          <!-- MESAS / SILLAS -->
+          <div class="modalreserva-row">
+            <div>
+              <label><i class="fas fa-table"></i> Mesas</label>
+              <input type="number" id="mesas" min="1" value="1" />
+            </div>
+
+            <div>
+              <label><i class="fas fa-chair"></i> Sillas</label>
+              <input type="number" id="sillas" min="1" value="1" />
+            </div>
+          </div>
+
+          <!-- NOMBRE / TELÉFONO -->
+          <div class="modalreserva-row">
+            <div>
+              <label><i class="fas fa-user"></i> Nombre</label>
+              <input type="text" id="nombrereserva" name="nombrereserva" placeholder="Tu nombre" required />
+            </div>
+
+            <div>
+              <label><i class="fas fa-phone"></i> Teléfono</label>
+              <input type="text" id="telefonoreserva" name="telefonoreserva" placeholder="WhatsApp" required />
+            </div>
+          </div>
+          <div>
+            <div>
+              <label> <i class="fas fa-envelope"></i> Email</label>
+              <input type="email" id="emailreserva" name="emailreserva" placeholder="Tu email" required />
+            </div>
+          </div>
+
+          <!-- DISPONIBILIDAD -->
+          <p id="disponibilidad" class="modalreserva-info"></p>
+
+          <!-- BOTONES -->
+          <div class="modalreserva-actions">
+            <button type="submit" class="modalreserva-btn-primary"> <i class="fas fa-check"></i> Confirmar reserva</button>
+
+            <button type="button" onclick="cerrarReservaModal()" class="modalreserva-btn-secondary"> <i class="fas fa-times"></i> Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL PERFIL -->
+    <!-- MODAL PERFIL -->
+    <div id="perfilModal" class="perfil-modal">
+      <div class="perfil-card">
+        <span class="perfil-close" onclick="cerrarPerfil()">×</span>
+
+        <h2><i class="fas fa-user"></i> Mi perfil</h2>
+
+        <form id="perfilForm">
+          <div class="perfil-grid">
+            <!-- AVATAR -->
+            <div class="perfil-avatar">
+              <img id="perfilImagenPreview" src="/media/perfil/avatar.png" />
+              <label class="btn-upload"> <i class="fas fa-camera"></i> Cambiar foto<input type="file" id="perfilImagen" hidden /></label>
+            </div>
+
+            <!-- INFO -->
+            <div class="perfil-info">
+              <div class="perfil-info-grid">
+                <div class="info-col">
+                  <label>Usuario</label>
+                  <input id="perfil_username" readonly />
+
+                  <label>Nombre</label>
+                  <input id="perfil_nombre" required />
+
+                  <label>Teléfono</label>
+                  <input id="perfil_telefono" />
+
+                  <label>Rol</label>
+                  <input id="perfil_rol" readonly />
+                </div>
+
+                <div class="info-col">
+                  <label>Email</label>
+                  <input id="perfil_email" readonly />
+
+                  <label>Apellido</label>
+                  <input id="perfil_apellido" required />
+
+                  <label>Dirección</label>
+                  <input id="perfil_direccion" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="perfil-actions">
+            <button type="button" class="btn-secondary" onclick="abrirPasswordModal()"><i class="fas fa-lock"></i> Cambiar contraseña</button>
+            <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL CONTRASEÑA -->
+    <div id="passwordModal" class="password-modal">
+      <div class="password-box">
+        <h3><i class="fas fa-lock"></i> Cambiar contraseña</h3>
+
+        <form id="passwordForm">
+          <label>Contraseña actual</label>
+          <input type="password" id="pass_actual" required />
+
+          <label>Nueva contraseña</label>
+          <input type="password" id="pass_nueva" required />
+
+          <label>Confirmar nueva contraseña</label>
+          <input type="password" id="pass_confirmar" required />
+
+          <div class="password-actions">
+            <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar</button>
+            <button type="button" class="btn-cancelar" onclick="cerrarPasswordModal()"><i class="fas fa-times"></i> Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="menuModal" class="menu-modal">
+      <div class="menu-modal-content">
+        <button class="modal-close" onclick="cerrarMenuModal()">×</button>
+
+        <div class="modal-header">
+          <h2><i class="fas fa-utensils"></i> Nuestro Menú</h2>
+
+          <input type="text" id="buscadorMenu" placeholder="Buscar producto..." oninput="filtrarProductosModal(this.value)" />
+        </div>
+
+        <div class="productos" id="productosModal"></div>
+      </div>
+    </div>
+
+    <!-- MODAL CONTACTO -->
+    <!-- MODAL CONTACTO -->
+    <div id="contactoModal" class="contacto-modal">
+      <div class="contacto-card">
+        <span class="contacto-close" onclick="cerrarContacto()">×</span>
+
+        <h2><i class="fas fa-envelope"></i> Contáctanos</h2>
+        <p class="contacto-intro">¿Tienes alguna pregunta o sugerencia? Escríbenos y te responderemos pronto.</p>
+
+        <!-- LAYOUT DOS COLUMNAS -->
+        <div class="contacto-layout">
+          <!-- COLUMNA IZQUIERDA -->
+          <div class="contacto-form-col">
+            <form id="contactoForm">
+              <label> <i class="fas fa-user"></i> Nombre</label>
+              <input type="text" id="contacto_nombre" required />
+
+              <label> <i class="fas fa-envelope"></i> Email</label>
+              <input type="email" id="contacto_email" required />
+
+              <label> <i class="fas fa-phone"></i> Teléfono (opcional)</label>
+              <input type="text" id="contacto_telefono" />
+
+              <label> <i class="fas fa-comment"></i> Mensaje</label>
+              <textarea id="contacto_mensaje" required></textarea>
+
+              <div class="contacto-actions">
+                <button type="submit" class="btn-enviar"> <i class="fas fa-paper-plane"></i> Enviar</button>
+                <button type="button" class="btn-cancelar" onclick="cerrarContacto()"> <i class="fas fa-times"></i> Cancelar</button>
+              </div>
+            </form>
+
+            <div class="contacto-info">
+              <p>
+                <strong><i class="fas fa-map-marker-alt"></i> Dirección:</strong>
+                <span id="empresaDireccion2"></span>
+              </p>
+
+              <p>
+                <strong><i class="fas fa-phone"></i> Teléfono:</strong>
+                <span id="empresaTelefono2"></span>
+              </p>
+
+              <p>
+                <strong><i class="fas fa-envelope"></i> Email:</strong>
+                <span id="empresaEmail"></span>
+              </p>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA -->
+          <div class="contacto-map-col">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3785.4844118108836!2d-70.11325412620226!3d18.416302272353693!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ea55f00400855eb%3A0xe00317666b9f241f!2sVagos%20Restaurante!5e0!3m2!1ses-419!2sdo!4v1770347441014!5m2!1ses-419!2sdo" style="border:0; width:100%; height:100%;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="btnScrollTop" onclick="scrollToTop()">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 14l6-6 6 6" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <div class="pos-modal" id="modalPosConfirmacionVenta">
+      <div class="modal-content">
         <!-- ================= HEADER ================= -->
         <div class="modal-header">
-            <h2>Confirmar Venta</h2>
- <button 
-    type="button"
-    class="btn-close" 
-    onclick="this.closest('.pos-modal').classList.remove('active')">
-    ✖
-</button>
+          <h2> <i class="fas fa-check-circle"></i> Confirmar Venta</h2>
+          <button type="button" class="btn-close" onclick="this.closest('.pos-modal').classList.remove('active')">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
 
         <!-- ================= BODY ================= -->
         <div class="modal-body">
+          <!-- ===== FILA SUPERIOR: CLIENTE + TOTAL ===== -->
+          <div class="modal-grid-top">
+            <!-- CLIENTE -->
+            <div class="checkout-section">
+              <h3>  <i class="fas fa-user"></i> Cliente</h3>
+              <input type="text" id="buscarCliente" placeholder="Buscar por nombre o teléfono" />
 
-            <!-- ===== FILA SUPERIOR: CLIENTE + TOTAL ===== -->
-            <div class="modal-grid-top">
+              <div id="listaClientes" class="lista-clientes"></div>
 
-                <!-- CLIENTE -->
-                <div class="checkout-section">
-                    <h3>Cliente</h3>
-                       <input type="text"
-                            id="buscarCliente"
-                            placeholder="Buscar por nombre o teléfono">
+              <input type="hidden" id="clienteSeleccionadoId" />
 
-                      <div id="listaClientes" class="lista-clientes"></div>
-
-                      <input type="hidden" id="clienteSeleccionadoId">
-
-                    <div class="nuevo-cliente">
-                        <input type="text" id="nuevoNombre" placeholder="Nombre del cliente">
-                        <input type="text" id="nuevoTelefono" placeholder="Teléfono">
-                    </div>
-                </div>
-
-                <!-- TOTAL -->
-                <div class="checkout-section total-box">
-                    <h3>Total a Cobrar</h3>
-
-                    <div class="total-cobro-box">
-                        <span>RD$</span>
-                        <input type="number"
-                               id="totalCobroInput"
-                               step="0.01"
-                               readonly>
-                    </div>
-                </div>
-
+              <div class="nuevo-cliente">
+                <input type="text" id="nuevoNombre" placeholder="Nombre del cliente" />
+                <input type="text" id="nuevoTelefono" placeholder="Teléfono" />
+              </div>
             </div>
 
-            <!-- ===== METODO DE PAGO ===== -->
-            <div class="checkout-section metodo-pago-section">
-                <h3>Método de Pago</h3>
+            <!-- TOTAL -->
+            <div class="checkout-section total-box">
+              <h3> <i class="fas fa-money-bill"></i> Total a Cobrar</h3>
 
-                <select id="metodoPago" onchange="mostrarCamposPago2()">
-                    <option value="efectivo">Efectivo</option>
-                    <option value="tarjeta">Tarjeta</option>
-                    <option value="transferencia">Transferencia</option>
-                </select>
+              <div class="total-cobro-box">
+                <span>RD$</span>
+                <input type="number" id="totalCobroInput" step="0.01" readonly />
+              </div>
+            </div>
+          </div>
 
-                <!-- EFECTIVO -->
-                <div id="pagoEfectivo" class="pago-opcion">
-                    <div class="input-group-inline">
-                        <input type="number"
-                               id="montoRecibido"
-                               placeholder="Monto recibido"
-                               oninput="calcularCambio()">
-                    </div>
-                    <p class="cambio-texto">
-                        Cambio: RD$ <span id="cambio">0.00</span>
-                    </p>
-                </div>
+          <!-- ===== METODO DE PAGO ===== -->
+          <div class="checkout-section metodo-pago-section">
+            <h3><i class="fas fa-credit-card"></i> Método de Pago</h3>
 
-                <!-- TARJETA -->
-                <div id="pagoTarjeta" class="pago-opcion" style="display:none;">
-                    <div class="grid-tarjeta">
-                        <input type="text" placeholder="Número de tarjeta">
-                        <input type="text" placeholder="MM/AA">
-                        <input type="text" placeholder="CVV">
-                    </div>
-                    <small class="demo-warning">
-                        ⚠️ Esto es una demostración. No almacenamos datos reales.
-                    </small>
-                </div>
+            <select id="metodoPago" onchange="mostrarCamposPago2()">
+              <option value="efectivo"> <i class="fas fa-money-bill"></i> Efectivo</option>
+              <option value="tarjeta"> <i class="fas fa-credit-card"></i> Tarjeta</option>
+              <option value="transferencia"> <i class="fas fa-exchange-alt"></i> Transferencia</option>
+            </select>
 
-                <!-- TRANSFERENCIA -->
-                <div id="pagoTransferencia" class="pago-opcion" style="display:none;">
-                    <input type="text"
-                           id="referenciaTransferencia"
-                           placeholder="Número de referencia">
-                </div>
-
+            <!-- EFECTIVO -->
+            <div id="pagoEfectivo" class="pago-opcion">
+              <div class="input-group-inline">
+                <input type="number" id="montoRecibido" placeholder="Monto recibido" oninput="calcularCambio()" />
+              </div>
+              <p class="cambio-texto">
+                Cambio: RD$ <span id="cambio">0.00</span>
+              </p>
             </div>
 
+            <!-- TARJETA -->
+            <div id="pagoTarjeta" class="pago-opcion" style="display:none;">
+              <div class="grid-tarjeta">
+                <input type="text" placeholder="Número de tarjeta" />
+                <input type="text" placeholder="MM/AA" />
+                <input type="text" placeholder="CVV" />
+              </div>
+              <small class="demo-warning"> <i class="fas fa-exclamation-triangle"></i> Esto es una demostración. No almacenamos datos reales.</small>
+            </div>
+
+            <!-- TRANSFERENCIA -->
+            <div id="pagoTransferencia" class="pago-opcion" style="display:none;">
+              <input type="text" id="referenciaTransferencia" placeholder="Número de referencia" />
+            </div>
+          </div>
         </div>
 
         <!-- ================= FOOTER ================= -->
         <div class="modal-footer">
-          <!--     <button id="btnConfirmarCobro" class="btn-confirm" onclick="confirmarCobro()">                 Confirmar Cobro            </button>-->
-            <button id="btnConfirmarCobro" class="btn-confirm" onclick="validarYConfirmar()">   Confirmar Cobro  </button>
+          <!-- <button id="btnConfirmarCobro" class="btn-confirm" onclick="confirmarCobro()"> Confirmar Cobro </button> -->
+          <button id="btnConfirmarCobro" class="btn-confirm" onclick="validarYConfirmar()"> <i class="fas fa-check"></i> Confirmar Cobro</button>
         </div>
-
+      </div>
     </div>
 
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}
+      <script src="{% static 'js/perfil.js' %}"></script>
+      <script src="{% static 'js/reservas.js' %}"></script>
+      <script src="{% static 'js/empresa.js' %}"></script>
+      <script src="{% static 'js/productos.js' %}"></script>
+      <script src="{% static 'js/caja.js' %}"></script>
 
-
-
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-{% block extra_js %}
-
-<script src="{% static 'js/perfil.js' %}"></script>
-<script src="{% static 'js/reservas.js' %}"></script>
-<script src="{% static 'js/empresa.js' %}"></script>
-<script src="{% static 'js/productos.js' %}"></script>
-<script src="{% static 'js/caja.js' %}"></script>
-
-<script src="{% static 'js/pos.js' %}"></script>
-<script src="{% static 'js/analytics.js' %}"></script>
-<script src="{% static 'js/reportes.js' %}"></script>
-<script src="{% static 'js/app.js' %}"></script>
-<script src="{% static 'js/admin-panel.js' %}"></script>
-{% endblock %}
-
-
-</body>
+      <script src="{% static 'js/pos.js' %}"></script>
+      <script src="{% static 'js/analytics.js' %}"></script>
+      <script src="{% static 'js/reportes.js' %}"></script>
+      <script src="{% static 'js/app.js' %}"></script>
+      <script src="{% static 'js/admin-panel.js' %}"></script>
+    {% endblock %}
+  </body>
 </html>

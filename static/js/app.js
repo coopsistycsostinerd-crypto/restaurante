@@ -194,7 +194,7 @@ function renderCarrito() {
     lista.innerHTML = "";
 
     if (carrito.length === 0) {
-        lista.innerHTML = `<li class="carrito-vacio">Tu carrito está vacío</li>`;
+        lista.innerHTML = `<li class="carrito-vacio"> <i class="fas fa-shopping-cart"></i> Tu carrito está vacío</li>`;
         total.textContent = "0";
         badge.textContent = "0";
         return;
@@ -215,10 +215,10 @@ function renderCarrito() {
             </div>
 
             <div class="cart-controls">
-                <button onclick="disminuir(${p.id})">−</button>
+                <button onclick="disminuir(${p.id})"> <i class="fas fa-minus"></i> </button>
                 <span>${p.cantidad}</span>
-                <button onclick="aumentar(${p.id})">+</button>
-                <button class="eliminar" onclick="eliminar(${p.id})">×</button>
+                <button onclick="aumentar(${p.id})"> <i class="fas fa-plus"></i> </button>
+                <button class="eliminar" onclick="eliminar(${p.id})"> <i class="fas fa-trash"></i> </button>
             </div>
         `;
 
@@ -288,7 +288,7 @@ async function cargarCategorias() {
         const contenedor = document.getElementById("categorias");
 
         contenedor.innerHTML = `
-            <button class="active" data-categoria="all">Todo</button>
+            <button class="active" data-categoria="all"> <i class="fas fa-list"></i> Todo</button>
         `;
 
         contenedor.querySelector("button").onclick = () =>
@@ -363,7 +363,7 @@ function renderProductos(lista) {
                             ${prod.precio},
                             'qty-${prod.id}'
                         )">
-                            Agregar
+                         Agregar
                         </button>
                     </div>
                 </div>
@@ -397,7 +397,7 @@ function filtrarCategoria(categoriaNombre, e) {
         p => p.categoria === categoriaNombre
     );
 
-    console.log("✅ Filtrados:", filtrados);
+   // console.log("✅ Filtrados:", filtrados);
     renderProductos(filtrados);
 }
 
@@ -458,22 +458,50 @@ async function checkout() {
         renderCarrito();
         toggleCarrito();
 
-        alert("🎉 Pedido realizado con éxito");
+      //  alert("🎉 Pedido realizado con éxito");
+        Swal.fire({
+            title: "✅ Éxito",
+            text: "Pedido realizado con éxito",
+            icon: "success"
+        });
+
 
     } catch (err) {
         console.error("❌ Error checkout:", err);
-        alert("Hubo un problema al procesar tu pedido");
+     //   alert("Hubo un problema al procesar tu pedido");
+        Swal.fire({
+            title: "❌ Error",
+            text: "Hubo un problema al procesar tu pedido",
+            icon: "error"
+        });
     }
 }
 
 
 
 /* modal*/
-function abrirCheckout() {
+async function abrirCheckout() {
     if (carrito.length === 0) {
-        alert("Carrito vacío");
+            // alert("Carrito vacío");
+        Swal.fire({ 
+            title: "❌ Error",
+            text: "El carrito está vacío",
+            icon: "error"
+        });
+
         return;
     }
+
+    const confirmar = await Swal.fire({
+        title: "¿Confirmar pedido?",
+        text: "Vas a proceder con tu orden",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Continuar",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmar.isConfirmed) return;
 
     document.getElementById("modal-total").textContent = formatearMoneda(totalPrecio());
     document.getElementById("checkoutModal").classList.add("active");
@@ -536,16 +564,7 @@ function conectarCheckoutForm() {
 
     e.preventDefault();
 
-    const confirmacion = await Swal.fire({
-        title: "¿Confirmar pedido?",
-        text: "Se enviará tu orden a la cocina",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Enviar pedido",
-        cancelButtonText: "Cancelar"
-    });
 
-    if (!confirmacion.isConfirmed) return;
 
     const payload = {
         cliente_nombre: nombre.value,
@@ -590,7 +609,12 @@ function conectarCheckoutForm() {
 
         } catch (err) {
             console.error(err);
-            alert("No se pudo procesar el pedido");
+           // alert("No se pudo procesar el pedido");
+            Swal.fire({
+                title: "❌ Error",
+                text: "No se pudo procesar el pedido",
+                icon: "error"
+            });
         }
 
     });
@@ -602,12 +626,12 @@ function mostrarPasoPago(orden) {
     const modalContent = document.querySelector("#checkoutModal .modal-content");
 
     modalContent.innerHTML = `
-        <h3>💳 Pago del pedido</h3>
+        <h3> <i class="fas fa-money-bill"></i> Pago del pedido</h3>
 
         <p><strong>Pedido #${orden.id}</strong></p>
         <p>Total: ${formatearMoneda(orden.total)}</p>
 
-        <label>Método de pago</label>
+        <label> <i class="fas fa-wallet"></i> Método de pago</label>
         <select id="metodoPago" onchange="mostrarCamposPago()">
             <option value="">Selecciona método</option>
             <option value="transferencia">Transferencia</option>
@@ -641,7 +665,7 @@ function mostrarCamposPago() {
   if (metodo === "tarjeta") {
     contenedor.innerHTML = `
         <div class="simulacion-alerta">
-            ⚠️ Pago simulado. No almacenamos datos reales de tarjeta.
+             <i class="fas fa-exclamation-triangle"></i> Pago simulado. No almacenamos datos reales de tarjeta.
         </div>
 
         <div class="card-form">
@@ -811,7 +835,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await res.json();
 
             if (!res.ok) {
-                alert(data.non_field_errors || data.error || "Credenciales inválidas");
+                Swal.fire({
+                    title: "❌ Error",
+                    text: data.non_field_errors || data.error || "Credenciales inválidas",
+                    icon: "error"
+                });
                 return;
             }
 
@@ -834,7 +862,7 @@ document.addEventListener("DOMContentLoaded", () => {
 actualizarMenuUsuario();
 
             cerrarLoginModal();
-            alert("✅ Sesión iniciada correctamente");
+         //   alert("✅ Sesión iniciada correctamente");
 
             // Precargar datos en checkout
             precargarDatos();
@@ -846,7 +874,12 @@ renderCarrito();
     location.reload();
         } catch (err) {
             console.error(err);
-            alert("Error al iniciar sesión");
+          //  alert("Error al iniciar sesión");
+            Swal.fire({
+                title: "❌ Error",
+                text: "Error al iniciar sesión",
+                icon: "error"
+            });
         }
     });
 });
@@ -919,15 +952,17 @@ function actualizarMenuUsuario() {
             </button>
 
             <div class="user-dropdown-content">
-                <a href="#"  onclick="abrirPerfil() ">👤 Mi perfil</a>
-                <a href="#" onclick="abrirMisPedidos()">🧾 Mis pedidos</a>
-                <a href="#" onclick="abrirMisReservas()">🧾 Mis Reservas</a>
+                <a href="#"  onclick="abrirPerfil() "> <i class="fas fa-user"></i> Mi perfil</a>
+                <a href="#" onclick="abrirMisPedidos()"> <i class="fas fa-list"></i> Mis pedidos</a>
+                <a href="#" onclick="abrirMisReservas()"> <i class="fas fa-calendar-alt"></i> Mis Reservas</a>
+${user.rol !== "cliente" 
+  ? `<a href="#" onclick="irPanelAdmin()"> 
+        <i class="fas fa-cogs"></i> Panel Admin
+     </a>` 
+  : ``}
 
- ${user.is_superuser ? `<a href="#" onclick="irPanelAdmin()">⚙️ Panel Admin</a>` : ``}
 
-
-
-                <a href="#" onclick="cerrarSesion()">🚪 Cerrar sesión</a>
+                <a href="#" onclick="cerrarSesion()"> <i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
             </div>
         </div>
         `;
@@ -1134,23 +1169,28 @@ async function cargarMisPedidos() {
             div.className = "pedido-card";
 
             div.innerHTML = `
-                <h4>Pedido #${p.id}</h4>
-                <p><strong>Fecha:</strong> ${new Date(p.creado).toLocaleString()}</p>
-                <p><strong>Estado:</strong> <span class="estado-${p.estado}">${p.estado}</span></p>
+                <h4> <i class="fas fa-list"></i> Pedido #${p.id}</h4>
+                <p><strong> <i class="fas fa-calendar"></i> Fecha:</strong> ${new Date(p.creado).toLocaleString()}</p>
+                <p><strong> <i class="fas fa-info-circle"></i> Estado:</strong> <span class="estado-${p.estado}">${p.estado}</span></p>
 
-                <p><strong>Total:</strong> ${formatearMoneda(p.total)}</p>
-                <ul>
-                    ${p.items.map(i => `
-                        <li>${i.nombre_producto} x${i.cantidad} — ${formatearMoneda(i.precio)}</li>
-                    `).join("")}
-                </ul>
+                <p><strong> <i class="fas fa-money-bill"></i> Total:</strong> ${formatearMoneda(p.total)}</p>
+<ul>
+    ${p.items.map(i => `
+        <li title="Precio unitario: ${formatearMoneda(i.precio)}">
+            <i class="fas fa-hamburger"></i>
+            ${i.nombre_producto}
+            <i class="fas fa-times"></i> ${i.cantidad}
+            — ${formatearMoneda(i.precio)}
+        </li>
+    `).join("")}
+</ul>
             `;
 
             contenedor.appendChild(div);
         });
 
     } catch (err) {
-        contenedor.innerHTML = "<p>Error cargando pedidos</p>";
+        contenedor.innerHTML = "<p><i class=\"fas fa-exclamation-triangle\"></i> Error cargando pedidos</p>";
         console.error(err);
     }
 }
@@ -1202,31 +1242,31 @@ async function cargarMisReservas() {
             div.className = "pedido-card"; // reutiliza el mismo estilo
 
             div.innerHTML = `
-                <h4>Reserva #${r.id}</h4>
+                <h4> <i class="fas fa-calendar-alt"></i> Reserva #${r.id}</h4>
 
-                <p><strong>Fecha:</strong> ${r.fecha}</p>
-                <p><strong>Hora:</strong> ${r.hora_inicio} - ${r.hora_fin}</p>
+                <p><strong> <i class="fas fa-calendar"></i> Fecha:</strong> ${r.fecha}</p>
+                <p><strong> <i class="fas fa-clock"></i> Hora:</strong> ${r.hora_inicio} - ${r.hora_fin}</p>
 
                 <p>
-                  <strong>Estado:</strong>
+                  <strong> <i class="fas fa-info-circle"></i> Estado:</strong>
                   <span class="estado-${r.estado}">
                     ${r.estado}
                   </span>
                 </p>
 
                 <p>
-                  <strong>Mesas:</strong> ${r.mesas} ·
-                  <strong>Sillas:</strong> ${r.sillas}
+                  <strong> <i class="fas fa-chair"></i> Mesas:</strong> ${r.mesas} ·
+                  <strong> <i class="fas fa-chair"></i> Sillas:</strong> ${r.sillas}
                 </p>
 
-                ${r.notas ? `<p><strong>Notas:</strong> ${r.notas}</p>` : ""}
+                ${r.notas ? `<p><strong> <i class="fas fa-sticky-note"></i> Notas:</strong> ${r.notas}</p>` : ""}
             `;
 
             contenedor.appendChild(div);
         });
 
     } catch (err) {
-        contenedor.innerHTML = "<p>Error cargando reservas</p>";
+        contenedor.innerHTML = "<p><i class=\"fas fa-exclamation-triangle\"></i> Error cargando reservas</p>";
         console.error(err);
     }
 }
@@ -1270,17 +1310,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         console.error("❌ Error backend:", data);
-        alert("❌ Error enviando mensaje");
+       // alert("❌ Error enviando mensaje");
+            Swal.fire({
+        title: "❌ Error",
+        text: "Error enviando mensaje.",
+        icon: "error"
+      });
         return;
       }
 
-      alert("📨 Mensaje enviado correctamente");
+     // alert("📨 Mensaje enviado correctamente");
+         Swal.fire({
+      title: "✅ Mensaje enviado",
+      text: "Tu mensaje ha sido enviado correctamente.",
+      icon: "success"
+    });
+
       cerrarContacto();
       form.reset();
 
     } catch (err) {
       console.error("❌ Error fetch:", err);
-      alert("❌ Error de conexión");
+     // alert("❌ Error de conexión");
+         Swal.fire({
+      title: "❌ Error",
+      text: "Error de conexión.",
+      icon: "error"
+    });
+
     }
   });
 
@@ -1334,7 +1391,7 @@ function abrirMenuModal() {
               ${prod.precio},
               'modal-qty-${prod.id}'
             )">
-              Agregar
+          Agregar
             </button>
           </div>
         </div>
@@ -1500,10 +1557,17 @@ async function cargarEmpresaFooter() {
     document.getElementById("empresaSlogan").textContent = e.slogan || "";
 
     // Info contacto
-    document.getElementById("empresaDireccion").textContent = `📍 ${e.direccion || ""}`;
-    document.getElementById("empresaTelefono").textContent = `📞 ${e.telefono || ""}`;
-        document.getElementById("empresaTelefono2").textContent = `📞 ${e.telefono || ""}`;
-    document.getElementById("empresaHorario").textContent = `🕒 ${e.horario || ""}`;
+document.getElementById("empresaDireccion").innerHTML =
+    `<i class="fas fa-map-marker-alt"></i> ${e.direccion || ""}`;
+
+document.getElementById("empresaTelefono").innerHTML =
+    `<i class="fas fa-phone"></i> ${e.telefono || ""}`;
+
+document.getElementById("empresaTelefono2").innerHTML =
+    `<i class="fas fa-phone"></i> ${e.telefono || ""}`;
+
+document.getElementById("empresaHorario").innerHTML =
+    `<i class="fas fa-clock"></i> ${e.horario || ""}`;
 
     // Redes
   const ig = document.getElementById("empresaInstagram");
@@ -1562,16 +1626,32 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const data = await res.json();
 
     if (data.success) {
-      alert("✅ Registro exitoso, ahora puedes iniciar sesión");
+    //  alert("✅ Registro exitoso, ahora puedes iniciar sesión");
+        Swal.fire({
+        title: "✅ Registro exitoso",
+        text: "Ahora puedes iniciar sesión",
+        icon: "success"
+      });
       mostrarLogin(); // vuelve al login
       form.reset();
     } else {
-      alert("❌ Error: " + (data.error || "No se pudo registrar"));
+    //  alert("❌ Error: " + (data.error || "No se pudo registrar"));
+            Swal.fire({
+        title: "❌ Error",
+        text: data.error || "No se pudo registrar",
+        icon: "error"
+      });
+
     }
 
   } catch (err) {
     console.error("Error registrando cliente:", err);
-    alert("❌ Error de conexión");
+    //alert("❌ Error de conexión");
+        Swal.fire({
+        title: "❌ Error",
+        text: "Error de conexión",
+        icon: "error"
+      });
   }
 });
 

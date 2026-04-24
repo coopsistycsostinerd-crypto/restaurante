@@ -27,11 +27,14 @@ async function cargarClientesAdmin() {
 
      <!-- Contenedor para el botón "Crear Usuario" y el filtro -->
     <div class="acciones-usuarios">
-        <button class="btn-crear" onclick="abrirModalUsuario()">➕ Crear Usuario</button>
+        <button class="btn-crear" onclick="abrirModalCrearUsuario()"><i class="fas fa-plus"></i> Crear Usuario</button>
+  
         <select id="filtroRol">
             <option value="">Filtrar por rol</option>
             <option value="cliente">Clientes</option>
             <option value="empleado">Empleados</option>
+            <option value="gerente">Gerentes</option>
+            <option value="cajero">Cajeros</option>
             <option value="admin">Administradores</option>
         </select>
     </div>
@@ -40,12 +43,12 @@ async function cargarClientesAdmin() {
 
 
     <div class="admin-clientes-header">
-        <h2>Gestión de Usuarios</h2>
+        <h2><i class="fas fa-users"></i> Gestión de Usuarios</h2>
     </div>
 
 
     <div class="tabla-wrapper">
-        <div id="tablaUsuarios">Cargando usuarios...</div>
+        <div id="tablaUsuarios">  Cargando usuarios...</div>
     </div>
 `;
 
@@ -59,6 +62,22 @@ async function cargarClientesAdmin() {
     // Cargar tabla inicial (sin filtro)
     cargarTablaUsuarios("");
 }
+function abrirModalCrearUsuario() {
+
+    window.usuarioEditandoId = null;
+
+    document.getElementById("formUsuario").reset();
+    document.getElementById("activoUsuario").checked = true;
+
+    // 🔥 mostrar password
+    document.getElementById("passwordFields").style.display = "block";
+
+    document.querySelector(".modal-usuariopanel__title").innerHTML =
+        '<i class="fas fa-user-plus"></i> Crear Usuario';
+
+    document.getElementById("modalUsuario").style.display = "flex";
+}
+
 
 async function cargarTablaUsuarios(rol) {
    // const token = localStorage.getItem("token");
@@ -118,29 +137,33 @@ window.usuariosGlobal = usuarios;
                                 <td>${u.telefono || "-"}</td>
                                    <td>${u.direccion || "-"}</td>
                               <td>
-    <span class="badge-rol badge-${u.rol}">
+  <span class="badge-rol badge-${u.rol}">
+    ${
+        u.rol === "cliente" ? `<i class="fas fa-user"></i> Cliente` :
+        u.rol === "empleado" ? `<i class="fas fa-screwdriver-wrench"></i> Empleado` :
+        u.rol === "supervisor" ? `<i class="fas fa-compass"></i> Supervisor` :
+        u.rol === "admin" ? `<i class="fas fa-crown"></i> Administrador` :
+        u.rol === "superuser" ? `<i class="fas fa-fire"></i> Superuser` :
+        "—"
+    }
+</span>
+</td>
+
+                             <td>
+    <span class="${u.is_active ? 'badge-activo' : 'badge-inactivo'}">
         ${
-            u.rol === "cliente" ? "👤 Cliente" :
-            u.rol === "empleado" ? "🛠 Empleado" :
-            u.rol === "supervisor" ? "🧭 Supervisor" :
-            u.rol === "admin" ? "👑 Administrador" :
-            u.rol === "superuser" ? "🔥 Superuser" :
-            "—"
+            u.is_active 
+            ? `<i class="fas fa-circle-check"></i> Activo`
+            : `<i class="fas fa-circle-xmark"></i> Inactivo`
         }
     </span>
 </td>
-
-                                <td>
-                                    <span class="${u.is_active ? 'badge-activo' : 'badge-inactivo'}">
-                                        ${u.is_active ? '🟢 Activo' : '🔴 Inactivo'}
-                                    </span>
-                                </td>
                                 <td class="acciones">
     <button 
         class="btn-editaradminuser"
         onclick="editarUsuario(${u.id})"
     >
-        ✏️ Editar
+         <i class="fas fa-edit"></i> Editar
     </button>
 </td>
 
@@ -156,7 +179,7 @@ window.usuariosGlobal = usuarios;
     <div class="modal-usuariopanel__content">
      
            <div class="modal-usuariopanel__header">
-            <h2 class="modal-usuariopanel__title">Crear Usuario</h2>
+            <h2 class="modal-usuariopanel__title"> <i class="fas fa-user-plus"></i> Crear Usuario</h2>
             <span class="modal-usuariopanel__close" onclick="cerrarModalUsuario()">&times;</span>
         </div>
 
@@ -203,6 +226,8 @@ window.usuariosGlobal = usuarios;
         <label>Rol</label>
         <select id="rolUsuario" required onchange="toggleAdminFields()">
             <option value="cliente">Cliente</option>
+            <option value="gerente">Gerente</option>
+            <option value="cajero">Cajero</option>
             <option value="empleado">Empleado</option>
             <option value="admin">Admin</option>
         </select>
@@ -225,21 +250,22 @@ window.usuariosGlobal = usuarios;
     </div>
 
     <!-- Password -->
+<div id="passwordFields">
     <div>
         <label>Contraseña</label>
-        <input type="password" id="passwordUsuario" required>
+        <input type="password" id="passwordUsuario">
     </div>
 
-    <!-- Confirm Password -->
     <div>
         <label>Confirmar contraseña</label>
-        <input type="password" id="passwordConfirmUsuario" required>
+        <input type="password" id="passwordConfirmUsuario">
     </div>
+</div>
 
     <!-- BOTONES -->
     <div class="modal-usuariopanel__actions">
         <button type="submit" class="modal-usuariopanel__btn">
-            Guardar Usuario
+          <i class="fas fa-save"></i>  Guardar Usuario
         </button>
     </div>
 </form>
@@ -255,86 +281,15 @@ window.usuariosGlobal = usuarios;
     }
 }
 
+
+
 function editarUsuario(id) {
     const usuario = window.usuariosGlobal.find(u => u.id === id);
     if (!usuario) return;
 
-    // Eliminar modal previo si existe
-    const modalPrevio = document.getElementById("modalUsuario");
-    if (modalPrevio) modalPrevio.remove();
+    window.usuarioEditandoId = id;
 
-    // 🧱 Inyectar HTML del modal
-    document.body.insertAdjacentHTML("beforeend", `
-        <div id="modalUsuario" class="modal-usuariopanel">
-            <div class="modal-usuariopanel__content">
-
-                <div class="modal-usuariopanel__header">
-                    <h2 class="modal-usuariopanel__title">Editar Usuario</h2>
-                    <span class="modal-usuariopanel__close" onclick="cerrarModalUsuario()">&times;</span>
-                </div>
-
-                <form id="formUsuario" class="modal-usuariopanel__form">
-
-                    <div>
-                        <label>Username</label>
-                        <input type="text" id="usernameUsuario" required>
-                    </div>
-
-                    <div>
-                        <label>Email</label>
-                        <input type="email" id="emailUsuario" required>
-                    </div>
-
-                    <div>
-                        <label>Nombre</label>
-                        <input type="text" id="nombreUsuario" required>
-                    </div>
-
-                    <div>
-                        <label>Apellido</label>
-                        <input type="text" id="apellidoUsuario" required>
-                    </div>
-
-                    <div>
-                        <label>Teléfono</label>
-                        <input type="text" id="telefonoUsuario">
-                    </div>
-
-                    <div>
-                        <label>Dirección</label>
-                        <input type="text" id="direccionUsuario">
-                    </div>
-
-                    <div>
-                        <label>Rol</label>
-                        <select id="rolUsuario" required onchange="toggleAdminFields()">
-                            <option value="cliente">Cliente</option>
-                            <option value="empleado">Empleado</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="admin">Admin</option>
-                            <option value="superuser">Superuser</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-usuariopanel__checkbox">
-                        <label>
-                            <input type="checkbox" id="activoUsuario">
-                            Activo
-                        </label>
-                    </div>
-
-                    <div class="modal-usuariopanel__actions">
-                        <button type="submit" class="modal-usuariopanel__btn">
-                            Guardar cambios
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    `);
-
-    // 🧾 Rellenar datos
+    // rellenar datos
     document.getElementById("usernameUsuario").value = usuario.username;
     document.getElementById("emailUsuario").value = usuario.email;
     document.getElementById("nombreUsuario").value = usuario.nombre;
@@ -344,20 +299,23 @@ function editarUsuario(id) {
     document.getElementById("rolUsuario").value = usuario.rol;
     document.getElementById("activoUsuario").checked = usuario.is_active;
 
-    // Mostrar modal
-    document.getElementById("modalUsuario").style.display = "flex";
+    // 🔥 ocultar password
+    document.getElementById("passwordFields").style.display = "none";
 
-    // Guardar ID para el submit
-    window.usuarioEditandoId = id;
+    document.querySelector(".modal-usuariopanel__title").innerHTML =
+        '<i class="fas fa-edit"></i> Editar Usuario';
+
+    document.getElementById("modalUsuario").style.display = "flex";
 }
+
 function cerrarModalUsuario() {
 
     const modal = document.getElementById("modalUsuario");
     if (modal) modal.style.display = "none";
-
+ window.usuarioEditandoId = null;
     const form = document.getElementById("formUsuario");
     if (form) form.reset();
-
+ window.usuarioEditandoId = null;
     const adminFields = document.getElementById("adminFields");
     if (adminFields) adminFields.style.display = "none";
 
@@ -376,7 +334,7 @@ document.addEventListener("submit", async function (e) {
         const confirmInput = document.getElementById("passwordConfirmUsuario");
 
         let password = null;
-
+/*
         if (passwordInput && confirmInput) {
             password = passwordInput.value;
             const confirmPassword = confirmInput.value;
@@ -389,6 +347,14 @@ document.addEventListener("submit", async function (e) {
                 });
             }
         }
+*/
+      
+    
+
+if (!window.usuarioEditandoId) {
+    const username = document.getElementById("usernameUsuario").value.trim();
+    password = username + "123";
+}
 
         const rol = document.getElementById("rolUsuario").value;
         const token = sessionStorage.getItem("token");
@@ -602,14 +568,14 @@ async function cargarContactoAdmin() {
         card.className = "admin-contactos__card";
 
      card.innerHTML = `
-  <h3 class="admin-contactos__titulo">📩 Mensaje de contacto</h3>
+  <h3 class="admin-contactos__titulo"> <i class="fas fa-envelope"></i> Mensaje de contacto</h3>
 
-  <p><strong>👤 Nombre:</strong> ${m.nombre}</p>
-  <p><strong>📧 Correo:</strong> ${m.email}</p>
+  <p><strong> <i class="fas fa-user"></i> Nombre:</strong> ${m.nombre}</p>
+  <p><strong> <i class="fas fa-envelope"></i> Correo:</strong> ${m.email}</p>
 
-  ${m.telefono ? `<p><strong>📞 Teléfono:</strong> ${m.telefono}</p>` : ""}
+  ${m.telefono ? `<p><strong> <i class="fas fa-phone"></i> Teléfono:</strong> ${m.telefono}</p>` : ""}
 
-  <p><strong>📝 Mensaje:</strong></p>
+  <p><strong> <i class="fas fa-comment"></i> Mensaje:</strong></p>
   <div >
     ${m.mensaje}
   </div>
@@ -622,7 +588,7 @@ async function cargarContactoAdmin() {
     Marcar como leído
   </label>
   <p class="admin-contactos__fecha">
-    <strong>🕒 Fecha:</strong> ${new Date(m.creado).toLocaleString()}
+    <strong> <i class="fas fa-clock"></i> Fecha:</strong> ${new Date(m.creado).toLocaleString()}
   </p>
 `;
 
@@ -649,7 +615,12 @@ async function marcarLeido(id, estado) {
     if (!res.ok) {
       const text = await res.text();
       console.error("Error backend:", text);
-      alert("Error actualizando estado");
+     // alert("Error actualizando estado");
+        swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "No se pudo actualizar el estado"
+});
       return;
     }
 
@@ -658,7 +629,12 @@ async function marcarLeido(id, estado) {
 
   } catch (err) {
     console.error("❌ Error real de red:", err);
-    alert("Error de conexión");
+   // alert("Error de conexión");
+    Swal.fire({
+    icon: "error",
+    title: "Error de conexión",
+    text: "No se pudo conectar al servidor"
+});
   }
 }
 
@@ -727,10 +703,10 @@ async function cargarPedidosAdmin() {
         contenedor.innerHTML = `
             <div class="pedidosadmin-topnav">
                 <div class="pedidosadmin-estados">
-                    <button class="pedidosadmin-btn activo" data-estado="todos">Todos</button>
-                    <button class="pedidosadmin-btn" data-estado="pendiente">Pendiente</button>
-                    <button class="pedidosadmin-btn" data-estado="preparando">Preparando</button>
-                    <button class="pedidosadmin-btn" data-estado="entregado">Entregado</button>
+                    <button class="pedidosadmin-btn activo" data-estado="todos"> <i class="fas fa-list"></i> Todos</button>
+                    <button class="pedidosadmin-btn" data-estado="pendiente"> <i class="fas fa-clock"></i> Pendiente</button>
+                    <button class="pedidosadmin-btn" data-estado="preparando"> <i class="fas fa-cog"></i> Preparando</button>
+                    <button class="pedidosadmin-btn" data-estado="entregado"> <i class="fas fa-truck"></i> Entregado</button>
                 </div>
             </div>
 
@@ -747,24 +723,24 @@ async function cargarPedidosAdmin() {
             card.dataset.estado = p.estado;
 
             card.innerHTML = `
-                <h3>Pedido #${p.id}</h3>
-                <p><strong>Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
-        <p><strong>Tipo:</strong> 
+                <h3> <i class="fas fa-list"></i> Pedido #${p.id}</h3>
+                <p><strong> <i class="fas fa-user"></i> Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
+        <p><strong> <i class="fas fa-box"></i> Tipo:</strong> 
         ${
             p.tipo_pedido === "delivery"
-            ? `<span class="tipo-delivery">Delivery</span>`
-            : `<span class="tipo-retirar">Retirar en local</span>`
+            ? `<span class="tipo-delivery"> <i class="fas fa-shipping-fast"></i> Delivery</span>`
+            : `<span class="tipo-retirar"> <i class="fas fa-store"></i> Retirar en local</span>`
         }
     </p>
-                <p><strong>Total:</strong> $${p.total}</p>
-                <p><strong>Estado:</strong> 
+                <p><strong> <i class="fas fa-tag"></i> Total:</strong> $${p.total}</p>
+                <p><strong> <i class="fas fa-info-circle"></i> Estado:</strong> 
                     ${
                         p.estado === "entregado"
-                        ? `<span class="estado-entregado">Entregado</span>`
+                        ? `<span class="estado-entregado"> <i class="fas fa-truck"></i> Entregado</span>`
                         : `
                             <select onchange="cambiarEstado(${p.id}, this.value)">
-                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}>Pendiente</option>
-                                <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}>Preparando</option>
+                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}> <i class="fas fa-clock"></i> Pendiente</option>
+                                <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}> <i class="fas fa-cog"></i> Preparando</option>
                             </select>
                         `
                     }
@@ -772,8 +748,8 @@ async function cargarPedidosAdmin() {
                <table class="pedido-tabla">
   <thead>
     <tr>
-      <th>Descripción</th>
-      <th>Cantidad</th>
+      <th> <i class="fas fa-list"></i> Descripción</th>
+      <th> <i class="fas fa-hashtag"></i> Cantidad</th>
     </tr>
   </thead>
   <tbody>
@@ -868,7 +844,7 @@ async function cambiarEstado(id, nuevoEstado) {
   //  const token = localStorage.getItem("token");
     const token = sessionStorage.getItem("token");
 
-    await fetch(`/api/panel-admin/ordenes/${id}/`, {
+    await fetch(`/api/panel-admin/ordenes/${id}/estado/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -925,28 +901,28 @@ async function cambiarEstado(id, nuevoEstado) {
             card.setAttribute("data-estado", r.estado);
 
             card.innerHTML = `
-                <h3>Reserva #${r.id}</h3>
+                <h3>    <i class="fas fa-calendar-check"></i> Reserva #${r.id}</h3>
 
                 <p>
-                  <strong>Cliente:</strong> ${r.nombre} (${r.telefono})
+                  <strong> <i class="fas fa-user"></i> Cliente:</strong> ${r.nombre} (${r.telefono})
                 </p>
 
                 <p>
-                  📅 <strong>Fecha:</strong> ${r.fecha}<br>
-                  ⏰ <strong>Hora:</strong> ${r.hora_inicio} - ${r.hora_fin}
+               <strong> <i class="fas fa-calendar"></i> Fecha:</strong> ${r.fecha}<br>
+                   <strong> <i class="fas fa-clock"></i> Hora:</strong> ${r.hora_inicio} - ${r.hora_fin}
                 </p>
 
                 <p>
-                  🍽️ <strong>Mesas:</strong> ${r.mesas} |
-                  🪑 <strong>Sillas:</strong> ${r.sillas}
+                   <strong> <i class="fas fa-utensils"></i> Mesas:</strong> ${r.mesas} |
+                   <strong> <i class="fas fa-chair"></i> Sillas:</strong> ${r.sillas}
                 </p>
 
                 <p>
-                  <strong>Estado:</strong>
+                  <strong> <i class="fas fa-info-circle"></i> Estado:</strong>
                   <select onchange="cambiarEstadoReserva(${r.id}, this.value)">
-                      <option value="pendiente" ${r.estado === "pendiente" ? "selected" : ""}>Pendiente</option>
-                      <option value="confirmada" ${r.estado === "confirmada" ? "selected" : ""}>Confirmada</option>
-                      <option value="cancelada" ${r.estado === "cancelada" ? "selected" : ""}>Cancelada</option>
+                      <option value="pendiente" ${r.estado === "pendiente" ? "selected" : ""}> <i class="fas fa-clock"></i> Pendiente</option>
+                      <option value="confirmada" ${r.estado === "confirmada" ? "selected" : ""}> <i class="fas fa-check-circle"></i> Confirmada</option>
+                      <option value="cancelada" ${r.estado === "cancelada" ? "selected" : ""}> <i class="fas fa-times-circle"></i> Cancelada</option>
                   </select>
                 </p>
             `;
@@ -1012,12 +988,15 @@ function iniciarAutoRefresh(desde = "", hasta = "") {
 }
 
 
-function crearKPI(contenedor, titulo, valor, prefijo = "") {
+function crearKPI(contenedor, titulo, valor, prefijo = "", icono = "") {
   const card = document.createElement("div");
   card.className = "kpi-card";
 
   card.innerHTML = `
-    <span>${titulo}</span>
+    <span class="kpi-title">
+        ${icono ? `<i class="fas ${icono}"></i>` : ""}
+        ${titulo}
+    </span>
     <strong>0</strong>
   `;
 
@@ -1060,7 +1039,7 @@ function renderDashboard(data) {
 
   <div class="dashboard-header">
     <div>
-      <h1>Dashboard</h1>
+      <h1> <i class="fas fa-chart-line"></i> Dashboard</h1>
       <p class="dashboard-sub">Resumen general del negocio</p>
     </div>
     <div class="dashboard-user">
@@ -1076,31 +1055,31 @@ function renderDashboard(data) {
       <div class="dashboard-filtros">
         <input type="date" id="dashDesde">
         <input type="date" id="dashHasta">
-        <button id="btnFiltrar">Filtrar</button>
+        <button id="btnFiltrar"> <i class="fas fa-filter"></i> Filtrar</button>
       </div>
 
       <div class="kpi-row" id="kpiRow"></div>
 
       <div class="charts-row">
         <div class="chart-card">
-          <h3>📈 Ventas por día</h3>
+          <h3> <i class="fas fa-chart-line"></i>  Ventas por día</h3>
           <canvas id="ventasChart"></canvas>
         </div>
 
         <div class="chart-card">
-          <h3>🪑 Reservas por día</h3>
+          <h3> <i class="fas fa-calendar-check"></i>  Reservas por día</h3>
           <canvas id="reservasChart"></canvas>
         </div>
       </div>
 
     <div class="top-row">
     <div class="top-card">
-        <h3>🔥 Productos Más Vendidos</h3>
+        <h3> <i class="fas fa-fire"></i>  Productos Más Vendidos</h3>
         <div id="topVendidos"></div>
     </div>
 
     <div class="top-card">
-        <h3>💰 Productos con Más Ingresos</h3>
+        <h3> <i class="fas fa-coins"></i>  Productos con Más Ingresos</h3>
         <div id="topIngresos"></div>
     </div>
     </div>
@@ -1112,13 +1091,27 @@ function renderDashboard(data) {
   const kpiRow = document.getElementById("kpiRow");
   kpiRow.innerHTML = "";
 
-  crearKPI(kpiRow, "Total Órdenes", data.kpis.total_ordenes);
-  crearKPI(kpiRow, "Total Ventas", data.kpis.total_ventas, "$");
-  crearKPI(kpiRow, "Reservas Hoy", data.kpis.reservas_hoy);
+crearKPI(kpiRow, "Total Órdenes", data.kpis.total_ordenes, "", "fa-receipt");
+crearKPI(kpiRow, "Total Ventas", data.kpis.total_ventas, "$", "fa-dollar-sign");
+crearKPI(kpiRow, "Reservas Hoy", data.kpis.reservas_hoy, "", "fa-calendar-check");
 
-  data.ordenes_por_estado.forEach(o => {
-    crearKPI(kpiRow, `Órdenes ${o.estado}`, o.total);
-  });
+ data.ordenes_por_estado.forEach(o => {
+
+  const iconosEstado = {
+    pendiente: "fa-clock",
+    en_proceso: "fa-spinner",
+    completado: "fa-circle-check",
+    cancelado: "fa-circle-xmark"
+  };
+
+  crearKPI(
+    kpiRow,
+    `Órdenes ${o.estado}`,
+    o.total,
+    "",
+    iconosEstado[o.estado] || "fa-chart-pie"
+  );
+});
 
   /* Charts */
   if (ventasChart) ventasChart.destroy();
@@ -1173,7 +1166,7 @@ function renderTopVendidos(productos) {
   contenedor.innerHTML = "";
 
   if (!productos || productos.length === 0) {
-    contenedor.innerHTML = "<p>No hay datos</p>";
+    contenedor.innerHTML = "<p> <i class=\"fas fa-exclamation-circle\"></i> No hay datos</p>";
     return;
   }
 
@@ -1185,8 +1178,8 @@ function renderTopVendidos(productos) {
     contenedor.innerHTML += `
       <div class="top-item">
         <div class="top-info">
-          <span>#${index + 1} ${p.producto__nombre}</span>
-          <strong>${p.total_vendido} vendidos</strong>
+          <span> #${index + 1} ${p.producto__nombre}</span>
+          <strong><i class="fas fa-shopping-cart"></i> ${p.total_vendido} vendidos</strong>
         </div>
         <div class="top-bar">
           <div class="top-bar-fill" style="width:${porcentaje}%"></div>
@@ -1217,8 +1210,8 @@ function renderTopIngresos(productos) {
     contenedor.innerHTML += `
       <div class="top-item">
         <div class="top-info">
-          <span>#${index + 1} ${p.producto__nombre}</span>
-          <strong>RD$ ${ingresoFormateado}</strong>
+          <span> #${index + 1} ${p.producto__nombre}</span>
+          <strong> <i class="fas fa-coins"></i> RD$ ${ingresoFormateado}</strong>
         </div>
         <div class="top-bar">
           <div class="top-bar-fill ingresos" style="width:${porcentaje}%"></div>
@@ -1276,7 +1269,7 @@ contenedor.innerHTML = `
 
     <input type="text"
        placeholder="Buscar producto..."
-       oninput="filtrarProductos(this.value)">
+       oninput="filtrarProductos(this.value)" >
 
     <!-- 🔥 NUEVA BARRA DE CATEGORÍAS -->
    <div class="adminpos-categorias-wrapper">
@@ -1328,7 +1321,7 @@ contenedor.innerHTML = `
 
 
 <button class="summary-total-btn  btn-charge" onclick="abrirModalCobro()">
-    <span class="label">COBRAR</span>
+    <span class="label"> <i class="fas fa-money-bill"></i> COBRAR</span>
     <span class="amount">RD$ <span id="posTotal">0.00</span></span>
 </button>
 
@@ -1434,7 +1427,13 @@ function filtrarAdminPOS(categoriaNombre, botonActivo) {
 function abrirModalCobro() {
 
     if (!carrito2.length) {
-        alert("No hay productos en la venta");
+      //  alert("No hay productos en la venta");
+      swal.fire({
+    icon: "warning",
+    title: "Carrito vacío",
+    text: "Agrega productos antes de cobrar"
+}); 
+
         return;
     }
 
@@ -1659,14 +1658,24 @@ async function confirmarCobro() {
     document.getElementById("totalCobroInput").value = "";
 
         } else {
-            alert("Error procesando la venta");
+           // alert("Error procesando la venta");
+           swal.fire({
+    icon: "error",
+    title: "Error",
+    text: data.error || "Error procesando la venta"
+});
             btn.disabled = false;
             btn.innerText = "Confirmar";
         }
 
     } catch (error) {
 
-        alert("Error de conexión");
+       // alert("Error de conexión");
+         swal.fire({    
+    icon: "error",
+    title: "Error de conexión",
+    text: "No se pudo conectar al servidor"
+});
         btn.disabled = false;
         btn.innerText = "Confirmar";
 
@@ -1683,12 +1692,21 @@ function validarYConfirmar() {
         const recibido = parseFloat(document.getElementById("montoRecibido").value) || 0;
 
         if (!recibido) {
-            alert("Debe ingresar el monto recibido.");
+          //  alert("Debe ingresar el monto recibido.");
+            swal.fire({
+                icon: "warning",
+                title: "Monto insuficiente",
+                text: "Debe ingresar el monto recibido."
+            });
             return;
         }
 
         if (recibido < total) {
-            alert("El monto recibido es menor que el total.");
+            swal.fire({
+                icon: "warning",
+                title: "Monto insuficiente",
+                text: "El monto recibido es menor que el total."
+            });
             return;
         }
     }
@@ -1703,17 +1721,29 @@ function validarYConfirmar() {
         const cvv = inputs[2].value.trim();
 
         if (numero.length < 13) {
-            alert("Número de tarjeta inválido.");
+            swal.fire({
+                icon: "warning",
+                title: "Número de tarjeta inválido",
+                text: "El número de tarjeta debe tener al menos 13 dígitos."
+            });
             return;
         }
 
         if (!/^\d{2}\/\d{2}$/.test(fecha)) {
-            alert("Formato de fecha inválido (MM/AA).");
+            swal.fire({
+                icon: "warning",
+                title: "Formato de fecha inválido",
+                text: "El formato de fecha debe ser MM/AA."
+            });
             return;
         }
 
         if (!/^\d{3,4}$/.test(cvv)) {
-            alert("CVV inválido.");
+            swal.fire({
+                icon: "warning",
+                title: "CVV inválido",
+                text: "El CVV debe tener 3 o 4 dígitos."
+            });
             return;
         }
     }
@@ -1724,7 +1754,11 @@ function validarYConfirmar() {
         const referencia = document.getElementById("referenciaTransferencia").value.trim();
 
         if (referencia === "") {
-            alert("Debe ingresar la referencia de la transferencia.");
+            swal.fire({
+                icon: "warning",
+                title: "Referencia de transferencia",
+                text: "Debe ingresar la referencia de la transferencia."
+            });
             return;
         }
     }
@@ -1771,8 +1805,8 @@ function mostrarConfirmacionImpresion(ventaId) {
             <h3>Venta realizada con éxito</h3>
             <p>¿Desea imprimir el ticket?</p>
             <div class="buttons">
-                <button id="btnNoPrint">No</button>
-                <button id="btnPrint">Imprimir</button>
+                <button id="btnNoPrint"> <i class="fas fa-times"></i> No</button>
+                <button id="btnPrint"> <i class="fas fa-print"></i> Imprimir</button>
             </div>
         </div>
     `;
@@ -1832,7 +1866,12 @@ async function cobrarVenta() {
     const token = sessionStorage.getItem("token");
 
     if (!carrito2.length) {
-        alert("No hay productos en la venta");
+      //  alert("No hay productos en la venta");
+        swal.fire({
+            icon: "warning",
+            title: "Carrito vacío",
+            text: "No hay productos en la venta."
+        });
         return;
     }
 
@@ -1905,7 +1944,7 @@ function renderCarrito2() {
 
                 <button class="btn-eliminar"
                         onclick="eliminarProducto(${p.id})">
-                        🗑
+                    <i class="fas fa-trash"></i>
                 </button>
             </div>
         `;

@@ -32,6 +32,7 @@ class Reserva(models.Model):
 
     nombre = models.CharField(max_length=100)
     telefono = models.CharField(max_length=30)
+    email = models.EmailField(null=True, blank=True)
 
     fecha = models.DateField()
     hora_inicio = models.TimeField()

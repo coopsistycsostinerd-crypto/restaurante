@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
+
+from core.permissions import IsAuthenticatedNotClient
+from users.models import Usuariohtp
 from .models import Empresa
 from .serializers import EmpresaSerializer
 
@@ -75,7 +78,7 @@ class EmpresaConfigAPIView(APIView):
 
 
 @api_view(["GET"])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticatedNotClient])
 def admin_dashboard(request):
     hoy = now().date()
 
@@ -151,6 +154,7 @@ def admin_dashboard(request):
         .order_by("-total_ingresos")[:5]
     )
 
+    user = Usuariohtp.objects.get(id=request.user.id)
 
 
     return Response({
@@ -165,6 +169,17 @@ def admin_dashboard(request):
         "reservas_por_dia": list(reservas_por_dia),
         "productos_mas_vendidos": list(productos_mas_vendidos),
         "productos_mas_ingresos": list(productos_mas_ingresos),
+            "user": {
+                "nombre": user.nombre,
+                "apellido": user.apellido,
+                "email": user.email,
+                "telefono": user.telefono,
+                "direccion": user.direccion,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
+                "is_admin": user.is_admin,
+                    "rol": user.rol,
+            }
 
     })
 
