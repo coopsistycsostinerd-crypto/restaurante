@@ -258,3 +258,8 @@ button {
   border-color: #d6b77c;
   box-shadow: 0 0 10px rgba(214,183,124,.4);
 }
+
+
+.swal2-container {
+    z-index: 99999 !important;
+}

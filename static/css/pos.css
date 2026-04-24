@@ -751,3 +751,6 @@ body.sidebar-open .products-col {
     background: #D6B77C;
     color: black;
 }
+.swal2-container {
+    z-index: 99999 !important;
+}

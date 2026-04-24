@@ -2347,3 +2347,7 @@ main {
 i {
   margin-right: 8px;
 }
+
+.swal2-container {
+    z-index: 99999 !important;
+}

@@ -912,3 +912,7 @@ textarea { min-height: 80px; resize: vertical; }
     font-size: 18px;
     margin-right: 6px;
 }
+
+.swal2-container {
+    z-index: 99999 !important;
+}

@@ -24,3 +24,6 @@
     padding: 20px;
     border-radius: 10px;
 }
+.swal2-container {
+    z-index: 99999 !important;
+}
