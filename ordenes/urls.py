@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AdminCambiarEstadoOrdenAPIView,  AdminOrdenDetailAPIView, AdminOrdenListAPIView,  LimpiarCarritoAPIView, OrdenListCreateAPIView, MisOrdenesAPIView, PanelAdminAccessAPIView, panel_admin_view
+from .views import AdminCambiarEstadoOrdenAPIView,  AdminOrdenListAPIViewcocina, AdminOrdenDetailAPIView, AdminOrdenListAPIView,  LimpiarCarritoAPIView, OrdenListCreateAPIView, MisOrdenesAPIView, PanelAdminAccessAPIView, panel_admin_view
 from django.urls import path
 
 
@@ -15,6 +15,7 @@ urlpatterns = [
 
 
       path("panel-admin/ordenes/", AdminOrdenListAPIView.as_view()),
+    path("panel-admin/ordenescocina/", AdminOrdenListAPIViewcocina.as_view()),
     path("panel-admin/ordenes/<int:pk>/", AdminCambiarEstadoOrdenAPIView.as_view()),
     path("panel-admin/ordenes/<int:pk>/estado/", AdminCambiarEstadoOrdenAPIView.as_view()),
    

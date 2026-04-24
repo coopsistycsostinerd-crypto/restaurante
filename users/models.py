@@ -59,6 +59,7 @@ class Usuariohtp(AbstractBaseUser, PermissionsMixin):
         ("supervisor", "Supervisor"),
         ("admin", "Administrador"),
          ("superuser", "Superuser"),
+            ("cocina", "Cocina"),
     )
 
     rol = models.CharField(max_length=20, choices=ROLES, default="cliente")
@@ -78,4 +79,4 @@ class Usuariohtp(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_staff(self):
-        return self.is_admin
+        return self.rol != "cliente"

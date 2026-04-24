@@ -858,6 +858,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   is_staff: data.is_staff,
                   is_admin:data.is_admin,
             is_superuser: data.is_superuser,
+                rol: data.rol
             }));
 actualizarMenuUsuario();
 
@@ -955,7 +956,7 @@ function actualizarMenuUsuario() {
                 <a href="#"  onclick="abrirPerfil() "> <i class="fas fa-user"></i> Mi perfil</a>
                 <a href="#" onclick="abrirMisPedidos()"> <i class="fas fa-list"></i> Mis pedidos</a>
                 <a href="#" onclick="abrirMisReservas()"> <i class="fas fa-calendar-alt"></i> Mis Reservas</a>
-${user.rol !== "cliente" 
+${user.rol && user.rol.toLowerCase().trim() !== "cliente"
   ? `<a href="#" onclick="irPanelAdmin()"> 
         <i class="fas fa-cogs"></i> Panel Admin
      </a>` 

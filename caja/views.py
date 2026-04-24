@@ -186,7 +186,8 @@ class AgregarPagoAPIView(APIView):
             # ==============================
             if venta.orden:
                 print(f"Cambiando estado de la orden {venta.orden.id} a 'entregado'")
-                venta.orden.estado = "entregado"
+             #   venta.orden.estado = "entregado"
+                venta.orden.estado = "en preparacion"  # 🔥 Nuevo estado para que cocina sepa que ya se pagó pero falta entregar
                 venta.orden.save()
 
             # ==============================

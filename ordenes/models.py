@@ -11,6 +11,7 @@ class Orden(models.Model):
     ESTADOS = (
         ('pendiente', 'Pendiente'),
         ('preparando', 'Preparando'),
+        ('en preparacion', 'En preparación'),
         ('entregado', 'Entregado'),
                 ('canelado', 'Cancelado'),
     )

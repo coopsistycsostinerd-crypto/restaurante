@@ -35,6 +35,7 @@ async function cargarClientesAdmin() {
             <option value="empleado">Empleados</option>
             <option value="gerente">Gerentes</option>
             <option value="cajero">Cajeros</option>
+            <option value="cocina">Cocina</option>
             <option value="admin">Administradores</option>
         </select>
     </div>
@@ -70,12 +71,12 @@ function abrirModalCrearUsuario() {
     document.getElementById("activoUsuario").checked = true;
 
     // 🔥 mostrar password
-    document.getElementById("passwordFields").style.display = "block";
+   // document.getElementById("passwordFields").style.display = "block";
 
     document.querySelector(".modal-usuariopanel__title").innerHTML =
         '<i class="fas fa-user-plus"></i> Crear Usuario';
 
-    document.getElementById("modalUsuario").style.display = "flex";
+    document.getElementById("modalUsuario").style.display = "block";
 }
 
 
@@ -144,6 +145,8 @@ window.usuariosGlobal = usuarios;
         u.rol === "supervisor" ? `<i class="fas fa-compass"></i> Supervisor` :
         u.rol === "admin" ? `<i class="fas fa-crown"></i> Administrador` :
         u.rol === "superuser" ? `<i class="fas fa-fire"></i> Superuser` :
+        u.rol === "cocina" ? `<i class="fas fa-utensils"></i> Cocina` :
+        u.rol === "cajero" ? `<i class="fas fa-cash-register"></i> Cajero` :
         "—"
     }
 </span>
@@ -226,6 +229,7 @@ window.usuariosGlobal = usuarios;
         <label>Rol</label>
         <select id="rolUsuario" required onchange="toggleAdminFields()">
             <option value="cliente">Cliente</option>
+            <option value="cocina">Cocina</option>
             <option value="gerente">Gerente</option>
             <option value="cajero">Cajero</option>
             <option value="empleado">Empleado</option>
@@ -242,15 +246,15 @@ window.usuariosGlobal = usuarios;
     </div>
 
     <!-- ADMIN FIELDS -->
-    <div id="adminFields" class="modal-usuariopanel__admin">
+    <div id="adminFields" class="modal-usuariopanel__admin"   >
         <label>
-            <input type="checkbox" id="isSuperUsuario">
+            <input type="checkbox" id="isSuperUsuario"  >
             Superusuario
         </label>
     </div>
 
     <!-- Password -->
-<div id="passwordFields">
+<div id="passwordFields" class="hidden" style="display:none;">
     <div>
         <label>Contraseña</label>
         <input type="password" id="passwordUsuario">
@@ -511,7 +515,10 @@ function cargarSeccion(seccion) {
         titulo.textContent = "Gestión de Pedidos";
         cargarPedidosAdmin();
     }
-
+if (seccion === "cocina") {
+        titulo.textContent = "Gestión de Cocina";
+        cargarCocinaAdmin();
+    }
     if (seccion === "clientes") {
         titulo.textContent = "Lista de Clientes";
        cargarClientesAdmin();
@@ -788,6 +795,117 @@ async function cargarPedidosAdmin() {
 }
 
 
+async function cargarCocinaAdmin() {
+
+   // const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
+    const contenedor = document.getElementById("adminBody");
+
+    contenedor.innerHTML = "Cargando pedidos...";
+
+    try {
+
+        const res = await fetch("/api/panel-admin/ordenescocina/", {
+            headers: {
+                "Authorization": `Token ${token}`
+            }
+        });
+
+        const pedidos = await res.json();
+
+        if (!pedidos.length) {
+            contenedor.innerHTML = "<p>No hay pedidos aún</p>";
+            return;
+        }
+
+        // 🔹 ESTRUCTURA PRINCIPAL (NAV + GRID)
+        contenedor.innerHTML = `
+            <div class="pedidosadmin-topnav">
+                <div class="pedidosadmin-estados">
+                    <button class="pedidosadmin-btn activo" data-estado="todos"> <i class="fas fa-list"></i> Todos</button>
+                    <button class="pedidosadmin-btn" data-estado="pendiente"> <i class="fas fa-clock"></i> Pendiente</button>
+                    <button class="pedidosadmin-btn" data-estado="preparando"> <i class="fas fa-cog"></i> Preparando</button>
+                    <button class="pedidosadmin-btn" data-estado="entregado"> <i class="fas fa-truck"></i> Entregado</button>
+                </div>
+            </div>
+
+            <div id="gridPedidos" class="pedidos-grid"></div>
+        `;
+
+        const grid = document.getElementById("gridPedidos");
+
+        // 🔹 CREAR TARJETAS
+        pedidos.forEach(p => {
+
+            const card = document.createElement("div");
+            card.className = "admin-card";
+            card.dataset.estado = p.estado;
+
+            card.innerHTML = `
+                <h3> <i class="fas fa-list"></i> Pedido #${p.id}</h3>
+                <p><strong> <i class="fas fa-user"></i> Cliente:</strong> ${p.cliente_nombre || "Invitado"}</p>
+        <p><strong> <i class="fas fa-box"></i> Tipo:</strong> 
+        ${
+            p.tipo_pedido === "delivery"
+            ? `<span class="tipo-delivery"> <i class="fas fa-shipping-fast"></i> Delivery</span>`
+            : `<span class="tipo-retirar"> <i class="fas fa-store"></i> Retirar en local</span>`
+        }
+    </p>
+            
+                <p><strong> <i class="fas fa-info-circle"></i> Estado:</strong> 
+                    ${
+                        p.estado === "entregado"
+                        ? `<span class="estado-entregado"> <i class="fas fa-truck"></i> Entregado</span>`
+                        : `
+                            <select onchange="cambiarEstado2(${p.id}, this.value)">
+                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}> <i class="fas fa-clock"></i> Pendiente</option>
+                                <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}> <i class="fas fa-cog"></i> Preparando</option>
+                            </select>
+                        `
+                    }
+                </p>
+               <table class="pedido-tabla">
+  <thead>
+    <tr>
+      <th> <i class="fas fa-list"></i> Descripción</th>
+      <th> <i class="fas fa-hashtag"></i> Cantidad</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${p.items.map(i => `
+      <tr>
+        <td>${i.nombre_producto}</td>
+        <td>${i.cantidad}</td>
+      </tr>
+    `).join("")}
+  </tbody>
+</table>
+            `;
+
+            grid.appendChild(card);
+        });
+
+        // 🔹 ACTIVAR FILTROS
+        const botones = document.querySelectorAll(".pedidosadmin-btn");
+
+        botones.forEach(btn => {
+            btn.addEventListener("click", function () {
+
+                // Quitar activo
+                botones.forEach(b => b.classList.remove("activo"));
+                this.classList.add("activo");
+
+                const estado = this.dataset.estado;
+                filtrarPedidos(estado);
+            });
+        });
+
+    } catch (error) {
+        contenedor.innerHTML = "<p>Error al cargar pedidos</p>";
+        console.error(error);
+    }
+}
 
 
 
@@ -857,6 +975,25 @@ async function cambiarEstado(id, nuevoEstado) {
 
     // Recargamos pedidos
     cargarPedidosAdmin();
+}
+async function cambiarEstado2(id, nuevoEstado) {
+
+  //  const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
+    await fetch(`/api/panel-admin/ordenes/${id}/estado/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${token}`
+        },
+        body: JSON.stringify({
+            estado: nuevoEstado
+        })
+    });
+
+    // Recargamos pedidos
+   cargarCocinaAdmin();
 }
 
 

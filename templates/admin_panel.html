@@ -16,6 +16,8 @@
       <nav>
            {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
         <a href="#" onclick="cargarSeccion('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</a>
+        <a href="#" onclick="cargarSeccion('cocina')"><i class="fas fa-chart-line"></i> Cocina</a>
+
  {% endif %}
         <a href="#" onclick="cargarSeccion('pedidos')"><i class="fas fa-receipt"></i> Pedidos</a>
 
