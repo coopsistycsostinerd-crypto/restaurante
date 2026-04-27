@@ -110,7 +110,7 @@ async function agregarCarrito(id, nombre, precio, inputId) {
 
         document.getElementById(inputId).value = 1;
         abrirCarrito();
-
+/*
         Swal.fire({
          //   toast: true,
             position: "top-end",
@@ -119,7 +119,7 @@ async function agregarCarrito(id, nombre, precio, inputId) {
             showConfirmButton: false,
             timer: 1500
         });
-
+*/
     } catch (error) {
 
         Swal.fire({
@@ -546,17 +546,33 @@ function precargarDatos() {
     nombre.value = user.nombre || "";
     telefono.value = user.telefono || "";
     direccion.value = user.direccion || "";
+        correo.value = user.email || "";
 }
+/*
 document.addEventListener("DOMContentLoaded", () => {
     const modalContent = document.querySelector("#checkoutModal .modal-content");
     checkoutHTMLOriginal = modalContent.innerHTML;
 
     conectarCheckoutForm();
 });
+*/
+document.addEventListener("DOMContentLoaded", () => {
+    const modalContent = document.querySelector(
+        "#checkoutModal .modal-checkoutnuevo-content"
+    );
 
+    if (!modalContent) {
+        console.log("No se encontró el modal");
+        return;
+    }
+
+    checkoutHTMLOriginal = modalContent.innerHTML;
+
+    conectarCheckoutForm();
+});
 
 function conectarCheckoutForm() {
-
+ console.log("SE EJECUT CONECTARCHECKOUTFORM");
     const form = document.getElementById("checkoutForm");
     if (!form) return;
 
@@ -566,19 +582,29 @@ function conectarCheckoutForm() {
 
 
 
-    const payload = {
-        cliente_nombre: nombre.value,
-        cliente_telefono: telefono.value,
-        cliente_correo: correo.value,
-        tipo_pedido: tipoPedido.value,
-        direccion: tipoPedido.value === "delivery" ? direccion.value : null,
-        items: carrito.map(p => ({
-            producto_id: p.id,
-            cantidad: p.cantidad,
-            precio: p.precio
-        })),
-        total: totalPrecio()
-    };
+    const nombre = document.getElementById("nombre");
+const telefono = document.getElementById("telefono");
+const correo = document.getElementById("correo");
+const tipoPedido = document.getElementById("tipoPedido");
+const direccion = document.getElementById("direccion");
+
+
+const payload = {
+    cliente_nombre: nombre.value,
+    cliente_telefono: telefono.value,
+    cliente_correo: correo.value,
+    tipo_pedido: tipoPedido.value,
+    direccion: tipoPedido.value === "delivery"
+        ? direccion.value
+        : null,
+    items: carrito.map(p => ({
+        producto_id: p.id,
+        cantidad: p.cantidad,
+        precio: p.precio
+    })),
+
+    total: totalPrecio()
+};
 
         try {
     const token = sessionStorage.getItem("token");
@@ -601,11 +627,19 @@ function conectarCheckoutForm() {
             guardarCarrito();
             renderCarrito();
 
-            if (data.tipo_pedido === "delivery") {
-                mostrarPasoPago(data);
-            } else {
-                finalizarPedido();
-            }
+if (
+    data.tipo_pedido === "delivery" ||
+    data.tipo_pedido === "retirar"
+) {
+    mostrarPasoPago(data);
+} else {
+    Swal.fire({
+        title: "Tipo de pedido requerido",
+        text: "Debes seleccionar si el pedido es Delivery o Retirar en local.",
+        icon: "warning",
+        confirmButtonText: "Entendido"
+    });
+}
 
         } catch (err) {
             console.error(err);
@@ -623,7 +657,9 @@ function conectarCheckoutForm() {
 
 function mostrarPasoPago(orden) {
 
-    const modalContent = document.querySelector("#checkoutModal .modal-content");
+   // const modalContent = document.querySelector("#checkoutModal .modal-content");
+    const modalContent = document.querySelector("#checkoutModal .modal-checkoutnuevo-content");
+        
 
     modalContent.innerHTML = `
         <h3> <i class="fas fa-money-bill"></i> Pago del pedido</h3>
@@ -636,6 +672,7 @@ function mostrarPasoPago(orden) {
             <option value="">Selecciona método</option>
             <option value="transferencia">Transferencia</option>
             <option value="tarjeta">Tarjeta</option>
+            <option value="efectivo_local">Efectivo al retirar</option>
         </select>
 
         <div id="camposPago"></div>
@@ -662,7 +699,7 @@ function mostrarCamposPago() {
         `;
     }
 
-  if (metodo === "tarjeta") {
+ else if (metodo === "tarjeta") {
     contenedor.innerHTML = `
         <div class="simulacion-alerta">
              <i class="fas fa-exclamation-triangle"></i> Pago simulado. No almacenamos datos reales de tarjeta.
@@ -702,6 +739,19 @@ function mostrarCamposPago() {
         </div>
     `;
 }
+else if (metodo === "efectivo_local") {
+    contenedor.innerHTML = `
+        <p>Has seleccionado pagar en efectivo al retirar tu pedido en el local.</p>
+        <p>Por favor, ten el monto exacto para agilizar el proceso.</p>
+        <p>Tu pedido estará listo para retiro en aproximadamente 20-30 minutos después de confirmar.</p>
+        <p>¡Gracias por tu preferencia!</p>
+    `;
+}
+ else {
+        contenedor.innerHTML = "";
+    }
+
+        
 
 
 
@@ -715,8 +765,8 @@ function formatearNumeroTarjeta(input) {
 function cerrarModalconfirmarpedido() {
 
     const modal = document.getElementById("checkoutModal");
-    const modalContent = document.querySelector("#checkoutModal .modal-content");
-
+   // const modalContent = document.querySelector("#checkoutModal .modal-content");
+const modalContent = document.querySelector("#checkoutModal .modal-checkoutnuevo-content");
     modal.classList.remove("active");
 
     // 🔥 RESTAURAR HTML ORIGINAL
@@ -725,7 +775,7 @@ function cerrarModalconfirmarpedido() {
     // 🔥 VOLVER A CONECTAR FORM
     conectarCheckoutForm();
 }
-
+/*
 async function confirmarPago(ordenId) {
 
     const metodo = document.getElementById("metodoPago").value;
@@ -745,7 +795,7 @@ async function confirmarPago(ordenId) {
         text: "Se registrará el pago del pedido",
         icon: "question",
         showCancelButton: true,
-        confirmButtonText: "Cobrar",
+        confirmButtonText: "Pagar",
         cancelButtonText: "Cancelar"
     });
 
@@ -760,7 +810,7 @@ async function confirmarPago(ordenId) {
 
     try {
 
-        const res = await fetch(`${API_BASE}/pago-online/`, {
+      const res = await fetch(`${API_BASE}/pago-online/${ordenId}/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -785,6 +835,92 @@ async function confirmarPago(ordenId) {
             icon: "error",
             title: "Error",
             text: "Error procesando pago"
+        });
+    }
+}
+    */
+
+async function confirmarPago(ordenId) {
+    const metodo = document.getElementById("metodoPago").value;
+
+    if (!metodo) {
+        Swal.fire({
+            icon: "warning",
+            title: "Selecciona método de pago"
+        });
+        return;
+    }
+
+    /* SI ES EFECTIVO EN LOCAL */
+    if (metodo === "efectivo_local") {
+        await Swal.fire({
+            icon: "success",
+            title: "Pedido confirmado",
+            text: "Pagarás en efectivo al momento de retirar tu pedido."
+        });
+
+        finalizarPedido();
+        return;
+    }
+
+    /* SI ES TRANSFERENCIA O TARJETA */
+    const numeroCompleto =
+        document.getElementById("numeroTarjeta")?.value;
+
+    const ultimos4 = numeroCompleto
+        ? numeroCompleto.slice(-4)
+        : null;
+
+    const confirmar = await Swal.fire({
+        title: "¿Confirmar pago?",
+        text: "Se registrará el pago del pedido",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Pagar",
+        cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmar.isConfirmed) return;
+
+    const payload = {
+        orden: ordenId,
+        metodo: metodo,
+        referencia:
+            document.getElementById("referenciaPago")?.value || null,
+        ultimos_digitos: ultimos4
+    };
+
+    try {
+        const res = await fetch(
+            `${API_BASE}/pago-online/${ordenId}/`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error("Error registrando pago");
+        }
+
+        await Swal.fire({
+            icon: "success",
+            title: "Pago registrado",
+            text: "🎉 El pago se registró correctamente"
+        });
+
+        finalizarPedido();
+
+    } catch (err) {
+        console.error(err);
+
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo procesar el pago"
         });
     }
 }

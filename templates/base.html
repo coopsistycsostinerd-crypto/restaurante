@@ -72,7 +72,7 @@
     <!-- CARRITO -->
     <aside id="carrito">
       <div class="carrito-header">
-        <h3> <i class="fas fa-shopping-cart"></i> Tu orden</h3>
+        <h3><i class="fas fa-shopping-cart"></i> Tu orden</h3>
         <button class="cerrar" onclick="toggleCarrito()"><i class="fas fa-times"></i></button>
       </div>
 
@@ -90,43 +90,137 @@
     <!-- OVERLAY -->
     <div id="overlay" onclick="toggleCarrito()"></div>
 
-    <div class="modal" id="checkoutModal">
-      <div class="modal-content">
-        <h3> <i class="fas fa-check-circle"></i> Confirmar pedido</h3>
+   <div class="modal-checkoutnuevo" id="checkoutModal">
+    <div class="modal-checkoutnuevo-content">
+
+        <h3 class="modal-checkoutnuevo-title">
+            <i class="fas fa-check-circle"></i>
+            Confirmar pedido
+        </h3>
 
         <form id="checkoutForm">
-          <label>Nombre</label>
-          <input type="text" id="nombre" placeholder="Tu nombre" required />
-          <label>Correo electrónico</label>
-          <input type="email" id="correo" placeholder="ejemplo@gmail.com" required />
 
-          <label>Teléfono</label>
-          <input type="tel" id="telefono" placeholder="809-000-0000" required />
+            <!-- DATOS PERSONALES -->
+            <div class="modal-checkoutnuevo-section">
+                <h4>Datos personales</h4>
 
-          <label> <i class="fas fa-utensils"></i> Tipo de pedido</label>
-          <select id="tipoPedido" onchange="toggleDireccion()" required>
-            <option value="">Selecciona una opción</option>
-            <option value="delivery"> <i class="fas fa-truck"></i> Delivery</option>
-            <option value="retirar"> <i class="fas fa-store"></i> Retirar en local</option>
-          </select>
+                <div class="modal-checkoutnuevo-row">
+                    <div class="modal-checkoutnuevo-group">
+                        <label>Nombre</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            placeholder="Tu nombre"
+                            required
+                        >
+                    </div>
 
-          <!-- DIRECCIÓN -->
-          <div id="direccionBox" style="display:none">
-            <label> <i class="fas fa-map-marker-alt"></i> Dirección de entrega</label>
-            <textarea id="direccion" placeholder="Ej: Calle Duarte #23, Santo Domingo"></textarea>
-          </div>
+                    <div class="modal-checkoutnuevo-group">
+                        <label>Teléfono</label>
+                        <input
+                            type="tel"
+                            id="telefono"
+                            placeholder="809-000-0000"
+                            required
+                        >
+                    </div>
+                </div>
 
-          <p class="total">
-            Total: <span id="modal-total">0</span>
-          </p>
+                <div class="modal-checkoutnuevo-row">
+                    <div class="modal-checkoutnuevo-group">
+                        <label>Correo electrónico (opcional)</label>
+                        <input
+                            type="email"
+                            id="correo"
+                            placeholder="ejemplo@gmail.com"
+                        >
+                    </div>
 
-          <div class="modal-actions">
-            <button type="button" onclick="cerrarModalconfirmarpedido()"> <i class="fas fa-times"></i> Cancelar</button>
-            <button type="submit" class="btn-confirmar-pedido"> <i class="fas fa-check"></i> Confirmar pedido</button>
-          </div>
+                    <div class="modal-checkoutnuevo-group">
+                        <label>Tipo de pedido</label>
+                        <select
+                            id="tipoPedido"
+                            onchange="toggleDireccion()"
+                            required
+                        >
+                            <option value="">Selecciona una opción</option>
+                            <option value="delivery">Delivery</option>
+                            <option value="retirar">Retirar en local</option>
+                          
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIRECCIÓN -->
+            <div
+                id="direccionBox"
+                class="modal-checkoutnuevo-section"
+                style="display: none;"
+            >
+                <h4>Información de entrega</h4>
+
+                <div class="modal-checkoutnuevo-group">
+                    <label>Dirección de entrega</label>
+                    <textarea
+                        id="direccion"
+                        placeholder="Ej: Calle Duarte #23, Santo Domingo"
+                    ></textarea>
+                </div>
+
+                <div class="modal-checkoutnuevo-group">
+                    <label>Referencia (opcional)</label>
+                    <textarea
+                        id="referencia"
+                        placeholder="Ej: Casa blanca con portón negro"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- OBSERVACIONES -->
+            <div class="modal-checkoutnuevo-section">
+                <h4>Notas adicionales</h4>
+
+                <div class="modal-checkoutnuevo-group">
+                    <label>Observaciones</label>
+                    <textarea
+                        id="observaciones"
+                        placeholder="Ej: sin cebolla, poco picante, sin hielo..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- RESUMEN -->
+            <div class="modal-checkoutnuevo-section">
+        
+
+                <p class="modal-checkoutnuevo-total">
+                    Total:
+                    <span id="modal-total">RD$0.00</span>
+                </p>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="modal-checkoutnuevo-actions">
+                <button
+                    type="button"
+                    onclick="cerrarModalconfirmarpedido()"
+                    class="btn-cancelar"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-finalizar"
+                >
+                    Finalizar pedido
+                </button>
+            </div>
+
         </form>
-      </div>
     </div>
+</div>
 
     <!-- Modal Login -->
     <!-- Modal Login -->
@@ -138,7 +232,7 @@
           <div class="auth-panel">
             <img class="empresaLogoAuth" alt="Logo empresa" />
 
-            <h3> <i class="fas fa-user"></i> Iniciar sesión</h3>
+            <h3><i class="fas fa-user"></i> Iniciar sesión</h3>
 
             <form id="loginForm">
               <input type="text" id="loginUsername" placeholder="Usuario" required />
@@ -146,14 +240,14 @@
               <input type="password" id="loginPassword" placeholder="Contraseña" required />
 
               <div class="modal-actions">
-                <button type="submit"> <i class="fas fa-sign-in-alt"></i> Entrar</button>
-                <button type="button" onclick="cerrarLoginModal()"> <i class="fas fa-times"></i> Cancelar</button>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+                <button type="button" onclick="cerrarLoginModal()"><i class="fas fa-times"></i> Cancelar</button>
               </div>
             </form>
 
             <p>
               ¿No tienes cuenta?
-              <a href="#" onclick="mostrarRegistro(event)"> <i class="fas fa-user-plus"></i> Hazte cliente aquí</a>
+              <a href="#" onclick="mostrarRegistro(event)"><i class="fas fa-user-plus"></i> Hazte cliente aquí</a>
             </p>
           </div>
 
@@ -161,7 +255,7 @@
           <div class="auth-panel">
             <img class="empresaLogoAuth" alt="Logo empresa" />
 
-            <h3> <i class="fas fa-user-plus"></i> Registro</h3>
+            <h3><i class="fas fa-user-plus"></i> Registro</h3>
 
             <form id="registerForm">
               <input type="text" name="nombre" placeholder="Nombre" required />
@@ -173,8 +267,8 @@
               <input type="text" name="direccion" placeholder="Dirección" required />
 
               <div class="modal-actions">
-                <button type="submit"> <i class="fas fa-user-plus"></i> Registrarse</button>
-                <button type="button" onclick="mostrarLogin()"> <i class="fas fa-arrow-left"></i> Volver</button>
+                <button type="submit"><i class="fas fa-user-plus"></i> Registrarse</button>
+                <button type="button" onclick="mostrarLogin()"><i class="fas fa-arrow-left"></i> Volver</button>
               </div>
             </form>
           </div>
@@ -189,7 +283,7 @@
         <div id="listaPedidos" class="lista-pedidos"></div>
 
         <div class="modal-actions">
-          <button type="button" onclick="cerrarMisPedidos()"> <i class="fas fa-times"></i> Cerrar</button>
+          <button type="button" onclick="cerrarMisPedidos()"><i class="fas fa-times"></i> Cerrar</button>
         </div>
       </div>
     </div>
@@ -203,7 +297,7 @@
         <div id="listaReservas" class="lista-pedidos"></div>
 
         <div class="modal-actions">
-          <button type="button" onclick="cerrarMisReservas()"> <i class="fas fa-times"></i> Cerrar</button>
+          <button type="button" onclick="cerrarMisReservas()"><i class="fas fa-times"></i> Cerrar</button>
         </div>
       </div>
     </div>
@@ -238,7 +332,7 @@
             </div>
 
             <div>
-              <label> <i class="fas fa-clock"></i> Salida</label>
+              <label><i class="fas fa-clock"></i> Salida</label>
               <input type="text" id="hora_fin" readonly />
             </div>
           </div>
@@ -270,7 +364,7 @@
           </div>
           <div>
             <div>
-              <label> <i class="fas fa-envelope"></i> Email</label>
+              <label><i class="fas fa-envelope"></i> Email</label>
               <input type="email" id="emailreserva" name="emailreserva" placeholder="Tu email" required />
             </div>
           </div>
@@ -280,9 +374,9 @@
 
           <!-- BOTONES -->
           <div class="modalreserva-actions">
-            <button type="submit" class="modalreserva-btn-primary"> <i class="fas fa-check"></i> Confirmar reserva</button>
+            <button type="submit" class="modalreserva-btn-primary"><i class="fas fa-check"></i> Confirmar reserva</button>
 
-            <button type="button" onclick="cerrarReservaModal()" class="modalreserva-btn-secondary"> <i class="fas fa-times"></i> Cancelar</button>
+            <button type="button" onclick="cerrarReservaModal()" class="modalreserva-btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
           </div>
         </form>
       </div>
@@ -301,7 +395,7 @@
             <!-- AVATAR -->
             <div class="perfil-avatar">
               <img id="perfilImagenPreview" src="/media/perfil/avatar.png" />
-              <label class="btn-upload"> <i class="fas fa-camera"></i> Cambiar foto<input type="file" id="perfilImagen" hidden /></label>
+              <label class="btn-upload"><i class="fas fa-camera"></i> Cambiar foto<input type="file" id="perfilImagen" hidden /></label>
             </div>
 
             <!-- INFO -->
@@ -394,21 +488,21 @@
           <!-- COLUMNA IZQUIERDA -->
           <div class="contacto-form-col">
             <form id="contactoForm">
-              <label> <i class="fas fa-user"></i> Nombre</label>
+              <label><i class="fas fa-user"></i> Nombre</label>
               <input type="text" id="contacto_nombre" required />
 
-              <label> <i class="fas fa-envelope"></i> Email</label>
+              <label><i class="fas fa-envelope"></i> Email</label>
               <input type="email" id="contacto_email" required />
 
-              <label> <i class="fas fa-phone"></i> Teléfono (opcional)</label>
+              <label><i class="fas fa-phone"></i> Teléfono (opcional)</label>
               <input type="text" id="contacto_telefono" />
 
-              <label> <i class="fas fa-comment"></i> Mensaje</label>
+              <label><i class="fas fa-comment"></i> Mensaje</label>
               <textarea id="contacto_mensaje" required></textarea>
 
               <div class="contacto-actions">
-                <button type="submit" class="btn-enviar"> <i class="fas fa-paper-plane"></i> Enviar</button>
-                <button type="button" class="btn-cancelar" onclick="cerrarContacto()"> <i class="fas fa-times"></i> Cancelar</button>
+                <button type="submit" class="btn-enviar"><i class="fas fa-paper-plane"></i> Enviar</button>
+                <button type="button" class="btn-cancelar" onclick="cerrarContacto()"><i class="fas fa-times"></i> Cancelar</button>
               </div>
             </form>
 
@@ -448,10 +542,8 @@
       <div class="modal-content">
         <!-- ================= HEADER ================= -->
         <div class="modal-header">
-          <h2> <i class="fas fa-check-circle"></i> Confirmar Venta</h2>
-          <button type="button" class="btn-close" onclick="this.closest('.pos-modal').classList.remove('active')">
-            <i class="fas fa-times"></i>
-          </button>
+          <h2><i class="fas fa-check-circle"></i> Confirmar Venta</h2>
+          <button type="button" class="btn-close" onclick="this.closest('.pos-modal').classList.remove('active')"><i class="fas fa-times"></i></button>
         </div>
 
         <!-- ================= BODY ================= -->
@@ -460,7 +552,7 @@
           <div class="modal-grid-top">
             <!-- CLIENTE -->
             <div class="checkout-section">
-              <h3>  <i class="fas fa-user"></i> Cliente</h3>
+              <h3><i class="fas fa-user"></i> Cliente</h3>
               <input type="text" id="buscarCliente" placeholder="Buscar por nombre o teléfono" />
 
               <div id="listaClientes" class="lista-clientes"></div>
@@ -475,7 +567,7 @@
 
             <!-- TOTAL -->
             <div class="checkout-section total-box">
-              <h3> <i class="fas fa-money-bill"></i> Total a Cobrar</h3>
+              <h3><i class="fas fa-money-bill"></i> Total a Cobrar</h3>
 
               <div class="total-cobro-box">
                 <span>RD$</span>
@@ -489,9 +581,15 @@
             <h3><i class="fas fa-credit-card"></i> Método de Pago</h3>
 
             <select id="metodoPago" onchange="mostrarCamposPago2()">
-              <option value="efectivo"> <i class="fas fa-money-bill"></i> Efectivo</option>
-              <option value="tarjeta"> <i class="fas fa-credit-card"></i> Tarjeta</option>
-              <option value="transferencia"> <i class="fas fa-exchange-alt"></i> Transferencia</option>
+              <option value="efectivo">
+                <i class="fas fa-money-bill"></i> Efectivo
+              </option>
+              <option value="tarjeta">
+                <i class="fas fa-credit-card"></i> Tarjeta
+              </option>
+              <option value="transferencia">
+                <i class="fas fa-exchange-alt"></i> Transferencia
+              </option>
             </select>
 
             <!-- EFECTIVO -->
@@ -511,7 +609,7 @@
                 <input type="text" placeholder="MM/AA" />
                 <input type="text" placeholder="CVV" />
               </div>
-              <small class="demo-warning"> <i class="fas fa-exclamation-triangle"></i> Esto es una demostración. No almacenamos datos reales.</small>
+              <small class="demo-warning"><i class="fas fa-exclamation-triangle"></i> Esto es una demostración. No almacenamos datos reales.</small>
             </div>
 
             <!-- TRANSFERENCIA -->
@@ -524,7 +622,7 @@
         <!-- ================= FOOTER ================= -->
         <div class="modal-footer">
           <!-- <button id="btnConfirmarCobro" class="btn-confirm" onclick="confirmarCobro()"> Confirmar Cobro </button> -->
-          <button id="btnConfirmarCobro" class="btn-confirm" onclick="validarYConfirmar()"> <i class="fas fa-check"></i> Confirmar Cobro</button>
+          <button id="btnConfirmarCobro" class="btn-confirm" onclick="validarYConfirmar()"><i class="fas fa-check"></i> Confirmar Cobro</button>
         </div>
       </div>
     </div>

@@ -16,6 +16,8 @@ class Orden(models.Model):
                 ('canelado', 'Cancelado'),
     )
     estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
+    estado_pago = models.CharField(max_length=20, choices=[('pendiente', 'Pendiente'), ('pagado', 'Pagado')], default='pendiente')
+
 
     # Campos extra
     cliente_nombre = models.CharField(max_length=200, blank=True, null=True)
@@ -24,6 +26,7 @@ class Orden(models.Model):
     TIPO_PEDIDO = (
         ("delivery", "Delivery"),
         ("retirar", "Retirar en local"),
+        ("efectivo_local", "Pago en efectivo al retirar")
     )
     tipo_pedido = models.CharField(max_length=20, choices=TIPO_PEDIDO, default="retirar")
     direccion = models.TextField(blank=True, null=True)

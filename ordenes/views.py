@@ -130,6 +130,19 @@ class AdminOrdenListAPIView(ListAPIView):
     permission_classes = [EsStaff]
 
 
+#class AdminOrdenListAPIViewcocina(ListAPIView):
+ #   serializer_class = OrdenAdminSerializer
+ #   permission_classes = [EsStaff]
+
+ #   def get_queryset(self):
+ #       queryset = Orden.objects.filter(
+  #          venta__completada=True
+  #      ).exclude(estado__in=["entregado", "cancelado", "preparando"]).order_by("-creado")
+
+  #      print("ORDENES PARA COCINA:", queryset)
+
+  #      return queryset
+
 class AdminOrdenListAPIViewcocina(ListAPIView):
     serializer_class = OrdenAdminSerializer
     permission_classes = [EsStaff]
@@ -137,13 +150,17 @@ class AdminOrdenListAPIViewcocina(ListAPIView):
     def get_queryset(self):
         queryset = Orden.objects.filter(
             venta__completada=True
-        ).exclude(estado__in=["entregado", "cancelado", "preparando"]).order_by("-creado")
-
-        print("ORDENES PARA COCINA:", queryset)
+        ).exclude(
+            estado__in=[
+                "entregado",
+                "cancelado",
+                "preparando"
+            ]
+        ).order_by(
+            "venta__fecha"
+        )
 
         return queryset
-
-
   
 
 

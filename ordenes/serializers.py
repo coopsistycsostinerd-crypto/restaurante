@@ -34,10 +34,11 @@ class OrdenSerializer(serializers.ModelSerializer):
             'direccion',
             'total',
             'estado',
+            'estado_pago',
             'creado',
             'items'
         ]
-        read_only_fields = ['estado', 'creado']
+        read_only_fields = ['estado', 'creado',  'estado_pago']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')

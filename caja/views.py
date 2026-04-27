@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -188,6 +190,7 @@ class AgregarPagoAPIView(APIView):
                 print(f"Cambiando estado de la orden {venta.orden.id} a 'entregado'")
              #   venta.orden.estado = "entregado"
                 venta.orden.estado = "en preparacion"  # 🔥 Nuevo estado para que cocina sepa que ya se pagó pero falta entregar
+                venta.orden.estado_pago = "pagado"  # 🔥 Nuevo estado para que cocina sepa que ya se pagó pero falta entregar
                 venta.orden.save()
 
             # ==============================
@@ -252,7 +255,8 @@ class AgregarPagoAPIView2(APIView):
             venta.save()
 
         # Cambiar el estado de la orden asociada a "entregado"
-        venta.orden.estado = "entregado"
+        venta.orden.estado = "pendiente" 
+        venta.orden.estado_pago = "pagado"  # 🔥 Nuevo estado para que cocina sepa que ya se pagó pero falta entregar
         venta.orden.save()
 
         return Response({"mensaje": "Pago aplicado", "monto": restante}, status=201)
@@ -290,7 +294,7 @@ class OrdenesParaCajaAPIView(APIView):
      
         # 🔹 Órdenes listas
         ordenes = Orden.objects.filter(
-            estado="preparando"
+            estado="pendiente", venta__isnull=True
         ).exclude(
             venta__isnull=False
         )
@@ -323,7 +327,7 @@ class OrdenesParaCajaAPIView(APIView):
                 "total": r.monto_deposito,
                 "descripcion": f"Reserva {r.fecha} {r.hora_inicio}"
             })
-        print("lo que se va a pagar", data)
+  #      print("lo que se va a pagar", data)
         return Response(data)
 
 
@@ -348,3 +352,151 @@ def ticket_venta(request, venta_id):
     })
 
     return HttpResponse(html)
+
+
+
+
+
+
+# recibir pagos online (simulado)
+
+from users.models import Usuariohtp
+
+
+from decimal import Decimal
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from ordenes.models import Orden
+from .models import Venta, Pago, PagoOnline
+
+
+
+from decimal import Decimal
+
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from ordenes.models import Orden
+from .models import Venta, Pago, PagoOnline
+
+
+
+class RecibirPagoOnlineAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, orden_id):
+        orden = get_object_or_404(Orden, id=orden_id)
+
+        # Validar método de pago
+        metodo = request.data.get("metodo")
+        referencia = request.data.get("referencia", "")
+        ultimos_digitos = request.data.get("ultimos_digitos", "")
+
+        if not metodo:
+            return Response({
+                "error": "Debe seleccionar un método de pago"
+            }, status=400)
+
+        # Solo métodos válidos para pago online
+        if metodo not in ["tarjeta", "transferencia"]:
+            return Response({
+                "error": "Método de pago inválido"
+            }, status=400)
+
+        # Evitar doble pago
+        if hasattr(orden, "venta") and orden.venta.completada:
+            return Response({
+                "error": "Esta orden ya fue pagada"
+            }, status=400)
+
+        # Usuario automático para ventas online
+        usuario_pago_online = Usuariohtp.objects.filter(
+            username="pogosonline"
+        ).first()
+
+        if not usuario_pago_online:
+            return Response({
+                "error": "El usuario 'pogosonline' no existe"
+            }, status=500)
+
+        # =====================================================
+        # 1. Registrar intento de pago online
+        # =====================================================
+
+        pago_online = PagoOnline.objects.create(
+            orden=orden,
+            metodo=metodo,
+            monto=orden.total,
+            referencia=referencia,
+            ultimos_digitos=ultimos_digitos,
+            estado="confirmado"  # simulado por ahora
+        )
+
+        # =====================================================
+        # 2. Crear venta si no existe
+        # =====================================================
+
+        venta, creada = Venta.objects.get_or_create(
+            orden=orden,
+            defaults={
+                "cajero": usuario_pago_online,
+                "subtotal": orden.total,
+                "impuestos": Decimal("0.00"),
+                "total": orden.total,
+                "completada": False
+            }
+        )
+
+        # =====================================================
+        # 3. Validar si ya está saldada
+        # =====================================================
+
+        total_pagado = sum(
+            p.monto for p in venta.pagos.all()
+        ) or Decimal("0.00")
+
+        restante = venta.total - total_pagado
+
+        if restante <= 0:
+            venta.completada = True
+            venta.save()
+
+            return Response({
+                "error": "La venta ya está saldada"
+            }, status=400)
+
+        # =====================================================
+        # 4. Crear pago real en caja
+        # =====================================================
+
+        Pago.objects.create(
+            venta=venta,
+            metodo=metodo,
+            monto=restante,
+            referencia=referencia,
+            ultimos_digitos=ultimos_digitos
+        )
+
+        # =====================================================
+        # 5. Finalizar venta y actualizar orden
+        # =====================================================
+
+        venta.completada = True
+        venta.save()
+
+        # Pagó → cocina debe preparar
+        orden.estado = "en preparacion"
+        orden.estado_pago = "pagado"
+        orden.save()
+
+        return Response({
+            "mensaje": "Pago online registrado correctamente",
+            "orden_id": orden.id,
+            "venta_id": venta.id,
+            "pago_online_id": pago_online.id,
+            "monto_pagado": restante,
+            "estado_orden": orden.estado
+        }, status=201)

@@ -746,8 +746,9 @@ async function cargarPedidosAdmin() {
                         ? `<span class="estado-entregado"> <i class="fas fa-truck"></i> Entregado</span>`
                         : `
                             <select onchange="cambiarEstado(${p.id}, this.value)">
-                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}> <i class="fas fa-clock"></i> Pendiente</option>
+                                <option value="entregado" ${p.estado === "entregado" ? "selected" : ""}> <i class="fas fa-truck"></i> Entregado</option>
                                 <option value="preparando" ${p.estado === "preparando" ? "selected" : ""}> <i class="fas fa-cog"></i> Preparando</option>
+                                <option value="pendiente" ${p.estado === "pendiente" ? "selected" : ""}> <i class="fas fa-clock"></i> Pendiente</option>
                             </select>
                         `
                     }

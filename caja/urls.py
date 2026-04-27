@@ -11,4 +11,8 @@ urlpatterns = [
      path('caja/ticket/<int:venta_id>/', ticket_venta),
      path("caja/crear-venta/", CrearVentaAPIView.as_view()),
 
+     # ESTA API QUE SIGUE ES PARA RECIBIR PAGOS ONLINE
+     path('pago-online/<int:orden_id>/', RecibirPagoOnlineAPIView.as_view(), name='pago_online'),
+
+
 ]
