@@ -190,6 +190,7 @@ function renderCarrito() {
     const lista = document.getElementById("lista-carrito");
     const total = document.getElementById("total");
     const badge = document.getElementById("cart-count");
+    const badgeMenu = document.getElementById("cart-count-menu");
 
     lista.innerHTML = "";
 
@@ -197,6 +198,7 @@ function renderCarrito() {
         lista.innerHTML = `<li class="carrito-vacio"> <i class="fas fa-shopping-cart"></i> Tu carrito está vacío</li>`;
         total.textContent = "0";
         badge.textContent = "0";
+        badgeMenu.textContent = "0";
         return;
     }
 
@@ -214,12 +216,77 @@ function renderCarrito() {
 
             </div>
 
-            <div class="cart-controls">
-                <button onclick="disminuir(${p.id})"> <i class="fas fa-minus"></i> </button>
-                <span>${p.cantidad}</span>
-                <button onclick="aumentar(${p.id})"> <i class="fas fa-plus"></i> </button>
-                <button class="eliminar" onclick="eliminar(${p.id})"> <i class="fas fa-trash"></i> </button>
-            </div>
+<div class="cart-controls">
+    <!-- Botón disminuir -->
+    <button 
+        style="
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            background-color: #d1d1d1; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='#27ae60'; this.style.color='#fff';"
+        onmouseout="this.style.backgroundColor='#d1d1d1'; this.style.color='#000';"
+        onclick="disminuir(${p.id})"
+    >
+        <i class="fas fa-minus" style="display:block; margin:auto; line-height:1; font-size:16px;"></i>
+    </button>
+
+    <span style="min-width:20px; text-align:center; display:inline-block;">${p.cantidad}</span>
+
+    <!-- Botón aumentar -->
+    <button 
+        style="
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            background-color: #d1d1d1; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='#27ae60'; this.style.color='#fff';"
+        onmouseout="this.style.backgroundColor='#d1d1d1'; this.style.color='#000';"
+        onclick="aumentar(${p.id})"
+    >
+        <i class="fas fa-plus" style="display:block; margin:auto; line-height:1; font-size:16px;"></i>
+    </button>
+
+    <!-- Botón eliminar -->
+   <!-- Botón eliminar -->
+<button 
+    style="
+        width: 32px;
+        height: 32px;
+        margin-left: 42px; /* separación */
+        border: none;
+        border-radius: 6px;
+        background-color: #f84c39;
+        color: #ffffff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    "
+    onmouseover="this.style.backgroundColor='#c0392b'; this.style.transform='scale(1.05)';"
+    onmouseout="this.style.backgroundColor='#f84c39'; this.style.transform='scale(1)';"
+    onmousedown="this.style.backgroundColor='#a93226';"
+    onmouseup="this.style.backgroundColor='#c0392b';"
+    onclick="eliminar(${p.id})"
+>
+    <i class="fas fa-trash" style="display:block; margin:auto; line-height:1; font-size:16px;"></i>
+</button>
+</div>
         `;
 
         lista.appendChild(li);
@@ -228,6 +295,7 @@ function renderCarrito() {
     total.textContent = formatearMoneda(totalPrecio());
 
     badge.textContent = totalItems();
+    badgeMenu.textContent = totalItems();
 }
 
 async function eliminar(id) {
@@ -291,14 +359,17 @@ async function cargarCategorias() {
             <button class="active" data-categoria="all"> <i class="fas fa-list"></i> Todo</button>
         `;
 
-        contenedor.querySelector("button").onclick = () =>
-            filtrarCategoria("all");
+      //  contenedor.querySelector("button").onclick = () =>
+       //     filtrarCategoria("all");
+      contenedor.querySelector("button").onclick = () =>
+    filtrarCategoriaModal("all");
 
         categorias.forEach(cat => {
             const btn = document.createElement("button");
             btn.textContent = cat.nombre;
             btn.dataset.categoria = cat.nombre;
-            btn.onclick = () => filtrarCategoria(cat.nombre);
+          //  btn.onclick = () => filtrarCategoria(cat.nombre);
+            btn.onclick = () => filtrarCategoriaModal(cat.nombre);
 
 
 
@@ -668,7 +739,7 @@ function mostrarPasoPago(orden) {
         <p>Total: ${formatearMoneda(orden.total)}</p>
 
         <label> <i class="fas fa-wallet"></i> Método de pago</label>
-        <select id="metodoPago" onchange="mostrarCamposPago()">
+        <select id="metodoPago" onchange="mostrarCamposPago()" class="" required>
             <option value="">Selecciona método</option>
             <option value="transferencia">Transferencia</option>
             <option value="tarjeta">Tarjeta</option>
@@ -1586,7 +1657,64 @@ function filtrarProductosModal(texto) {
     destino.appendChild(article);
   });
 }
+function filtrarCategoriaModal(categoriaNombre) {
 
+  const destino = document.getElementById("productosModal");
+
+  destino.innerHTML = "";
+
+  let productosFiltrados = productosGlobal;
+
+  if (categoriaNombre !== "all") {
+    productosFiltrados = productosGlobal.filter(
+      prod => prod.categoria === categoriaNombre
+    );
+  }
+
+  productosFiltrados.forEach(prod => {
+
+    const article = document.createElement("article");
+
+    const imagen = prod.imagen
+      ? prod.imagen
+      : "/media/productos/default.png";
+
+    article.className = "producto-card";
+
+    article.innerHTML = `
+      <img src="${imagen}" class="producto-img">
+
+      <div class="producto-info">
+        <h3>${prod.nombre}</h3>
+        <p>${prod.descripcion || ""}</p>
+
+        <div class="producto-footer">
+          <span class="producto-precio">
+            ${formatearMoneda(prod.precio)}
+          </span>
+
+          <div class="cantidad-control">
+            <input type="number"
+                   min="1"
+                   value="1"
+                   id="modal-qty-${prod.id}">
+
+            <button class="btn-agregar" onclick="agregarCarrito(
+              ${prod.id},
+              '${prod.nombre}',
+              ${prod.precio},
+              'modal-qty-${prod.id}'
+            )">
+              Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    destino.appendChild(article);
+  });
+}
 
 function cerrarMenuModal() {
   document.getElementById("menuModal").classList.remove("active");
@@ -1815,4 +1943,16 @@ if (sessionStorage.getItem('theme') === 'dark') {
   btn.textContent = '☀️';
 }
 
+function abrirCarritoDesdeMenu() {
 
+    // cerrar modal menú
+  //  document.getElementById("menuModal").classList.remove("active");
+
+    // abrir carrito
+    toggleCarrito2();
+}
+
+function toggleCarrito2() {
+    document.getElementById("carrito").classList.toggle("active");
+    document.getElementById("overlay").classList.toggle("active");
+}

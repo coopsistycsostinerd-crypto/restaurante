@@ -21,6 +21,11 @@
   z-index: 3000;
 }
 
+/* Iconos dentro del modal de contacto */
+.contacto-modal i {
+    color: #27ae60; /* verde */
+}
+
 .contacto-modal.active {
   display: flex;
 }
@@ -97,7 +102,7 @@
 
 .btn-enviar {
   flex: 1;
-  background: #2563eb;
+  background: #a52828;
   color: #fff;
   padding: 10px;
   border-radius: 8px;
@@ -107,7 +112,7 @@
 }
 
 .btn-enviar:hover {
-  background: #1e4fd6;
+  background: #a52828;
 }
 
 .btn-cancelar {

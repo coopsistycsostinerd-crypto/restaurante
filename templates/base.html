@@ -51,13 +51,14 @@
 
         <a onclick="event.preventDefault(); abrirContacto()">Contáctanos</a>
 
-        <div id="userMenuContainer">
-          <a href="#" class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</a>
-        </div>
-
         <div class="cart-btn" onclick="toggleCarrito()">
           <i class="fas fa-shopping-cart"></i>
           <span class="cart-count" id="cart-count">0</span>
+        </div>
+
+      
+        <div id="userMenuContainer">
+          <a href="#" class="login-btn" id="loginBtn" onclick="abrirLoginModal()">Login</a>
         </div>
         <!-- <button id="themeToggle" class="theme-btn">🌙</button> -->
       </nav>
@@ -90,137 +91,89 @@
     <!-- OVERLAY -->
     <div id="overlay" onclick="toggleCarrito()"></div>
 
-   <div class="modal-checkoutnuevo" id="checkoutModal">
-    <div class="modal-checkoutnuevo-content">
-
+    <div class="modal-checkoutnuevo" id="checkoutModal">
+      <div class="modal-checkoutnuevo-content">
         <h3 class="modal-checkoutnuevo-title">
-            <i class="fas fa-check-circle"></i>
-            Confirmar pedido
+          <i class="fas fa-check-circle"></i>
+          Confirmar pedido
         </h3>
 
         <form id="checkoutForm">
+          <!-- DATOS PERSONALES -->
+          <div class="modal-checkoutnuevo-section">
+            <h4>Datos personales</h4>
 
-            <!-- DATOS PERSONALES -->
-            <div class="modal-checkoutnuevo-section">
-                <h4>Datos personales</h4>
+            <div class="modal-checkoutnuevo-row">
+              <div class="modal-checkoutnuevo-group">
+                <label>Nombre</label>
+                <input type="text" id="nombre" placeholder="Tu nombre" required />
+              </div>
 
-                <div class="modal-checkoutnuevo-row">
-                    <div class="modal-checkoutnuevo-group">
-                        <label>Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            placeholder="Tu nombre"
-                            required
-                        >
-                    </div>
-
-                    <div class="modal-checkoutnuevo-group">
-                        <label>Teléfono</label>
-                        <input
-                            type="tel"
-                            id="telefono"
-                            placeholder="809-000-0000"
-                            required
-                        >
-                    </div>
-                </div>
-
-                <div class="modal-checkoutnuevo-row">
-                    <div class="modal-checkoutnuevo-group">
-                        <label>Correo electrónico (opcional)</label>
-                        <input
-                            type="email"
-                            id="correo"
-                            placeholder="ejemplo@gmail.com"
-                        >
-                    </div>
-
-                    <div class="modal-checkoutnuevo-group">
-                        <label>Tipo de pedido</label>
-                        <select
-                            id="tipoPedido"
-                            onchange="toggleDireccion()"
-                            required
-                        >
-                            <option value="">Selecciona una opción</option>
-                            <option value="delivery">Delivery</option>
-                            <option value="retirar">Retirar en local</option>
-                          
-                        </select>
-                    </div>
-                </div>
+              <div class="modal-checkoutnuevo-group">
+                <label>Teléfono</label>
+                <input type="tel" id="telefono" placeholder="809-000-0000" required />
+              </div>
             </div>
 
-            <!-- DIRECCIÓN -->
-            <div
-                id="direccionBox"
-                class="modal-checkoutnuevo-section"
-                style="display: none;"
-            >
-                <h4>Información de entrega</h4>
+            <div class="modal-checkoutnuevo-row">
+              <div class="modal-checkoutnuevo-group">
+                <label>Correo electrónico (opcional)</label>
+                <input type="email" id="correo" placeholder="ejemplo@gmail.com" />
+              </div>
 
-                <div class="modal-checkoutnuevo-group">
-                    <label>Dirección de entrega</label>
-                    <textarea
-                        id="direccion"
-                        placeholder="Ej: Calle Duarte #23, Santo Domingo"
-                    ></textarea>
-                </div>
+              <div class="modal-checkoutnuevo-group">
+                <label>Tipo de pedido</label>
+                <select id="tipoPedido" onchange="toggleDireccion()" required>
+                  <option value="">Selecciona una opción</option>
+                  <option value="delivery">Delivery</option>
+                  <option value="retirar">Retirar en local</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-                <div class="modal-checkoutnuevo-group">
-                    <label>Referencia (opcional)</label>
-                    <textarea
-                        id="referencia"
-                        placeholder="Ej: Casa blanca con portón negro"
-                    ></textarea>
-                </div>
+          <!-- DIRECCIÓN -->
+          <div id="direccionBox" class="modal-checkoutnuevo-section" style="display: none;">
+            <h4>Información de entrega</h4>
+
+            <div class="modal-checkoutnuevo-group">
+              <label>Dirección de entrega</label>
+              <textarea id="direccion" placeholder="Ej: Calle Duarte #23, Santo Domingo"></textarea>
             </div>
 
-            <!-- OBSERVACIONES -->
-            <div class="modal-checkoutnuevo-section">
-                <h4>Notas adicionales</h4>
-
-                <div class="modal-checkoutnuevo-group">
-                    <label>Observaciones</label>
-                    <textarea
-                        id="observaciones"
-                        placeholder="Ej: sin cebolla, poco picante, sin hielo..."
-                    ></textarea>
-                </div>
+            <div class="modal-checkoutnuevo-group">
+              <label>Referencia (opcional)</label>
+              <textarea id="referencia" placeholder="Ej: Casa blanca con portón negro"></textarea>
             </div>
+          </div>
 
-            <!-- RESUMEN -->
-            <div class="modal-checkoutnuevo-section">
-        
+          <!-- OBSERVACIONES -->
+          <div class="modal-checkoutnuevo-section">
+            <h4>Notas adicionales</h4>
 
-                <p class="modal-checkoutnuevo-total">
-                    Total:
-                    <span id="modal-total">RD$0.00</span>
-                </p>
+            <div class="modal-checkoutnuevo-group">
+              <label>Observaciones</label>
+              <textarea id="observaciones" placeholder="Ej: sin cebolla, poco picante, sin hielo..."></textarea>
             </div>
+          </div>
 
-            <!-- BOTONES -->
-            <div class="modal-checkoutnuevo-actions">
-                <button
-                    type="button"
-                    onclick="cerrarModalconfirmarpedido()"
-                    class="btn-cancelar"
-                >
-                    Cancelar
-                </button>
+          <!-- RESUMEN -->
+          <div class="modal-checkoutnuevo-section">
+            <p class="modal-checkoutnuevo-total">
+              Total:
+              <span id="modal-total">RD$0.00</span>
+            </p>
+          </div>
 
-                <button
-                    type="submit"
-                    class="btn-finalizar"
-                >
-                    Finalizar pedido
-                </button>
-            </div>
+          <!-- BOTONES -->
+          <div class="modal-checkoutnuevo-actions">
+            <button type="button" onclick="cerrarModalconfirmarpedido()" class="btn-cancelar">Cancelar</button>
 
+            <button type="submit" class="btn-finalizar">Finalizar pedido</button>
+          </div>
         </form>
+      </div>
     </div>
-</div>
 
     <!-- Modal Login -->
     <!-- Modal Login -->
@@ -240,8 +193,8 @@
               <input type="password" id="loginPassword" placeholder="Contraseña" required />
 
               <div class="modal-actions">
+                <button type="button" onclick="cerrarLoginModal()" class="btn-cancelar-rojo"><i class="fas fa-times"></i> Cancelar</button>
                 <button type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-                <button type="button" onclick="cerrarLoginModal()"><i class="fas fa-times"></i> Cancelar</button>
               </div>
             </form>
 
@@ -267,8 +220,9 @@
               <input type="text" name="direccion" placeholder="Dirección" required />
 
               <div class="modal-actions">
-                <button type="submit"><i class="fas fa-user-plus"></i> Registrarse</button>
                 <button type="button" onclick="mostrarLogin()"><i class="fas fa-arrow-left"></i> Volver</button>
+
+                <button type="submit"><i class="fas fa-user-plus"></i> Registrarse</button>
               </div>
             </form>
           </div>
@@ -374,9 +328,9 @@
 
           <!-- BOTONES -->
           <div class="modalreserva-actions">
-            <button type="submit" class="modalreserva-btn-primary"><i class="fas fa-check"></i> Confirmar reserva</button>
-
             <button type="button" onclick="cerrarReservaModal()" class="modalreserva-btn-secondary"><i class="fas fa-times"></i> Cancelar</button>
+
+            <button type="submit" class="modalreserva-btn-primary"><i class="fas fa-check"></i> Confirmar reserva</button>
           </div>
         </form>
       </div>
@@ -462,6 +416,10 @@
 
     <div id="menuModal" class="menu-modal">
       <div class="menu-modal-content">
+           <div class="cart-btnmenu" onclick="abrirCarritoDesdeMenu()">
+          <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cart-count-menu">0</span>
+        </div>
         <button class="modal-close" onclick="cerrarMenuModal()">×</button>
 
         <div class="modal-header">
@@ -469,7 +427,8 @@
 
           <input type="text" id="buscadorMenu" placeholder="Buscar producto..." oninput="filtrarProductosModal(this.value)" />
         </div>
-
+        <section class="categorias" id="categorias"></section>
+<br>
         <div class="productos" id="productosModal"></div>
       </div>
     </div>

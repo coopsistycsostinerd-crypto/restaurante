@@ -1253,39 +1253,94 @@ crearKPI(kpiRow, "Reservas Hoy", data.kpis.reservas_hoy, "", "fa-calendar-check"
 
   /* Charts */
   if (ventasChart) ventasChart.destroy();
-  ventasChart = new Chart(
-    document.getElementById("ventasChart"),
-    {
-      type: "line",
-      data: {
-        labels: data.ventas_por_dia.map(v => v.creado__date),
-        datasets: [{
-          label: "Ventas",
-          data: data.ventas_por_dia.map(v => v.total),
-          borderColor: "#2563eb",
-          backgroundColor: "rgba(37,99,235,.15)",
-          fill: true,
-          tension: .4
-        }]
+ ventasChart = new Chart(
+  document.getElementById("ventasChart"),
+  {
+    type: "line",
+    data: {
+      labels: data.ventas_por_dia.map(v => v.creado__date),
+      datasets: [{
+        label: "Ventas",
+        data: data.ventas_por_dia.map(v => v.total),
+
+        borderColor: "#2563eb",
+        backgroundColor: "rgba(37,99,235,0.1)",
+
+        fill: true,
+        tension: 0.4,
+
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#2563eb",
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#111",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          callbacks: {
+            label: ctx =>
+              "RD$ " + ctx.raw.toLocaleString("es-DO")
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "rgba(0,0,0,0.05)"
+          },
+          ticks: {
+            callback: val => "RD$ " + val
+          }
+        }
       }
     }
-  );
+  }
+);
 
   if (reservasChart) reservasChart.destroy();
-  reservasChart = new Chart(
-    document.getElementById("reservasChart"),
-    {
-      type: "bar",
-      data: {
-        labels: data.reservas_por_dia.map(r => r.fecha),
-        datasets: [{
-          label: "Reservas",
-          data: data.reservas_por_dia.map(r => r.total),
-          backgroundColor: "#22c55e"
-        }]
+ reservasChart = new Chart(
+  document.getElementById("reservasChart"),
+  {
+    type: "bar",
+    data: {
+      labels: data.reservas_por_dia.map(r => r.fecha),
+      datasets: [{
+        label: "Reservas",
+        data: data.reservas_por_dia.map(r => r.total),
+
+        backgroundColor: "#22c55e",
+        borderRadius: 8,
+        barThickness: 18
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "rgba(0,0,0,0.05)"
+          }
+        }
       }
     }
-  );
+  }
+);
 renderTopVendidos(data.productos_mas_vendidos);
 renderTopIngresos(data.productos_mas_ingresos);
 
@@ -1300,64 +1355,120 @@ renderTopIngresos(data.productos_mas_ingresos);
 
 
 function renderTopVendidos(productos) {
+
   const contenedor = document.getElementById("topVendidos");
-  contenedor.innerHTML = "";
 
   if (!productos || productos.length === 0) {
-    contenedor.innerHTML = "<p> <i class=\"fas fa-exclamation-circle\"></i> No hay datos</p>";
+    contenedor.innerHTML = `<p>No hay datos</p>`;
     return;
   }
 
-  const max = productos[0].total_vendido;
+  const max = Number(productos[0].total_vendido);
+
+  let html = `<div class="ranking-list">`;
 
   productos.forEach((p, index) => {
-    const porcentaje = (p.total_vendido / max) * 100;
 
-    contenedor.innerHTML += `
-      <div class="top-item">
-        <div class="top-info">
-          <span> #${index + 1} ${p.producto__nombre}</span>
-          <strong><i class="fas fa-shopping-cart"></i> ${p.total_vendido} vendidos</strong>
+    const total = Number(p.total_vendido);
+
+    const porcentaje = (total / max) * 100;
+
+    const medal =
+      ["🥇", "🥈", "🥉"][index] || `#${index + 1}`;
+
+    html += `
+      <div class="ranking-item">
+
+        <div class="ranking-top">
+
+          <div class="ranking-title">
+            ${medal} ${p.producto__nombre}
+          </div>
+
+          <div class="ranking-value">
+            ${total.toLocaleString("es-DO")}
+          </div>
+
         </div>
-        <div class="top-bar">
-          <div class="top-bar-fill" style="width:${porcentaje}%"></div>
+
+        <div class="ranking-bar">
+          <div 
+            class="ranking-progress"
+            style="width:${porcentaje}%">
+          </div>
         </div>
+
       </div>
     `;
   });
+
+  html += `</div>`;
+
+  contenedor.innerHTML = html;
 }
+
+
+
 function renderTopIngresos(productos) {
+
   const contenedor = document.getElementById("topIngresos");
-  contenedor.innerHTML = "";
 
   if (!productos || productos.length === 0) {
-    contenedor.innerHTML = "<p>No hay datos</p>";
+    contenedor.innerHTML = `<p>No hay datos</p>`;
     return;
   }
 
   const max = Number(productos[0].total_ingresos);
 
+  let html = `<div class="ranking-list">`;
+
   productos.forEach((p, index) => {
+
     const ingresos = Number(p.total_ingresos);
+
     const porcentaje = (ingresos / max) * 100;
 
-    const ingresoFormateado = ingresos.toLocaleString("es-DO", {
-      minimumFractionDigits: 2
-    });
+    const medal =
+      ["🥇", "🥈", "🥉"][index] || `#${index + 1}`;
 
-    contenedor.innerHTML += `
-      <div class="top-item">
-        <div class="top-info">
-          <span> #${index + 1} ${p.producto__nombre}</span>
-          <strong> <i class="fas fa-coins"></i> RD$ ${ingresoFormateado}</strong>
+    const dinero = ingresos.toLocaleString("es-DO", {
+      style: "currency",
+      currency: "DOP"
+    }).replace("DOP", "RD$");
+
+    html += `
+      <div class="ranking-item ingresos">
+
+        <div class="ranking-top">
+
+          <div class="ranking-title">
+            ${medal} ${p.producto__nombre}
+          </div>
+
+          <div class="ranking-value">
+            ${dinero}
+          </div>
+
         </div>
-        <div class="top-bar">
-          <div class="top-bar-fill ingresos" style="width:${porcentaje}%"></div>
+
+        <div class="ranking-bar">
+          <div 
+            class="ranking-progress"
+            style="width:${porcentaje}%">
+          </div>
         </div>
+
       </div>
     `;
   });
+
+  html += `</div>`;
+
+  contenedor.innerHTML = html;
 }
+
+
+
 
 async function cargarPuntodeVenta() {
 

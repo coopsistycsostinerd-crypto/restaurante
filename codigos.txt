@@ -18,3 +18,37 @@ application = get_wsgi_application()
 
 
 ALLOWED_HOSTS = ['.onrender.com']
+
+
+
+
+
+
+
+
+
+<!-- 🍽️ HERO DEL MENÚ (EL TUYO ACTUAL) -->
+<section class="hero-menu">
+    <div class="hero-menu-content">
+        <h1> <i class="fas fa-book"></i> Nuestro Menú</h1>
+        <p>Descubre todo lo que tenemos preparado para ti</p>
+    </div>
+</section>
+
+
+
+
+<!-- 🔘 CATEGORÍAS (TU SECCIÓN ACTUAL) -->
+<section class="categorias" id="categorias"></section>
+
+
+
+<!-- 🧾 MENÚ (TU GRID ACTUAL) -->
+
+<section class="menu">
+    <div class="productos" id="productos"></div>
+     <div class="menu-ver-mas">
+    <button onclick="abrirMenuModal()"><i class="fas fa-book"></i> Ver todo el menú</button>
+  </div>
+</section>
+

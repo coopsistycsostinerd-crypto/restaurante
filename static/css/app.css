@@ -150,6 +150,17 @@ header nav a:hover {
     font-size: 20px;
        margin-right: 10px;
 }
+.cart-btnmenu {
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+    margin-right: auto;
+    /* ALIGN-CONTENT: flex-end; */
+    POSITION: absolute;
+    top: 34px;
+    right: 70px;
+    color: white;
+}
 
 .cart-count {
     position: absolute;
@@ -236,35 +247,84 @@ main {
     color: var(--gris-texto);
     display: block;
 }
+.cart-controls {
+    display: flex;
+    align-items: center;      /* centra verticalmente todos los elementos */
+    gap: 6px;                 /* espacio entre los botones */
+}
 
-.cart-controls button {
+.cart-controls button:not(.eliminar-boton) {
     width: 26px;
     height: 26px;
+    border: none;
+    background: var(--gris-borde); /* color gris de los botones normales */
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centra el icono */
+    font-weight: 700;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.cart-controls button:not(.eliminar-boton):hover {
+    background-color: var(--verde-principal);
+    color: white;
+}
+
+
+/* Botones de cantidad (- y +) */
+.cantidad-btn {
+    width: 32px;  /* igual que el botón eliminar para uniformidad */
+    height: 32px;
     border: none;
     background: var(--gris-borde);
     border-radius: 6px;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centra icono */
     font-weight: 700;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-.cart-controls button:hover {
-    background: var(--verde-principal);
+.cantidad-btn:hover {
+    background-color: var(--verde-principal);
     color: white;
 }
-
-.eliminar {
-    background: #c94b4b;
-    color: white;
+.eliminar-boton {
+    width: 32px;              /* cuadrado para icono */
+    height: 32px;
+    padding: 0;
+    background-color: #f84c39; /* rojo brillante */
+    color: #ffffff;           /* icono blanco */
     border: none;
     border-radius: 6px;
-    padding: 4px 8px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;  /* centra icono */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.eliminar-boton i {
+    display: block;            /* bloque para usar flex centering */
+    line-height: 1;            /* evita desalineación vertical */
+    font-size: 16px;   
+         /* tamaño del icono */
+}
+.cart-controls span {
+    min-width: 20px;
+    text-align: center;
+    display: inline-block;
+}
+.eliminar-boton:hover {
+    background-color: #c0392b; /* rojo más oscuro */
+    transform: scale(1.05);
 }
 
-.eliminar:hover {
-    background: #992d2d;
+.eliminar-boton:active {
+    background-color: #a93226; /* rojo aún más oscuro */
 }
 
 /* Footer */
@@ -1117,7 +1177,7 @@ main {
    CONTACTO
 ========================= */
 .footer-contacto {
-  background: #1c1c1c; /* fondo oscuro elegante */
+  background: #153024; /* fondo oscuro elegante */
   color: #f5f5f5;      /* texto claro */
   padding: 60px 20px 30px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1663,7 +1723,7 @@ main {
   width: 100%;
   padding: 14px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #e63946, #ff5f6d);
+  background: linear-gradient(135deg, #534344, #816568);
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -1682,12 +1742,14 @@ main {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
-  background: transparent;
-  color: #666;
+  background-color: #e60202; /* Gris neutro para Cancelar */
+  color: #fffcfc;               /* Texto oscuro para buen contraste */
   border: none;
   font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
 
 .modalreserva-btn-secondary:hover {
   text-decoration: underline;
@@ -1756,6 +1818,24 @@ main {
   pointer-events: none;
   cursor: default;
 }
+/* SELECTS DEL MODAL RESERVA */
+.modalreserva-content select{
+  width: 100%;
+  padding: 10px 42px 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  background-color: #fff;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
 
 /* ===============================
    MOBILE
@@ -1815,6 +1895,8 @@ main {
   overflow: hidden;
   box-shadow: 0 30px 60px rgba(0,0,0,.25);
 }
+
+
 
 /* =========================
    SLIDER
@@ -1911,7 +1993,7 @@ main {
   flex: 1;
   padding: 13px;
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   border: none;
   transition: .3s ease;
@@ -1919,8 +2001,12 @@ main {
 
 /* Botón principal */
 .modal-actions button:first-child {
-  background: linear-gradient(135deg, #019966, #017a52);
-  color: #fff;
+
+      background: #c0392b;
+  color: #ffffff;
+    transform: translateY(-1px);
+
+
 }
 
 .modal-actions button:first-child:hover {
@@ -1929,6 +2015,13 @@ main {
 }
 
 /* Botón secundario */
+.modal-actions button:last-child {
+
+
+      background: linear-gradient(135deg, #019966, #017a52);
+  color: #fff;
+    font-weight: 600;
+}
 
 
 /* =========================
@@ -2236,13 +2329,13 @@ main {
 
 /* Fondo desenfocado dinámico */
 .bg-blur {
-    position: absolute;
-    top: 0;
+    position:fixed;
+  /*  top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(25px) brightness(0.5);
+   filter: blur(25px) brightness(0.5);*/
     z-index: 1;
 }
 
@@ -2502,4 +2595,100 @@ i {
 }
 .swal2-container {
     z-index: 99999 !important;
+}
+
+
+/* SELECT MÉTODO DE PAGO */
+
+```css id="k7q9dw"
+/* =========================
+   SELECT MÉTODO DE PAGO
+========================= */
+
+.metodo-pago-section{
+    width: 100%;
+}
+
+#metodoPago{
+    width: 100%;
+    min-width: 320px;
+
+    padding: 16px 45px 16px 14px;
+
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+
+    background-color: #fff;
+    color: #333;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+    outline: none;
+
+    transition: all 0.3s ease;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* Flecha personalizada */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+}
+
+/* Hover */
+#metodoPago:hover{
+    border-color: #27ae60;
+}
+
+/* Focus */
+#metodoPago:focus{
+    border-color: #27ae60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+}
+
+/* Opciones */
+#metodoPago option{
+    color: #333;
+    background: #fff;
+}
+
+
+
+
+
+/* MODAL MENU */
+.menu-modal{
+    z-index: 5000;
+}
+
+/* OVERLAY DEL CARRITO */
+#overlay{
+    z-index: 6000;
+}
+
+/* CARRITO */
+#carrito{
+    z-index: 7000;
+}
+
+#carrito{
+    position: fixed;
+    top: 0;
+    right: -420px;
+
+    width: 400px;
+    height: 100vh;
+
+    background: #fff;
+    transition: .3s ease;
+}
+
+#carrito.active{
+    right: 0;
 }

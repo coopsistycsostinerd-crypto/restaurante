@@ -106,6 +106,15 @@ def admin_dashboard(request):
         ordenes.values("estado")
         .annotate(total=Count("id"))
     )
+    estados_dict = {
+        "pendiente": 0,
+        "en_proceso": 0,
+        "entregado": 0,
+        "cancelado": 0,
+    }
+
+    for o in ordenes_por_estado:
+        estados_dict[o["estado"]] = o["total"]
 
     reservas_hoy = reservas.filter(fecha=hoy).count()
 
@@ -163,7 +172,8 @@ def admin_dashboard(request):
             "total_ventas": total_ventas,
             "reservas_hoy": reservas_hoy
         },
-        "ordenes_por_estado": list(ordenes_por_estado),
+       # "ordenes_por_estado": list(ordenes_por_estado),
+       "ordenes_por_estado": list(ordenes_por_estado),
         "reservas_por_estado": list(reservas_por_estado),
         "ventas_por_dia": list(ventas_por_dia),
         "reservas_por_dia": list(reservas_por_dia),
