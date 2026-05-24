@@ -102,7 +102,7 @@
 
 .btn-enviar {
   flex: 1;
-  background: #a52828;
+  background: red;
   color: #fff;
   padding: 10px;
   border-radius: 8px;
@@ -112,7 +112,7 @@
 }
 
 .btn-enviar:hover {
-  background: #a52828;
+  background: red;
 }
 
 .btn-cancelar {
@@ -291,11 +291,8 @@
 /* ENVIAR */
 .btn-enviar {
   flex: 1;
-  background: linear-gradient(
-    135deg,
-    var(--color-principal),
-    #a52828
-  );
+  background:     red ;
+ 
   color: #fff;
   padding: 12px;
   border-radius: 12px;

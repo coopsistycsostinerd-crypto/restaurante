@@ -231,3 +231,44 @@
 .swal2-container {
     z-index: 99999 !important;
 }
+
+
+
+/* CONTENEDOR DE CADA IMAGEN */
+.galeria-item{
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* EFECTO HOVER */
+.galeria-item img{
+  transition: transform 0.4s ease;
+}
+
+.galeria-item:hover img{
+  transform: scale(1.03);
+}
+
+/* DESCRIPCIÓN OCULTA */
+.galeria-texto{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  background: rgba(0,0,0,0.70);
+  color: white;
+
+  padding: 14px;
+  text-align: center;
+  font-size: 14px;
+
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* MOSTRAR TEXTO */
+.galeria-item:hover .galeria-texto{
+  opacity: 1;
+}

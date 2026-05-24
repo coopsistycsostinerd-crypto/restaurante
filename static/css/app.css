@@ -1719,13 +1719,14 @@ main {
 ================================ */
 
 .modalreserva-btn-primary {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
-  padding: 14px;
-  border-radius: 14px;
+  height: 52px;
+
+  border-radius: 12px;
   background: linear-gradient(135deg, #534344, #816568);
   color: #fff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   border: none;
   cursor: pointer;
@@ -1740,12 +1741,14 @@ main {
 .modalreserva-btn-secondary {
   margin-top: 10px;
   width: 100%;
-  padding: 12px;
+  height: 52px;
   border-radius: 12px;
   background-color: #e60202; /* Gris neutro para Cancelar */
   color: #fffcfc;               /* Texto oscuro para buen contraste */
   border: none;
   font-size: 14px;
+   font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -1754,6 +1757,7 @@ main {
 .modalreserva-btn-secondary:hover {
   text-decoration: underline;
 }
+
 
 /* ===============================
    ANIMATION
@@ -1810,7 +1814,7 @@ main {
 
 .modalreserva-actions {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 .redes-icons a.disabled {
@@ -1973,13 +1977,13 @@ main {
    LOGIN FORM WIDTH
 ========================= */
 #loginForm {
+    width: 50%;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 360px;
+  max-width: 450px;  /* 👈 antes 360px */
   margin: 0 auto;
 }
-
 /* =========================
    BOTONES
 ========================= */
