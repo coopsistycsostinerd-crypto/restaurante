@@ -19,7 +19,7 @@ path(
   name="marcar_contacto_leido"
 ),
     path('experiencias/', experiencias, name='experiencias'),
-
+path('bloqueado/', views.bloqueado, name='bloqueado')
 
 ]
 from django.conf import settings

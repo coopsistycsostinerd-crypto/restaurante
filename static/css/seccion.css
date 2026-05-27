@@ -112,13 +112,13 @@
 }
 
 .btn-enviar:hover {
-  background: red;
+  background: rgb(74, 70, 82);
 }
 
 .btn-cancelar {
   flex: 1;
-  background: #e5e7eb;
-  color: #333;
+  background: #eb1b00;
+  color: #ffffff;
   padding: 10px;
   border-radius: 8px;
   border: none;
@@ -291,7 +291,7 @@
 /* ENVIAR */
 .btn-enviar {
   flex: 1;
-  background:     red ;
+  background:     rgb(101, 71, 211) ;
  
   color: #fff;
   padding: 12px;
@@ -305,14 +305,14 @@
 
 .btn-enviar:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(139, 30, 30, 0.45);
+  box-shadow: 0 8px 18px rgba(59, 52, 52, 0.45);
 }
 
 /* CANCELAR */
 .btn-cancelar {
   flex: 1;
-  background: transparent;
-  color: var(--color-texto);
+  background: red;
+  color: #fff;
   padding: 12px;
   border-radius: 12px;
   border: 1px solid #ccc;
@@ -322,7 +322,7 @@
 }
 
 .btn-cancelar:hover {
-  background: #eee;
+  background: #eeeeee42;
   border-color: var(--color-principal);
 }
 

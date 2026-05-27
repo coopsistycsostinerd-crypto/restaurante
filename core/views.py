@@ -267,3 +267,15 @@ from django.http import JsonResponse
 
 def experiencias(request):
     return render(request, "experiencias.html")
+
+
+
+
+
+
+def bloqueado(request):
+
+    return render(
+        request,
+        "bloqueado.html"
+    )
