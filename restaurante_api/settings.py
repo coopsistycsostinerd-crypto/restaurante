@@ -195,7 +195,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 #EMAIL_USE_TLS = True
 
 #EMAIL_HOST_USER = "apikey"
-#EMAIL_HOST_PASSWORD = "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"
+#EMAIL_HOST_PASSWORD = ""
 
 #DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
 
