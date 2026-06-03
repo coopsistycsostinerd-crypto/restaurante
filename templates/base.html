@@ -407,9 +407,10 @@
           <input type="password" id="pass_confirmar" required />
 
           <div class="password-actions">
-            <button type="submit" class="btn-guardar"><i class="fas fa-save"></i> Guardar</button>
-            <button type="button" class="btn-cancelar" onclick="cerrarPasswordModal()"><i class="fas fa-times"></i> Cancelar</button>
-          </div>
+                <button type="button" class="modalreserva-btn-secondary " onclick="cerrarPasswordModal()"><i class="fas fa-times"></i> Cancelar</button>
+         
+            <button type="submit" class="modalreserva-btn-primary"><i class="fas fa-save"></i> Guardar</button>
+         </div>
         </form>
       </div>
     </div>
@@ -460,9 +461,10 @@
               <textarea id="contacto_mensaje" required></textarea>
 
               <div class="contacto-actions">
-                <button type="submit" class="btn-enviar"><i class="fas fa-paper-plane"></i> Enviar</button>
-                <button type="button" class="btn-cancelar" onclick="cerrarContacto()"><i class="fas fa-times"></i> Cancelar</button>
-              </div>
+                     <button type="button" class="modalreserva-btn-secondary " onclick="cerrarContacto()"><i class="fas fa-times"></i> Cancelar</button>
+             
+                <button type="submit" class="modalreserva-btn-primary"><i class="fas fa-paper-plane"></i> Enviar</button>
+            </div>
             </form>
 
             <div class="contacto-info">
@@ -601,6 +603,7 @@
       <script src="{% static 'js/reportes.js' %}"></script>
       <script src="{% static 'js/app.js' %}"></script>
       <script src="{% static 'js/admin-panel.js' %}"></script>
+        <script src="{% static 'js/reset-password.js' %}"></script>
     {% endblock %}
   </body>
 </html>

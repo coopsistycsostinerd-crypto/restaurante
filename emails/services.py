@@ -12,29 +12,46 @@ import traceback
 # 🔹 FUNCIÓN BASE PARA ENVIAR EMAIL CON SENDGRID
 # =====================================================
 
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+import traceback
+
+
 def enviar_email_sendgrid(destinatario, asunto, template, contexto):
     try:
-        html_content = render_to_string(template, contexto)
 
-        message = Mail(
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to_emails=destinatario,
-            subject=asunto,
-            html_content=html_content,
+        html_content = render_to_string(
+            template,
+            contexto
         )
 
-        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
-        response = sg.send(message)
+        email = EmailMultiAlternatives(
+            subject=asunto,
+            body="",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[destinatario]
+        )
 
-        print("📨 STATUS:", response.status_code)
+        email.attach_alternative(
+            html_content,
+            "text/html"
+        )
 
-        return response.status_code == 202
+        email.send()
 
-    except Exception:
+        print("📨 EMAIL ENVIADO:", destinatario)
+
+        return True
+
+    except Exception as e:
+
         print("❌ ERROR ENVIANDO EMAIL")
+        print(str(e))
         traceback.print_exc()
-        return False
 
+        return False
 
 # =====================================================
 # 🔹 FUNCIÓN AUXILIAR PARA OBTENER EMAIL DE UNA ORDEN

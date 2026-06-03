@@ -29,7 +29,7 @@ async function cargarClientesAdmin() {
     <div class="acciones-usuarios">
         <button class="btn-crear" onclick="abrirModalCrearUsuario()"><i class="fas fa-plus"></i> Crear Usuario</button>
   
-        <select id="filtroRol">
+        <select class="form-select shadow-sm" id="filtroRol">
             <option value="">Filtrar por rol</option>
             <option value="cliente">Clientes</option>
             <option value="empleado">Empleados</option>
@@ -161,13 +161,22 @@ window.usuariosGlobal = usuarios;
         }
     </span>
 </td>
-                                <td class="acciones">
-    <button 
+                       <td class="acciones">
+
+    <button
         class="btn-editaradminuser"
         onclick="editarUsuario(${u.id})"
     >
-         <i class="fas fa-edit"></i> Editar
+        <i class="fas fa-edit"></i> Editar
     </button>
+
+    <button
+        class="btn-recuperaradmninuser"
+        onclick="enviarRecuperacion(${u.id})"
+    >
+        <i class="fas fa-key"></i> Recuperar
+    </button>
+
 </td>
 
                             </tr>
@@ -285,7 +294,46 @@ window.usuariosGlobal = usuarios;
     }
 }
 
+async function enviarRecuperacion(userId) {
 
+    const confirmar = confirm(
+        "¿Deseas enviar un enlace de recuperación de contraseña a este usuario?"
+    );
+
+    if (!confirmar) return;
+
+    const token = sessionStorage.getItem("token");
+
+    try {
+
+        const response = await fetch(
+            `/api/admin/enviar-recuperacion/${userId}/`,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Token ${token}`
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Error");
+        }
+
+        alert("Correo enviado correctamente");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "No fue posible enviar el correo"
+        );
+    }
+}
 
 function editarUsuario(id) {
     const usuario = window.usuariosGlobal.find(u => u.id === id);

@@ -274,3 +274,247 @@ def editar_usuario(request, user_id):
         "success": True,
         "message": "Usuario actualizado correctamente"
     })
+
+
+
+
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+
+def enviar_link_recuperacion(usuario):
+
+    uid = urlsafe_base64_encode(force_bytes(usuario.pk))
+
+    token = PasswordResetTokenGenerator().make_token(usuario)
+
+    link = (
+    f"{settings.FRONTEND_URL}"
+    f"/recuperar-password.html"
+    f"?uid={uid}&token={token}"
+)
+
+    send_mail(
+        "Recuperación de contraseña",
+        f"Hola {usuario.nombre},\n\n"
+        f"Para cambiar tu contraseña entra aquí:\n\n{link}",
+        "noreply@tudominio.com",
+        [usuario.email],
+        fail_silently=False,
+    )
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def enviar_correo_recuperacion(usuario, link):
+
+    send_mail(
+        subject="Recuperación de contraseña",
+        message=f"""
+Hola {usuario.nombre},
+
+Se ha generado un enlace para restablecer tu contraseña.
+
+Haz clic aquí:
+
+{link}
+
+Si no solicitaste este cambio puedes ignorar este mensaje.
+        """,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[usuario.email],
+        fail_silently=False,
+    )
+
+
+from rest_framework.permissions import IsAdminUser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
+from users.models import Usuariohtp
+
+
+
+
+class EnviarRecuperacionAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, user_id):
+
+        try:
+            usuario = Usuariohtp.objects.get(id=user_id)
+
+            uid = urlsafe_base64_encode(
+                force_bytes(usuario.pk)
+            )
+
+            token = PasswordResetTokenGenerator().make_token(
+                usuario
+            )
+
+            link = (
+                f"{settings.FRONTEND_URL}"
+                f"/api/reset-password/{uid}/{token}/"
+            )
+
+            enviar_correo_recuperacion(
+                usuario,
+                link
+            )
+
+            return Response({
+                "success": True,
+                "message": "Correo enviado"
+            })
+
+        except Usuariohtp.DoesNotExist:
+            return Response(
+                {"error": "Usuario no encontrado"},
+                status=404
+            )
+
+
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+class ValidarTokenAPIView(APIView):
+
+    permission_classes = []
+
+    def post(self, request):
+
+        uid = request.data.get("uid")
+        token = request.data.get("token")
+        nueva = request.data.get("password")
+
+        try:
+            user_id = urlsafe_base64_decode(uid).decode()
+            user = Usuariohtp.objects.get(pk=user_id)
+
+        except:
+            return Response(
+                {"error": "Link inválido"},
+                status=400
+            )
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return Response(
+                {"error": "Token inválido o expirado"},
+                status=400
+            )
+
+        user.set_password(nueva)
+        user.save()
+
+        return Response({
+            "message": "Contraseña actualizada"
+        })
+
+
+
+from django.shortcuts import render
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_decode
+
+class ResetPasswordAPIView(APIView):
+    permission_classes = []
+
+    def get(self, request, uid, token):
+
+        try:
+            print("UID recibido:", uid)
+
+            user_id = urlsafe_base64_decode(uid).decode()
+            print("USER ID:", user_id)
+
+            user = Usuariohtp.objects.get(pk=user_id)
+            print("USUARIO:", user)
+
+        except Exception as e:
+            print("ERROR:", str(e))
+
+            return render(
+                request,
+                "error.html",
+                {"mensaje": f"Enlace inválido: {str(e)}"}
+            )
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return render(
+                request,
+                "error.html",
+                {"mensaje": "Token inválido o expirado"}
+            )
+
+        return render(
+            request,
+            "recuperar-password.html",
+            {
+                "uid": uid,
+                "token": token
+            }
+        )
+    def post(self, request, uid, token):
+
+        try:
+
+            print("UID:", uid)
+            print("TOKEN:", token)
+
+            user_id = urlsafe_base64_decode(uid).decode()
+            print("USER_ID:", user_id)
+
+            user = Usuariohtp.objects.get(pk=user_id)
+            print("USER:", user)
+
+            password = request.POST.get("password")
+            password2 = request.POST.get("password2")
+
+            print("PASSWORD:", password)
+            print("PASSWORD2:", password2)
+
+            if password != password2:
+                return render(
+                    request,
+                    "recuperar-password.html",
+                    {
+                        "uid": uid,
+                        "token": token,
+                        "mensaje": "Las contraseñas no coinciden"
+                    }
+                )
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return render(
+                    request,
+                    "error.html",
+                    {"mensaje": "Token inválido o expirado"}
+                )
+
+            user.set_password(password)
+            user.save()
+
+            print("PASSWORD ACTUALIZADA")
+
+            return render(
+                request,
+                "success.html"
+            )
+
+        except Exception as e:
+
+            print("ERROR POST:", str(e))
+
+            return render(
+                request,
+                "error.html",
+                {"mensaje": str(e)}
+            )

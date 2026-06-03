@@ -26,6 +26,12 @@ SECRET_KEY = 'django-insecure-u&i4y0wky5yji$m=2jb@0z4ac5%3ur$-(a@)*dsd5f$3rjhtq+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+if DEBUG:
+    FRONTEND_URL = "http://127.0.0.1:8000"
+else:
+    FRONTEND_URL = "https://vagosrestaurante.com"
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -168,29 +174,29 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-#EMAIL_HOST = "smtp.gmail.com"
-#EMAIL_PORT = 587
-#EMAIL_USE_TLS = True
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
-# EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
-# EMAIL_HOST_PASSWORD = "fxgh hytf ohxz tzxi"
+EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
+EMAIL_HOST_PASSWORD = "rrap znsd cpus pivn"
 
-# DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
+DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
 
 import os
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#EMAIL_HOST = "smtp.sendgrid.net"
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = "apikey"
-EMAIL_HOST_PASSWORD = "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"
+#EMAIL_HOST_USER = "apikey"
+#EMAIL_HOST_PASSWORD = "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"
 
-DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
+#DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
 
 # redeploy trigger

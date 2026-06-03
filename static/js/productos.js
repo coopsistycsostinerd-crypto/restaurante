@@ -58,7 +58,19 @@ async function cargarProductosAdmin() {
 <td>$${p.precio}</td>
 <td>${p.disponible ? '✅' : '❌'}</td>
 <td>
-<button onclick='editarProducto(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
+<button
+    onclick='editarProducto(${JSON.stringify(p)})'
+    style="
+    background: var(--verde-principal);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    ">
+    <i class="fas fa-edit"></i>
+</button>
 </td>
 </tr>
                         `).join("")}

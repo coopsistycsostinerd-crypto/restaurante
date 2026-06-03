@@ -2456,6 +2456,9 @@ i {
 }
 
 .modal-checkoutnuevo-content {
+    position: relative;
+    z-index: 9999;
+
     background: #ffffff;
     width: 100%;
     max-width: 850px;
@@ -2604,7 +2607,7 @@ i {
 
 /* SELECT MÉTODO DE PAGO */
 
-```css id="k7q9dw"
+
 /* =========================
    SELECT MÉTODO DE PAGO
 ========================= */
@@ -2695,4 +2698,141 @@ i {
 
 #carrito.active{
     right: 0;
+}
+
+
+
+
+
+
+/* ==========================
+   CONTENEDOR PRINCIPAL
+========================== */
+
+.resetpass-container {
+    max-width: 450px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    text-align: center;
+}
+
+/* ==========================
+   TITULO
+========================== */
+
+.resetpass-title {
+    margin-bottom: 25px;
+    color: #222;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* ==========================
+   TEXTO
+========================== */
+
+.resetpass-text {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* ==========================
+   FORMULARIO
+========================== */
+
+.resetpass-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ==========================
+   INPUTS
+========================== */
+
+.resetpass-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all .25s ease;
+    box-sizing: border-box;
+}
+
+.resetpass-input:focus {
+    outline: none;
+    border-color: #d35400;
+    box-shadow: 0 0 0 3px rgba(211,84,0,.15);
+}
+
+/* ==========================
+   BOTON
+========================== */
+
+.resetpass-btn {
+    background:linear-gradient(135deg, #534344, #816568);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.resetpass-btn:hover {
+    background: linear-gradient(135deg, #534344, #816568);
+    transform: translateY(-2px);
+}
+
+/* ==========================
+   LINK
+========================== */
+
+.resetpass-link {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    background:linear-gradient(135deg, #534344, #816568);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.resetpass-link:hover {
+    background: linear-gradient(135deg, #534344, #816568);
+}
+
+/* ==========================
+   ALERTA ERROR
+========================== */
+
+.resetpass-error {
+    background: #ffe5e5;
+    color: #c0392b;
+    border: 1px solid #f5b7b1;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* ==========================
+   ALERTA EXITO
+========================== */
+
+.resetpass-success {
+    background: #eafaf1;
+    color: linear-gradient(135deg, #534344, #816568);
+    border: 1px solid #abebc6;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }

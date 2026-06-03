@@ -24,7 +24,7 @@
         <a href="#" onclick="cargarSeccion('reservas')"><i class="fas fa-calendar-check"></i> Reservas</a>
 
         {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
-          <a href="#" onclick="cargarSeccion('clientes')"><i class="fas fa-users"></i> Clientes</a>
+          <a href="#" onclick="cargarSeccion('clientes')"><i class="fas fa-users"></i> Usuarios / Clientes</a>
         {% endif %}
 
         {% if user.rol == 'admin' or user.rol == 'gerente' or user.rol == 'empleado' %}
@@ -43,15 +43,13 @@
           <a href="#" onclick="cargarSeccion('empresa')"><i class="fas fa-building"></i> Configuración de Empresa</a>
         {% endif %}
 
-        {% if user.rol == 'admin' or user.rol == 'gerente' %}
-          <a href="#" onclick="cargarSeccion('analitica')"><i class="fas fa-chart-pie"></i> Analítica</a>
-        {% endif %}
+   
 
         {% if user.rol == 'admin' or user.rol == 'gerente' %}
           <a href="#" onclick="cargarSeccion('reportes')"><i class="fas fa-file-alt"></i> Reportes</a>
         {% endif %}
 
-        {% if user.rol == 'admin' or user.rol == 'empleado' %}
+        {% if user.rol == 'admin' or user.rol == 'empleado' or user.rol == 'cajero' %}
           <a href="#" onclick="cargarSeccion('pos')"><i class="fas fa-desktop"></i> Punto de Venta</a>
         {% endif %}
       </nav>

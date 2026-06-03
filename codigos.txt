@@ -52,3 +52,33 @@ ALLOWED_HOSTS = ['.onrender.com']
   </div>
 </section>
 
+
+
+
+
+
+enviando correo a sendgrid
+
+
+def enviar_email_sendgrid(destinatario, asunto, template, contexto):
+    try:
+        html_content = render_to_string(template, contexto)
+
+        message = Mail(
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to_emails=destinatario,
+            subject=asunto,
+            html_content=html_content,
+        )
+
+        sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
+        response = sg.send(message)
+
+        print("📨 STATUS:", response.status_code)
+
+        return response.status_code == 202
+
+    except Exception:
+        print("❌ ERROR ENVIANDO EMAIL")
+        traceback.print_exc()
+        return False

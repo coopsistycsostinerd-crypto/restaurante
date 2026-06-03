@@ -552,6 +552,9 @@ async function checkout() {
 
 /* modal*/
 async function abrirCheckout() {
+     cerrarMenuModal();
+     document.getElementById("carrito").style.display = "none";
+
     if (carrito.length === 0) {
             // alert("Carrito vacío");
         Swal.fire({ 
@@ -1732,7 +1735,39 @@ menuModal.addEventListener("click", function(e) {
   }
 });
 
+function cerrarTodoAntesCheckout2() {
 
+    // menú productos
+    document.getElementById("menuModal")
+        ?.classList.remove("active");
+
+    // carrito lateral
+    document.getElementById("carrito")
+        ?.classList.remove("active");
+
+    // overlay
+    document.getElementById("overlay")
+        ?.classList.remove("active");
+
+    // login
+    document.getElementById("loginModal")
+        ?.classList.remove("active");
+
+    // pedidos
+    document.getElementById("misPedidosModal")
+        ?.classList.remove("active");
+
+    // reservas
+    document.getElementById("misReservasModal")
+        ?.style && (
+            document.getElementById("misReservasModal")
+                .style.display = "none"
+        );
+
+    // contacto
+    document.getElementById("contactoModal")
+        ?.classList.remove("active");
+}
 async function cargarEmpresaPublica() {
   try {
     const res = await fetch("/public/config/empresa/");
@@ -1956,3 +1991,5 @@ function toggleCarrito2() {
     document.getElementById("carrito").classList.toggle("active");
     document.getElementById("overlay").classList.toggle("active");
 }
+
+
