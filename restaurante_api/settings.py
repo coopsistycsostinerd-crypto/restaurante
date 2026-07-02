@@ -73,7 +73,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'auditoria.middleware.AuditoriaMiddleware',
-    'core.middleware.LicenciaMiddleware',
+  #  'core.middleware.LicenciaMiddleware',
 ]
 
 ROOT_URLCONF = 'restaurante_api.urls'
