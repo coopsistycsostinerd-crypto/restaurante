@@ -160,7 +160,7 @@ class CambiarPasswordAPIView(APIView):
             print("✅ Password guardada en BD")
 
             print("📧 Intentando enviar correo...")
-            notificar_cambio_password(user)
+         #   notificar_cambio_password(user)
             print("✅ Función notificar_cambio_password ejecutada")
 
             return Response(
@@ -201,7 +201,7 @@ def registro_cliente(request):
         user.direccion = data.get("direccion")
         user.rol = "cliente"
         user.save()
-        enviar_correo_bienvenida(user)
+     #   enviar_correo_bienvenida(user)
 
         return JsonResponse({"success": True})
 
@@ -296,7 +296,7 @@ def enviar_link_recuperacion(usuario):
     f"?uid={uid}&token={token}"
 )
 
-    send_mail(
+ #   send_mail(
         "Recuperación de contraseña",
         f"Hola {usuario.nombre},\n\n"
         f"Para cambiar tu contraseña entra aquí:\n\n{link}",
@@ -312,7 +312,7 @@ from django.conf import settings
 
 def enviar_correo_recuperacion(usuario, link):
 
-    send_mail(
+  #  send_mail(
         subject="Recuperación de contraseña",
         message=f"""
 Hola {usuario.nombre},
@@ -365,7 +365,7 @@ class EnviarRecuperacionAPIView(APIView):
                 f"/api/reset-password/{uid}/{token}/"
             )
 
-            enviar_correo_recuperacion(
+       #     enviar_correo_recuperacion(
                 usuario,
                 link
             )
