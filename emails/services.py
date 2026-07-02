@@ -39,8 +39,8 @@ def enviar_email_sendgrid(destinatario, asunto, template, contexto):
             "text/html"
         )
 
-      #  email.send(fail_silently=True)
-        email.send()
+         email.send(fail_silently=True)
+     #   email.send()
 
         print("📨 EMAIL ENVIADO:", destinatario)
 
