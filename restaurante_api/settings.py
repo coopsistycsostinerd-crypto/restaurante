@@ -174,15 +174,22 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+import os
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "://gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
-EMAIL_HOST_PASSWORD = "gsjc dcsi gglz azsr"
+
+# Lee la contraseña desde Render; si estás en local y no existe, usa la de prueba
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "rrap znsd cpus pivn")
+
+# EVITA QUE RENDER SE CAIGA: Si Gmail no responde en 5 segundos, aborta el intento
+EMAIL_TIMEOUT = 5 
 
 DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
+
 
 import os
 import ssl
