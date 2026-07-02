@@ -23,7 +23,7 @@ class LoginAPIView(APIView):
             user = serializer.validated_data["user"]
             login(request, user)
             print("ANTES DE LLAMAR NOTIFICAR_LOGIN", flush=True)
-            notificar_login(user)
+       #     notificar_login(user)
             print("DESPUÉS DE LLAMAR NOTIFICAR_LOGIN", flush=True)
             print("FROM:", settings.DEFAULT_FROM_EMAIL, flush=True)
             print("API KEY:", settings.EMAIL_HOST_PASSWORD, flush=True)
