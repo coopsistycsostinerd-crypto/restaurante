@@ -180,7 +180,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = "grupodemonografico53@gmail.com"
-EMAIL_HOST_PASSWORD = "rrap znsd cpus pivn"
+EMAIL_HOST_PASSWORD = "rrapznsdcpuspivn"
 
 DEFAULT_FROM_EMAIL = "Vagos Restaurante <grupodemonografico53@gmail.com>"
 
